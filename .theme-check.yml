@@ -1,0 +1,5 @@
+# Shopify Theme Check configuration
+# Docs: https://shopify.dev/docs/storefronts/themes/tools/theme-check
+root: "."
+
+extends: :default
