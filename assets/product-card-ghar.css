@@ -1,0 +1,284 @@
+/* Ghar Essentials product card.
+   Used by every product grid on the site. Mobile-first: the 375px two-column
+   layout is the base, desktop starts at Dawn's 750px breakpoint.
+   Colours come in as custom properties so sections can expose them as settings. */
+
+.ghar-product-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ghar-card {
+  --ghar-accent: #f4d021;
+  --ghar-accent-text: #1a1a1a;
+  --ghar-discount: #1b7a46;
+  --ghar-card-radius: 0.8rem;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.09);
+  border-radius: var(--ghar-card-radius);
+  background-color: rgb(var(--color-background));
+}
+
+/* 1. Media — fixed ratio so the grid never jumps while images load */
+
+.ghar-card__media {
+  position: relative;
+  display: block;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background-color: rgba(var(--color-foreground), 0.03);
+  text-decoration: none;
+}
+
+.ghar-card__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ghar-card__image--secondary {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Hover swap only where hover actually exists — never on touch */
+@media (hover: hover) {
+  .ghar-card:hover .ghar-card__image--secondary {
+    opacity: 1;
+  }
+}
+
+.ghar-card__media .placeholder-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* 2. Badges — top-left overlay */
+
+.ghar-card__badges {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.8rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.ghar-card__badge {
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.4rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.02rem;
+}
+
+.ghar-card__badge--discount {
+  background-color: var(--ghar-accent);
+  color: var(--ghar-accent-text);
+}
+
+.ghar-card__badge--custom {
+  background-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+}
+
+.ghar-card__badge--soldout {
+  background-color: rgba(var(--color-foreground), 0.72);
+  color: rgb(var(--color-background));
+}
+
+/* 3–8. Card body */
+
+.ghar-card__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem;
+}
+
+.ghar-card__title {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  font-family: var(--font-body-family);
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.ghar-card__title a {
+  color: rgb(var(--color-foreground));
+  text-decoration: none;
+}
+
+.ghar-card__title a:hover {
+  text-decoration: underline;
+}
+
+.ghar-card__size {
+  margin: 0;
+  font-size: 1.4rem;
+  line-height: 1.3;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+/* Judge.me injects stars into this div once the app is installed.
+   The reserved height stops the grid shifting when that happens. */
+.ghar-card__reviews {
+  min-height: 2rem;
+}
+
+.ghar-card__prices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-top: auto;
+}
+
+.ghar-card__price {
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: rgb(var(--color-foreground));
+}
+
+.ghar-card__mrp {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.ghar-card__off {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ghar-discount);
+}
+
+.ghar-card__tax {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.3;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.ghar-card__variants {
+  position: relative;
+  margin-top: 0.2rem;
+}
+
+/* Chevron drawn in CSS rather than an SVG data URI, so it follows the
+   owner's theme colours instead of a colour baked into this file. */
+.ghar-card__variants::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 1.4rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-right: 0.15rem solid rgb(var(--color-foreground));
+  border-bottom: 0.15rem solid rgb(var(--color-foreground));
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+
+.ghar-card__select {
+  width: 100%;
+  min-height: 4.4rem;
+  padding: 0 3.4rem 0 1rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.25);
+  border-radius: 0.4rem;
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  font-family: var(--font-body-family);
+  font-size: 1.6rem;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ghar-card__form {
+  margin-top: 0.4rem;
+}
+
+/* Always visible — the two-tap purchase path depends on it */
+.ghar-card__atc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 4.4rem;
+  padding: 0.8rem 1rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  font-family: var(--font-body-family);
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  cursor: pointer;
+}
+
+.ghar-card__atc:disabled,
+.ghar-card__atc[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ghar-card__atc .loading__spinner {
+  width: 1.8rem;
+  height: 1.8rem;
+  margin-left: 0.6rem;
+}
+
+.ghar-card__error {
+  margin: 0.4rem 0 0;
+  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.8);
+}
+
+.ghar-card--soldout .ghar-card__media {
+  opacity: 0.65;
+}
+
+@media screen and (min-width: 750px) {
+  .ghar-product-grid {
+    grid-template-columns: repeat(var(--ghar-columns-desktop, 4), minmax(0, 1fr));
+    gap: 2rem;
+  }
+
+  .ghar-card__body {
+    gap: 0.8rem;
+    padding: 1.4rem;
+  }
+
+  .ghar-card__title {
+    font-size: 1.7rem;
+  }
+
+  .ghar-card__price {
+    font-size: 2rem;
+  }
+}

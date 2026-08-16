@@ -1,0 +1,302 @@
+{% comment %}
+  Renders the Ghar Essentials product card.
+
+  Every product grid on the site uses this snippet. Everything shown comes from
+  the product object — nothing is hardcoded. Copy that is not part of the
+  product (the tax note, the optional badge) is passed in by the calling
+  section, so it stays editable in the theme editor.
+
+  Accepts:
+  - card_product: {Object} Product object. Required.
+  - section_id: {String} ID of the calling section, used to keep element ids unique.
+  - tax_note: {String} Small line under the price, e.g. "Inclusive of all taxes". (optional)
+  - secondary_badge: {String} Second badge, e.g. "Bestseller" / "New". Falls back to
+      the product metafield custom.badge when not passed. (optional)
+  - show_secondary_image: {Boolean} Swap to the second image on hover. Default: true (optional)
+  - show_variant_picker: {Boolean} Show the in-card size selector. Default: true (optional)
+  - lazy_load: {Boolean} Lazy-load the image. Default: true. Pass false above the fold. (optional)
+  - image_sizes: {String} sizes attribute for the product image. (optional)
+  - accent_color: {String} Background of the "% OFF" badge. (optional)
+  - accent_text_color: {String} Text colour inside the "% OFF" badge. (optional)
+  - discount_color: {String} Colour of the "% off" text in the price row. (optional)
+  - skip_styles: {Boolean} Skip the stylesheet tag when the section already loaded it. (optional)
+
+  The calling section must also load Dawn's add-to-cart script:
+    <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+    <script src="{{ 'product-card-ghar.js' | asset_url }}" defer="defer"></script>
+
+  Usage:
+    {% render 'product-card-ghar',
+        card_product: product,
+        section_id: section.id,
+        tax_note: section.settings.tax_note %}
+{% endcomment %}
+
+{%- unless skip_styles -%}
+  {{ 'product-card-ghar.css' | asset_url | stylesheet_tag }}
+{%- endunless -%}
+
+{%- if card_product and card_product != empty -%}
+  {%- liquid
+    assign card_uid = section_id | append: '-' | append: card_product.id
+    assign variant = card_product.selected_or_first_available_variant
+
+    assign discount_percent = 0
+    if variant.compare_at_price > variant.price
+      assign discount_percent = variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round
+    endif
+
+    assign show_second_image = false
+    if show_secondary_image != false and card_product.media[1] != blank
+      assign show_second_image = true
+    endif
+
+    assign extra_badge = secondary_badge
+    if extra_badge == blank
+      assign extra_badge = card_product.metafields.custom.badge.value
+    endif
+
+    assign show_picker = false
+    if show_variant_picker != false and card_product.variants.size > 1
+      assign show_picker = true
+    endif
+
+    assign show_size_line = false
+    if variant.title != 'Default Title' and variant.title != blank
+      assign show_size_line = true
+    endif
+
+    assign image_loading = 'lazy'
+    if lazy_load == false
+      assign image_loading = 'eager'
+    endif
+
+    assign card_image_sizes = image_sizes | default: '(min-width: 990px) calc((100vw - 10rem) / 4), (min-width: 750px) calc((100vw - 10rem) / 3), calc((100vw - 4rem) / 2)'
+
+    assign image_alt = card_product.featured_media.alt | default: card_product.title
+    assign second_image_alt = card_product.media[1].alt | default: card_product.title
+    assign card_form_id = 'GharCardForm-' | append: card_uid
+
+    assign card_styles = ''
+    if accent_color != blank
+      assign card_styles = card_styles | append: '--ghar-accent: ' | append: accent_color | append: ';'
+    endif
+    if accent_text_color != blank
+      assign card_styles = card_styles | append: '--ghar-accent-text: ' | append: accent_text_color | append: ';'
+    endif
+    if discount_color != blank
+      assign card_styles = card_styles | append: '--ghar-discount: ' | append: discount_color | append: ';'
+    endif
+  -%}
+
+  <ghar-product-card
+    class="ghar-card{% if card_product.available == false %} ghar-card--soldout{% endif %}"
+    {% if card_styles != blank %}
+      style="{{ card_styles }}"
+    {% endif %}
+  >
+    {%- comment -%} 1. Image, with the second image swapped in on hover {%- endcomment -%}
+    <a
+      class="ghar-card__media"
+      href="{{ card_product.url }}"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      {%- if card_product.featured_media -%}
+        {{
+          card_product.featured_media
+          | image_url: width: 800
+          | image_tag:
+            loading: image_loading,
+            widths: '165,220,330,440,550,660,800',
+            sizes: card_image_sizes,
+            class: 'ghar-card__image',
+            alt: image_alt
+        }}
+
+        {%- if show_second_image -%}
+          {{
+            card_product.media[1]
+            | image_url: width: 800
+            | image_tag:
+              loading: 'lazy',
+              widths: '165,220,330,440,550,660,800',
+              sizes: card_image_sizes,
+              class: 'ghar-card__image ghar-card__image--secondary',
+              alt: second_image_alt
+          }}
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'ghar-card__image placeholder-svg' }}
+      {%- endif -%}
+
+      {%- comment -%} 2. Badges. The percentage is calculated, never typed in. {%- endcomment -%}
+      <div class="ghar-card__badges">
+        {%- if card_product.available == false -%}
+          <span class="ghar-card__badge ghar-card__badge--soldout">
+            {{- 'products.product.sold_out' | t -}}
+          </span>
+        {%- endif -%}
+
+        {%- comment -%}
+          Always in the DOM so the in-card variant switch can update it. Hidden
+          when the selected variant has no MRP above its price.
+        {%- endcomment -%}
+        <span
+          class="ghar-card__badge ghar-card__badge--discount"
+          data-ghar-badge-off
+          {% if discount_percent == 0 or card_product.available == false %}
+            hidden
+          {% endif %}
+        >
+          {%- if discount_percent > 0 -%}{{ discount_percent }}% OFF{%- endif -%}
+        </span>
+
+        {%- if extra_badge != blank -%}
+          <span class="ghar-card__badge ghar-card__badge--custom">{{ extra_badge | escape }}</span>
+        {%- endif -%}
+      </div>
+    </a>
+
+    <div class="ghar-card__body">
+      {%- comment -%} 3. Title, clamped to two lines in CSS {%- endcomment -%}
+      <h3 class="ghar-card__title">
+        <a href="{{ card_product.url }}" id="GharCardLink-{{ card_uid }}">
+          {{- card_product.title | escape -}}
+        </a>
+      </h3>
+
+      {%- comment -%} 4. Size / variant line {%- endcomment -%}
+      {%- if show_size_line -%}
+        <p class="ghar-card__size" data-ghar-size>{{ variant.title | escape }}</p>
+      {%- endif -%}
+
+      {%- comment -%}
+        5. Review row. Judge.me finds this div and injects the stars once the app
+        is installed. Height is reserved in CSS so nothing shifts when it loads.
+      {%- endcomment -%}
+      <div class="jdgm-widget jdgm-preview-badge ghar-card__reviews" data-id="{{ card_product.id }}"></div>
+
+      {%- comment -%} 6. Price row {%- endcomment -%}
+      <div class="ghar-card__prices">
+        <span class="ghar-card__price" data-ghar-price>{{ variant.price | money }}</span>
+
+        <s
+          class="ghar-card__mrp"
+          data-ghar-mrp
+          {% if discount_percent == 0 %}
+            hidden
+          {% endif %}
+        >
+          {%- if discount_percent > 0 -%}{{ variant.compare_at_price | money }}{%- endif -%}
+        </s>
+
+        <span
+          class="ghar-card__off"
+          data-ghar-off
+          {% if discount_percent == 0 %}
+            hidden
+          {% endif %}
+        >
+          {%- if discount_percent > 0 -%}{{ discount_percent }}% off{%- endif -%}
+        </span>
+      </div>
+
+      {%- if tax_note != blank -%}
+        <p class="ghar-card__tax">{{ tax_note | escape }}</p>
+      {%- endif -%}
+
+      {%- comment -%} 7. Variant selector, so size changes without leaving the grid {%- endcomment -%}
+      {%- if show_picker -%}
+        <div class="ghar-card__variants">
+          <label class="visually-hidden" for="GharCardVariant-{{ card_uid }}">
+            {{- 'products.product.product_variants' | t -}}
+          </label>
+          <select
+            id="GharCardVariant-{{ card_uid }}"
+            class="ghar-card__select"
+            data-ghar-variant-select
+          >
+            {%- for product_variant in card_product.variants -%}
+              <option
+                value="{{ product_variant.id }}"
+                {% if product_variant.id == variant.id %}
+                  selected
+                {% endif %}
+              >
+                {{ product_variant.title | escape }}
+                {%- unless product_variant.available %} — {{ 'products.product.sold_out' | t }}{% endunless -%}
+              </option>
+            {%- endfor -%}
+          </select>
+        </div>
+
+        <script type="application/json" data-ghar-variants>
+          [
+            {%- for product_variant in card_product.variants -%}
+              {
+                "id": {{ product_variant.id | json }},
+                "title": {{ product_variant.title | json }},
+                "available": {{ product_variant.available | json }},
+                "price": {{ product_variant.price | money | json }},
+                "compare_at_price": {% if product_variant.compare_at_price > product_variant.price %}{{ product_variant.compare_at_price | money | json }}{% else %}null{% endif %},
+                "discount": {% if product_variant.compare_at_price > product_variant.price %}{{ product_variant.compare_at_price | minus: product_variant.price | times: 100.0 | divided_by: product_variant.compare_at_price | round }}{% else %}0{% endif %}
+              }{%- unless forloop.last -%},{%- endunless -%}
+            {%- endfor -%}
+          ]
+        </script>
+      {%- endif -%}
+
+      {%- comment -%} 8. Add to Cart — always visible, never behind a hover or a tap {%- endcomment -%}
+      <div class="ghar-card__form">
+        <product-form data-section-id="{{ section_id }}">
+          {%- form 'product',
+            card_product,
+            id: card_form_id,
+            class: 'form',
+            novalidate: 'novalidate',
+            data-type: 'add-to-cart-form'
+          -%}
+            <input
+              type="hidden"
+              name="id"
+              value="{{ variant.id }}"
+              class="product-variant-id"
+              data-ghar-variant-id
+            >
+            <input type="hidden" name="quantity" value="1">
+
+            <button
+              type="submit"
+              name="add"
+              class="ghar-card__atc"
+              data-ghar-atc
+              data-add-label="{{ 'products.product.add_to_cart' | t | escape }}"
+              data-sold-out-label="{{ 'products.product.sold_out' | t | escape }}"
+              aria-labelledby="GharCardLink-{{ card_uid }}"
+              {% if card_product.available == false %}
+                disabled
+              {% endif %}
+            >
+              <span data-ghar-atc-text>
+                {%- if card_product.available -%}
+                  {{- 'products.product.add_to_cart' | t -}}
+                {%- else -%}
+                  {{- 'products.product.sold_out' | t -}}
+                {%- endif -%}
+              </span>
+              <span class="sold-out-message hidden">
+                {{- 'products.product.sold_out' | t -}}
+              </span>
+              {%- render 'loading-spinner' -%}
+            </button>
+
+            <div class="product-form__error-message-wrapper ghar-card__error" role="alert" hidden>
+              <span class="product-form__error-message"></span>
+            </div>
+          {%- endform -%}
+        </product-form>
+      </div>
+    </div>
+  </ghar-product-card>
+{%- endif -%}
