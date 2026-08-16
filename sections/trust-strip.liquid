@@ -1,0 +1,135 @@
+{{ 'section-trust-strip.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="trust-strip page-width section-{{ section.id }}-padding">
+    {%- if section.settings.heading != blank -%}
+      <h2 class="trust-strip__heading">{{ section.settings.heading | escape }}</h2>
+    {%- endif -%}
+
+    <ul class="trust-strip__list" role="list">
+      {%- for block in section.blocks -%}
+        <li class="trust-strip__item" {{ block.shopify_attributes }}>
+          {%- if block.settings.icon != blank -%}
+            {{
+              block.settings.icon
+              | image_url: width: 120
+              | image_tag: loading: 'lazy', widths: '60,90,120', sizes: '60px', class: 'trust-strip__icon', alt: ''
+            }}
+          {%- endif -%}
+
+          {%- if block.settings.label != blank -%}
+            <span class="trust-strip__label">{{ block.settings.label | escape }}</span>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Trust strip",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading (optional)",
+      "info": "Usually best left empty. The strip works harder without one."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 20
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Trust point",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon",
+          "info": "A simple flat line icon on a transparent background, square, about 120x120px. Use one visual style across all four - same stroke weight, same single colour (your brand green works well). A leaf, a shield, a rupee note or truck, and a calendar or clock cover the four defaults. PNG with transparency or SVG."
+        },
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Label",
+          "default": "Plant-based cleansers"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trust strip",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "label": "Plant-based cleansers"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "label": "Safe around food & kids"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "label": "Cash on delivery"
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "label": "Delivers in 3-5 days"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

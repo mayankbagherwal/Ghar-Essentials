@@ -1,0 +1,226 @@
+{{ 'product-card-ghar.css' | asset_url | stylesheet_tag }}
+{{ 'section-bestsellers-grid.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'product-card-ghar.js' | asset_url }}" defer="defer"></script>
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  #Bestsellers-{{ section.id }} .ghar-product-grid {
+    --ghar-columns-desktop: {{ section.settings.columns_desktop }};
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign products_list = section.settings.collection.products
+  assign products_count = section.settings.collection.all_products_count
+-%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div id="Bestsellers-{{ section.id }}" class="bestsellers page-width section-{{ section.id }}-padding">
+    {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
+      <div class="bestsellers__header">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="bestsellers__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p class="bestsellers__subheading">{{ section.settings.subheading | escape }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if products_count > 0 -%}
+      <ul class="ghar-product-grid" role="list">
+        {%- for product in products_list limit: section.settings.products_to_show -%}
+          {%- liquid
+            assign card_lazy = true
+            if forloop.index <= 2
+              assign card_lazy = false
+            endif
+          -%}
+          <li>
+            {% render 'product-card-ghar',
+              card_product: product,
+              section_id: section.id,
+              tax_note: section.settings.tax_note,
+              secondary_badge: section.settings.secondary_badge,
+              accent_color: section.settings.accent_color,
+              accent_text_color: section.settings.accent_text_color,
+              discount_color: section.settings.discount_color,
+              lazy_load: card_lazy,
+              skip_styles: true
+            %}
+          </li>
+        {%- endfor -%}
+      </ul>
+
+      {%- if section.settings.view_all_label != blank -%}
+        <div class="bestsellers__footer">
+          <a
+            class="bestsellers__view-all"
+            {% if section.settings.view_all_link != blank %}
+              href="{{ section.settings.view_all_link }}"
+            {% else %}
+              href="{{ section.settings.collection.url | default: routes.all_products_collection_url }}"
+            {% endif %}
+          >
+            {{- section.settings.view_all_label | escape -}}
+          </a>
+        </div>
+      {%- endif -%}
+
+    {%- else -%}
+      {%- comment -%}
+        Nothing to show yet. This message only ever appears to the owner while
+        setting up, never to a shopper with a stocked collection.
+      {%- endcomment -%}
+      <p class="bestsellers__empty">
+        Pick a collection in this section's settings to show products here. Products
+        need a price, a compare-at price and at least one photo for the offer badge
+        and savings to appear.
+      </p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bestsellers grid",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our bestsellers"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "The three cleaners most Ghar Essentials homes start with."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Create a collection called Bestsellers in Products, Collections and pick it here. Put your 4 to 6 strongest products in it, best seller first."
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "label": "Products to show",
+      "default": 6
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "label": "Columns on desktop",
+      "info": "Mobile is always two columns.",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Card details"
+    },
+    {
+      "type": "text",
+      "id": "tax_note",
+      "label": "Tax line under the price",
+      "default": "Inclusive of all taxes"
+    },
+    {
+      "type": "text",
+      "id": "secondary_badge",
+      "label": "Second badge on every card",
+      "info": "Leave empty for none. To badge only some products, add a product metafield called custom.badge instead and set it per product."
+    },
+    {
+      "type": "text",
+      "id": "view_all_label",
+      "label": "View all button text",
+      "default": "See all products"
+    },
+    {
+      "type": "url",
+      "id": "view_all_link",
+      "label": "View all button link",
+      "info": "Leave empty to link to the collection above."
+    },
+    {
+      "type": "header",
+      "content": "Accent colours"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Offer badge background",
+      "default": "#f4d021"
+    },
+    {
+      "type": "color",
+      "id": "accent_text_color",
+      "label": "Offer badge text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "discount_color",
+      "label": "Savings text",
+      "default": "#1b7a46"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bestsellers grid"
+    }
+  ]
+}
+{% endschema %}

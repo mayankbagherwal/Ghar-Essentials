@@ -1,0 +1,223 @@
+{{ 'section-hero-primary.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  #Hero-{{ section.id }} {
+    --hero-overlay: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+  }
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div id="Hero-{{ section.id }}" class="hero section-{{ section.id }}-padding">
+    <div class="hero__media">
+      {%- if section.settings.video != blank -%}
+        {{
+          section.settings.video
+          | video_tag:
+            image_size: '1100x',
+            autoplay: true,
+            loop: true,
+            muted: true,
+            controls: false,
+            class: 'hero__video'
+        }}
+      {%- elsif section.settings.image_mobile != blank or section.settings.image_desktop != blank -%}
+        {%- liquid
+          assign mobile_image = section.settings.image_mobile | default: section.settings.image_desktop
+          assign desktop_image = section.settings.image_desktop | default: section.settings.image_mobile
+          assign hero_alt = section.settings.heading | default: shop.name
+        -%}
+        <picture>
+          <source
+            media="(min-width: 750px)"
+            srcset="
+              {{ desktop_image | image_url: width: 1100 }} 1100w,
+              {{ desktop_image | image_url: width: 1500 }} 1500w,
+              {{ desktop_image | image_url: width: 2000 }} 2000w
+            "
+            sizes="100vw"
+          >
+          {{
+            mobile_image
+            | image_url: width: 900
+            | image_tag:
+              loading: 'eager',
+              fetchpriority: 'high',
+              widths: '375,550,750,900',
+              sizes: '100vw',
+              class: 'hero__image',
+              alt: hero_alt
+          }}
+        </picture>
+      {%- else -%}
+        <div class="hero__placeholder">
+          {{ 'hero-apparel-1' | placeholder_svg_tag: 'placeholder-svg' }}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="hero__content hero__content--{{ section.settings.text_position }}">
+      <div class="hero__box">
+        {%- if section.settings.heading != blank -%}
+          <h1 class="hero__heading">{{ section.settings.heading | escape }}</h1>
+        {%- endif -%}
+
+        {%- if section.settings.subheading != blank -%}
+          <p class="hero__subheading">{{ section.settings.subheading | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.button_label != blank -%}
+          <a
+            class="hero__button"
+            {% if section.settings.button_link != blank %}
+              href="{{ section.settings.button_link }}"
+            {% else %}
+              href="{{ routes.all_products_collection_url }}"
+            {% endif %}
+          >
+            {{- section.settings.button_label | escape -}}
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.microproof != blank -%}
+          <p class="hero__microproof">{{ section.settings.microproof | escape }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hero",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image or video"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image",
+      "info": "Shown on phones, where most of your buyers are. Use a TALL image, roughly 1000x1200px. Show the bottle in a real Indian kitchen being used - a hand spraying a counter or wiping a stove. Keep the bottle in the lower half so the headline sits over empty space. Avoid empty white studio kitchens."
+    },
+    {
+      "type": "image_picker",
+      "id": "image_desktop",
+      "label": "Desktop image",
+      "info": "Shown on laptops. Use a WIDE version of the same scene, roughly 2000x1100px. Keep the bottle on one side so the text has room on the other."
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video (optional)",
+      "info": "Overrides the images if set. A short silent clip, 5-8 seconds, looping: spray, wipe, clean surface. Shoot it on a phone in a real kitchen. Keep it under 5MB or the page will feel slow on mobile data."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "label": "Dark overlay over image",
+      "info": "Raise this if the headline is hard to read against your photo.",
+      "default": 35
+    },
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Headline",
+      "default": "Clean ghar, bina harsh chemicals"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "One-line subhead",
+      "default": "Plant-based cleaners for your kitchen, bathroom and floors."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button text",
+      "default": "Shop bestsellers"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link",
+      "info": "Point this straight at your best-selling product, not a collection. Fewer taps to checkout."
+    },
+    {
+      "type": "text",
+      "id": "microproof",
+      "label": "Small proof line under the button",
+      "info": "REPLACE BEFORE LAUNCH. Only put a rating or customer count here once it is real and you can show the reviews. Made-up numbers are a legal risk under ASCI rules.",
+      "default": "[ADD REAL PROOF - e.g. 4.7 stars from 200 verified reviews]"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Text position",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "middle", "label": "Middle" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "bottom"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero"
+    }
+  ]
+}
+{% endschema %}

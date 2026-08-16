@@ -1,0 +1,55 @@
+/* Four short trust points. At 375px this is a 2x2 grid, one row on desktop.
+   These are the first thing a first-time buyer reads, so the text stays 15px+. */
+
+.trust-strip__heading {
+  margin: 0 0 1.6rem;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.trust-strip__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.6rem 1.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.trust-strip__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  text-align: center;
+}
+
+.trust-strip__icon {
+  width: 4rem;
+  height: 4rem;
+  object-fit: contain;
+}
+
+.trust-strip__label {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: rgb(var(--color-foreground));
+}
+
+@media screen and (min-width: 750px) {
+  .trust-strip__list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 2.4rem;
+  }
+
+  .trust-strip__item {
+    flex-direction: row;
+    justify-content: center;
+    text-align: left;
+  }
+
+  .trust-strip__label {
+    font-size: 1.6rem;
+  }
+}
