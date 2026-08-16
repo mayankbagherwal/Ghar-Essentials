@@ -1,1 +1,89 @@
-{"sections":{"main":{"type":"main-product","blocks":{"vendor":{"type":"text","settings":{"text":"{{ product.vendor }}","text_style":"uppercase"}},"title":{"type":"title","settings":{}},"price":{"type":"price","settings":{}},"variant_picker":{"type":"variant_picker","settings":{"picker_type":"button","swatch_shape":"circle"}},"quantity_selector":{"type":"quantity_selector","settings":{}},"buy_buttons":{"type":"buy_buttons","settings":{"show_dynamic_checkout":true,"show_gift_card_recipient":true}},"description":{"type":"description","settings":{}},"share":{"type":"share","settings":{"share_label":"Share"}}},"block_order":["vendor","title","price","variant_picker","quantity_selector","buy_buttons","description","share"],"settings":{"enable_sticky_info":true,"color_scheme":"scheme-1","media_size":"large","constrain_to_viewport":true,"media_fit":"contain","gallery_layout":"stacked","mobile_thumbnails":"hide","media_position":"left","image_zoom":"lightbox","hide_variants":true,"enable_video_looping":false,"padding_top":36,"padding_bottom":12}},"disclosures":{"type":"disclosures","settings":{"padding_top":36,"padding_bottom":0}},"related-products":{"type":"related-products","settings":{"heading":"You may also like","heading_size":"h2","products_to_show":4,"columns_desktop":4,"columns_mobile":"2","color_scheme":"scheme-1","image_ratio":"square","image_shape":"default","show_secondary_image":true,"show_vendor":false,"show_rating":false,"padding_top":36,"padding_bottom":28}}},"order":["main","disclosures","related-products"]}
+{
+  "sections": {
+    "main": {
+      "type": "main-product-ghar",
+      "blocks": {
+        "benefits": {
+          "type": "benefits",
+          "settings": {}
+        },
+        "how_to_use": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "How to use",
+            "content": "<p>Spray directly onto the surface. Leave for 30 seconds, then wipe with a damp cloth. For heavy grease, repeat once.</p>",
+            "open_by_default": false
+          }
+        },
+        "ingredients": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Ingredients",
+            "content": "<p>Full ingredient list to be published here before launch. [SUBSTANTIATE BEFORE LAUNCH]</p><p><strong>Not added:<\/strong> SLES, phthalates, sulphates, phosphates. [SUBSTANTIATE BEFORE LAUNCH]<\/p>",
+            "open_by_default": false
+          }
+        },
+        "delivery": {
+          "type": "collapsible",
+          "settings": {
+            "heading": "Delivery and returns",
+            "content": "<p>Cash on delivery is available across India.<\/p><p>Orders are delivered in 3-5 working days. [SUBSTANTIATE BEFORE LAUNCH]<\/p><p>Unopened bottles can be returned within 7 days of delivery. [SUBSTANTIATE BEFORE LAUNCH]<\/p>",
+            "open_by_default": false
+          }
+        }
+      },
+      "block_order": [
+        "benefits",
+        "how_to_use",
+        "ingredients",
+        "delivery"
+      ],
+      "settings": {
+        "color_scheme": "scheme-1",
+        "tax_note": "Inclusive of all taxes",
+        "prepaid_note": "Extra 5% off on prepaid orders",
+        "payment_note": "Cash on delivery available. Delivered in 3-5 days.",
+        "show_buy_now": true,
+        "variant_label": "Choose size",
+        "quantity_label": "Quantity",
+        "gallery_hint": "Swipe for more photos",
+        "show_review_hooks": true,
+        "accent_color": "#f4d021",
+        "accent_text_color": "#1a1a1a",
+        "discount_color": "#1b7a46",
+        "padding_top": 24,
+        "padding_bottom": 36
+      }
+    },
+    "disclosures": {
+      "type": "disclosures",
+      "settings": {
+        "padding_top": 36,
+        "padding_bottom": 0
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "You may also like",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "columns_mobile": "2",
+        "color_scheme": "scheme-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "padding_top": 36,
+        "padding_bottom": 28
+      }
+    }
+  },
+  "order": [
+    "main",
+    "disclosures",
+    "related-products"
+  ]
+}

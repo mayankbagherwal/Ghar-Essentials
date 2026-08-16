@@ -1,0 +1,486 @@
+{{ 'section-main-product-ghar.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'section-main-product-ghar.js' | asset_url }}" defer="defer"></script>
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+
+  assign discount_percent = 0
+  if current_variant.compare_at_price > current_variant.price
+    assign discount_percent = current_variant.compare_at_price | minus: current_variant.price | times: 100.0 | divided_by: current_variant.compare_at_price | round
+  endif
+
+  assign has_variants = false
+  if product.variants.size > 1
+    assign has_variants = true
+  endif
+
+  assign accent_styles = ''
+  if section.settings.accent_color != blank
+    assign accent_styles = accent_styles | append: '--ghar-accent: ' | append: section.settings.accent_color | append: ';'
+  endif
+  if section.settings.accent_text_color != blank
+    assign accent_styles = accent_styles | append: '--ghar-accent-text: ' | append: section.settings.accent_text_color | append: ';'
+  endif
+  if section.settings.discount_color != blank
+    assign accent_styles = accent_styles | append: '--ghar-discount: ' | append: section.settings.discount_color | append: ';'
+  endif
+-%}
+
+<div class="color-{{ section.settings.color_scheme }} gradient">
+  <div class="ghar-pdp section-{{ section.id }}-padding">
+    {%- comment -%} Media. Swipeable on mobile with CSS scroll-snap, stacked on desktop. {%- endcomment -%}
+    <div class="ghar-pdp__media-col">
+      <ul class="ghar-pdp__media" role="list">
+        {%- if product.media.size > 0 -%}
+          {%- for media in product.media -%}
+            {%- liquid
+              assign media_loading = 'lazy'
+              assign media_priority = 'auto'
+              if forloop.first
+                assign media_loading = 'eager'
+                assign media_priority = 'high'
+              endif
+              assign media_alt = media.alt | default: product.title
+            -%}
+            <li class="ghar-pdp__media-item">
+              {{
+                media
+                | image_url: width: 1200
+                | image_tag:
+                  loading: media_loading,
+                  fetchpriority: media_priority,
+                  widths: '375,550,750,900,1100,1200',
+                  sizes: '(min-width: 750px) 50vw, 100vw',
+                  alt: media_alt
+              }}
+            </li>
+          {%- endfor -%}
+        {%- else -%}
+          <li class="ghar-pdp__media-item">
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          </li>
+        {%- endif -%}
+      </ul>
+
+      {%- if product.media.size > 1 and section.settings.gallery_hint != blank -%}
+        <p class="ghar-pdp__media-hint">{{ section.settings.gallery_hint | escape }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%}
+      Buy panel. Everything needed to decide sits here, above the fold at 375px.
+    {%- endcomment -%}
+    <ghar-product-info
+      class="ghar-pdp__info"
+      {% if accent_styles != blank %}
+        style="{{ accent_styles }}"
+      {% endif %}
+    >
+      <h1 class="ghar-pdp__title">{{ product.title | escape }}</h1>
+
+      {%- if section.settings.show_review_hooks -%}
+        {%- comment -%} Judge.me injects the star rating here once installed. {%- endcomment -%}
+        <div class="jdgm-widget jdgm-preview-badge ghar-pdp__reviews" data-id="{{ product.id }}"></div>
+      {%- endif -%}
+
+      <div class="ghar-pdp__prices">
+        <span class="ghar-pdp__price" data-ghar-price>{{ current_variant.price | money }}</span>
+
+        <s
+          class="ghar-pdp__mrp"
+          data-ghar-mrp
+          {% if discount_percent == 0 %}
+            hidden
+          {% endif %}
+        >
+          {%- if discount_percent > 0 -%}{{ current_variant.compare_at_price | money }}{%- endif -%}
+        </s>
+
+        <span
+          class="ghar-pdp__off"
+          data-ghar-off
+          {% if discount_percent == 0 %}
+            hidden
+          {% endif %}
+        >
+          {%- if discount_percent > 0 -%}{{ discount_percent }}% off{%- endif -%}
+        </span>
+      </div>
+
+      {%- if section.settings.tax_note != blank -%}
+        <p class="ghar-pdp__tax">{{ section.settings.tax_note | escape }}</p>
+      {%- endif -%}
+
+      {%- comment -%}
+        Variant pills. Which one looks selected is handled entirely in CSS;
+        JavaScript only updates the price and the hidden variant id.
+      {%- endcomment -%}
+      {%- if has_variants -%}
+        <fieldset class="ghar-pdp__variants">
+          <legend class="ghar-pdp__variants-legend">
+            {{- section.settings.variant_label | escape -}}
+          </legend>
+          <div class="ghar-pdp__pills">
+            {%- for variant in product.variants -%}
+              <input
+                type="radio"
+                class="ghar-pdp__pill-input"
+                id="GharVariant-{{ section.id }}-{{ variant.id }}"
+                name="ghar-variant-{{ section.id }}"
+                value="{{ variant.id }}"
+                data-ghar-variant-option
+                {% if variant.id == current_variant.id %}
+                  checked
+                {% endif %}
+              >
+              <label
+                class="ghar-pdp__pill{% unless variant.available %} ghar-pdp__pill--unavailable{% endunless %}"
+                for="GharVariant-{{ section.id }}-{{ variant.id }}"
+              >
+                {{- variant.title | escape -}}
+              </label>
+            {%- endfor -%}
+          </div>
+        </fieldset>
+
+        <script type="application/json" data-ghar-variants>
+          [
+            {%- for variant in product.variants -%}
+              {
+                "id": {{ variant.id | json }},
+                "title": {{ variant.title | json }},
+                "available": {{ variant.available | json }},
+                "price": {{ variant.price | money | json }},
+                "compare_at_price": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | json }}{% else %}null{% endif %},
+                "discount": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | minus: variant.price | times: 100.0 | divided_by: variant.compare_at_price | round }}{% else %}0{% endif %}
+              }{%- unless forloop.last -%},{%- endunless -%}
+            {%- endfor -%}
+          ]
+        </script>
+      {%- endif -%}
+
+      <product-form data-section-id="{{ section.id }}">
+        {%- form 'product',
+          product,
+          id: 'GharProductForm',
+          class: 'form',
+          novalidate: 'novalidate',
+          data-type: 'add-to-cart-form'
+        -%}
+          <input
+            type="hidden"
+            name="id"
+            value="{{ current_variant.id }}"
+            class="product-variant-id"
+            data-ghar-variant-id
+          >
+
+          <div class="ghar-pdp__quantity-wrapper">
+            <label class="ghar-pdp__quantity-label" for="GharQuantity-{{ section.id }}">
+              {{- section.settings.quantity_label | escape -}}
+            </label>
+            <div class="ghar-pdp__quantity">
+              <button
+                type="button"
+                class="ghar-pdp__quantity-button"
+                data-ghar-quantity-change="minus"
+                aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}"
+              >
+                &minus;
+              </button>
+              <input
+                type="number"
+                class="ghar-pdp__quantity-input"
+                id="GharQuantity-{{ section.id }}"
+                name="quantity"
+                value="1"
+                min="1"
+                step="1"
+                data-ghar-quantity
+              >
+              <button
+                type="button"
+                class="ghar-pdp__quantity-button"
+                data-ghar-quantity-change="plus"
+                aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}"
+              >
+                +
+              </button>
+            </div>
+          </div>
+
+          <div class="ghar-pdp__buttons">
+            <button
+              type="submit"
+              name="add"
+              class="ghar-pdp__atc"
+              data-ghar-atc
+              data-add-label="{{ 'products.product.add_to_cart' | t | escape }}"
+              data-sold-out-label="{{ 'products.product.sold_out' | t | escape }}"
+              {% if current_variant.available == false %}
+                disabled
+              {% endif %}
+            >
+              <span data-ghar-atc-text>
+                {%- if current_variant.available -%}
+                  {{- 'products.product.add_to_cart' | t -}}
+                {%- else -%}
+                  {{- 'products.product.sold_out' | t -}}
+                {%- endif -%}
+              </span>
+              <span class="sold-out-message hidden">
+                {{- 'products.product.sold_out' | t -}}
+              </span>
+              {%- render 'loading-spinner' -%}
+            </button>
+
+            {%- if section.settings.show_buy_now -%}
+              {{ form | payment_button }}
+            {%- endif -%}
+          </div>
+
+          <div class="product-form__error-message-wrapper ghar-pdp__error" role="alert" hidden>
+            <span class="product-form__error-message"></span>
+          </div>
+        {%- endform -%}
+      </product-form>
+
+      {%- comment -%}
+        Payment notes sit next to the buttons on purpose — this is the point of
+        decision for a first-time buyer.
+      {%- endcomment -%}
+      {%- if section.settings.prepaid_note != blank or section.settings.payment_note != blank -%}
+        <div class="ghar-pdp__payment-notes">
+          {%- if section.settings.prepaid_note != blank -%}
+            <p class="ghar-pdp__note ghar-pdp__note--prepaid">{{ section.settings.prepaid_note | escape }}</p>
+          {%- endif -%}
+          {%- if section.settings.payment_note != blank -%}
+            <p class="ghar-pdp__note">{{ section.settings.payment_note | escape }}</p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </ghar-product-info>
+
+    {%- comment -%} Detail blocks: benefits visible, the rest collapsed. {%- endcomment -%}
+    {%- if section.blocks.size > 0 -%}
+      <div class="ghar-pdp__details">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'benefits' -%}
+              <div class="ghar-pdp__benefits" {{ block.shopify_attributes }}>
+                {%- if block.settings.heading != blank -%}
+                  <h2 class="ghar-pdp__benefits-heading">{{ block.settings.heading | escape }}</h2>
+                {%- endif -%}
+                <div class="rte">{{ block.settings.content }}</div>
+              </div>
+
+            {%- when 'collapsible' -%}
+              <details
+                class="ghar-pdp__collapsible"
+                {% if block.settings.open_by_default %}
+                  open
+                {% endif %}
+                {{ block.shopify_attributes }}
+              >
+                <summary class="ghar-pdp__summary">{{ block.settings.heading | escape }}</summary>
+                <div class="ghar-pdp__collapsible-content rte">{{ block.settings.content }}</div>
+              </details>
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if section.settings.show_review_hooks -%}
+      {%- comment -%} Judge.me injects the full review list here once installed. {%- endcomment -%}
+      <div class="ghar-pdp__review-widget">
+        <div class="jdgm-widget jdgm-review-widget" data-id="{{ product.id }}"></div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product page (Ghar)",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Price and payment"
+    },
+    {
+      "type": "text",
+      "id": "tax_note",
+      "label": "Tax line under the price",
+      "default": "Inclusive of all taxes"
+    },
+    {
+      "type": "text",
+      "id": "prepaid_note",
+      "label": "Prepaid offer line",
+      "info": "Shown next to the buttons. The discount itself is set up in your Shopify admin, not here.",
+      "default": "Extra 5% off on prepaid orders"
+    },
+    {
+      "type": "text",
+      "id": "payment_note",
+      "label": "Payment and delivery line",
+      "default": "Cash on delivery available. Delivered in 3-5 days."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_buy_now",
+      "label": "Show Buy Now button",
+      "info": "Needs dynamic checkout turned on in Settings, Payments.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Labels"
+    },
+    {
+      "type": "text",
+      "id": "variant_label",
+      "label": "Size selector label",
+      "default": "Choose size"
+    },
+    {
+      "type": "text",
+      "id": "quantity_label",
+      "label": "Quantity label",
+      "default": "Quantity"
+    },
+    {
+      "type": "text",
+      "id": "gallery_hint",
+      "label": "Mobile gallery hint",
+      "info": "Shown under the images on mobile when a product has more than one photo.",
+      "default": "Swipe for more photos"
+    },
+    {
+      "type": "header",
+      "content": "Reviews"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_review_hooks",
+      "label": "Show review widgets",
+      "info": "Leave on. Judge.me fills these in automatically once the app is installed.",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Accent colours"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Offer badge background",
+      "default": "#f4d021"
+    },
+    {
+      "type": "color",
+      "id": "accent_text_color",
+      "label": "Offer badge text",
+      "default": "#1a1a1a"
+    },
+    {
+      "type": "color",
+      "id": "discount_color",
+      "label": "Savings text",
+      "default": "#1b7a46"
+    },
+    {
+      "type": "header",
+      "content": "Section padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 36
+    }
+  ],
+  "blocks": [
+    {
+      "type": "benefits",
+      "name": "Benefit bullets",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Why you'll like it"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Bullets",
+          "default": "<ul><li>Cuts everyday kitchen grease without hard scrubbing</li><li>Made with plant-based cleansers derived from coconut [SUBSTANTIATE BEFORE LAUNCH]</li><li>No added SLES, phthalates, sulphates or phosphates [SUBSTANTIATE BEFORE LAUNCH]</li><li>Safe to use around food preparation areas [SUBSTANTIATE BEFORE LAUNCH]</li></ul>"
+        }
+      ]
+    },
+    {
+      "type": "collapsible",
+      "name": "Collapsible row",
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "How to use"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Spray directly onto the surface. Leave for 30 seconds, then wipe with a damp cloth. For heavy grease, repeat once.</p>"
+        },
+        {
+          "type": "checkbox",
+          "id": "open_by_default",
+          "label": "Open by default",
+          "default": false
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

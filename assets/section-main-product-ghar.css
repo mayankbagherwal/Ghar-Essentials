@@ -1,0 +1,411 @@
+/* Ghar Essentials product page.
+   Mobile-first. Everything a shopper needs to decide — image, title, rating,
+   price, size, quantity, Add to Cart, Buy Now — sits above the fold at 375px.
+   Detail blocks come after. Desktop two-column layout starts at 750px. */
+
+.ghar-pdp {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+}
+
+/* Media — a CSS scroll-snap gallery on mobile, no JavaScript involved */
+
+.ghar-pdp__media {
+  display: flex;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.ghar-pdp__media::-webkit-scrollbar {
+  display: none;
+}
+
+.ghar-pdp__media-item {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+}
+
+.ghar-pdp__media-item img,
+.ghar-pdp__media-item .placeholder-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 0.8rem;
+  background-color: rgba(var(--color-foreground), 0.03);
+}
+
+.ghar-pdp__media-hint {
+  margin: 0.6rem 0 0;
+  font-size: 1.3rem;
+  text-align: center;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+/* Buy panel */
+
+.ghar-pdp__info {
+  --ghar-accent: #f4d021;
+  --ghar-accent-text: #1a1a1a;
+  --ghar-discount: #1b7a46;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 0 1.5rem;
+}
+
+.ghar-pdp__title {
+  margin: 0;
+  font-size: 2.4rem;
+  line-height: 1.25;
+}
+
+/* Judge.me drops the stars in here. Height reserved so nothing jumps. */
+.ghar-pdp__reviews {
+  min-height: 2rem;
+}
+
+.ghar-pdp__prices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.8rem;
+}
+
+.ghar-pdp__price {
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.ghar-pdp__mrp {
+  font-size: 1.8rem;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.ghar-pdp__off {
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.4rem;
+  background-color: var(--ghar-accent);
+  color: var(--ghar-accent-text);
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.ghar-pdp__tax {
+  margin: -0.6rem 0 0;
+  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+/* Variant pills — selection state is pure CSS, JS only updates the price */
+
+.ghar-pdp__variants {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.ghar-pdp__variants-legend {
+  display: block;
+  margin-bottom: 0.8rem;
+  padding: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.ghar-pdp__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.ghar-pdp__pill-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.ghar-pdp__pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 4.4rem;
+  padding: 0 1.6rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.3);
+  border-radius: 4rem;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ghar-pdp__pill-input:checked + .ghar-pdp__pill {
+  border-color: rgb(var(--color-foreground));
+  border-width: 0.2rem;
+  font-weight: 700;
+}
+
+.ghar-pdp__pill-input:focus-visible + .ghar-pdp__pill {
+  outline: var(--focused-base-outline);
+  outline-offset: var(--focused-base-outline-offset);
+}
+
+.ghar-pdp__pill--unavailable {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+/* Quantity + buy buttons */
+
+.ghar-pdp__quantity-label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+.ghar-pdp__quantity {
+  display: inline-flex;
+  align-items: center;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.3);
+  border-radius: 0.4rem;
+}
+
+.ghar-pdp__quantity-button {
+  width: 4.4rem;
+  height: 4.4rem;
+  border: 0;
+  background: none;
+  color: rgb(var(--color-foreground));
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ghar-pdp__quantity-input {
+  width: 5rem;
+  height: 4.4rem;
+  border: 0;
+  border-left: 0.1rem solid rgba(var(--color-foreground), 0.15);
+  border-right: 0.1rem solid rgba(var(--color-foreground), 0.15);
+  background: none;
+  color: rgb(var(--color-foreground));
+  font-family: var(--font-body-family);
+  font-size: 1.6rem;
+  text-align: center;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.ghar-pdp__quantity-input::-webkit-outer-spin-button,
+.ghar-pdp__quantity-input::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ghar-pdp__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.ghar-pdp__atc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 5rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  font-family: var(--font-body-family);
+  font-size: 1.7rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ghar-pdp__atc:disabled,
+.ghar-pdp__atc[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ghar-pdp__atc .loading__spinner {
+  width: 1.8rem;
+  height: 1.8rem;
+  margin-left: 0.6rem;
+}
+
+.ghar-pdp .shopify-payment-button__button {
+  min-height: 5rem;
+  border-radius: 0.4rem;
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+
+.ghar-pdp__payment-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.ghar-pdp__note {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.4;
+}
+
+.ghar-pdp__note--prepaid {
+  font-weight: 700;
+  color: var(--ghar-discount);
+}
+
+.ghar-pdp__error {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+/* Detail blocks */
+
+.ghar-pdp__details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: 0 1.5rem;
+}
+
+.ghar-pdp__benefits-heading {
+  margin: 0 0 0.8rem;
+  font-size: 1.8rem;
+}
+
+.ghar-pdp__benefits .rte {
+  font-size: 1.6rem;
+  line-height: 1.6;
+}
+
+.ghar-pdp__benefits .rte ul {
+  margin: 0;
+  padding-left: 2rem;
+}
+
+.ghar-pdp__benefits .rte li {
+  margin-bottom: 0.6rem;
+}
+
+.ghar-pdp__collapsible {
+  border-top: 0.1rem solid rgba(var(--color-foreground), 0.12);
+}
+
+.ghar-pdp__collapsible:last-of-type {
+  border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.12);
+}
+
+.ghar-pdp__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.6rem 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.ghar-pdp__summary::-webkit-details-marker {
+  display: none;
+}
+
+.ghar-pdp__summary::after {
+  content: '';
+  flex: 0 0 auto;
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-left: 1rem;
+  border-right: 0.15rem solid rgb(var(--color-foreground));
+  border-bottom: 0.15rem solid rgb(var(--color-foreground));
+  transform: translateY(-25%) rotate(45deg);
+}
+
+.ghar-pdp__collapsible[open] > .ghar-pdp__summary::after {
+  transform: translateY(25%) rotate(-135deg);
+}
+
+.ghar-pdp__collapsible-content {
+  padding-bottom: 1.6rem;
+  font-size: 1.6rem;
+  line-height: 1.6;
+}
+
+.ghar-pdp__collapsible-content > :first-child {
+  margin-top: 0;
+}
+
+/* Judge.me full review widget */
+
+.ghar-pdp__review-widget {
+  padding: 0 1.5rem;
+}
+
+@media screen and (min-width: 750px) {
+  .ghar-pdp {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 4rem;
+    align-items: start;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 5rem;
+  }
+
+  .ghar-pdp__media {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.2rem;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .ghar-pdp__media-hint {
+    display: none;
+  }
+
+  .ghar-pdp__info {
+    position: sticky;
+    top: 2rem;
+    padding: 0;
+  }
+
+  .ghar-pdp__title {
+    font-size: 3rem;
+  }
+
+  .ghar-pdp__details,
+  .ghar-pdp__review-widget {
+    grid-column: 1 / -1;
+    padding: 0;
+  }
+
+  .ghar-pdp__buttons {
+    flex-direction: row;
+  }
+
+  .ghar-pdp__buttons > * {
+    flex: 1 1 0;
+  }
+}
