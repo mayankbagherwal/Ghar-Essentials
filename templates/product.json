@@ -80,7 +80,7 @@
     "1786995882853225db": {
       "type": "apps",
       "blocks": {
-        "judge_me_reviews_review_widget_MBRmWW": {
+        "judge_me_reviews_review_widget_qmmHhc": {
           "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {
             "review_data": "sample_data",
@@ -91,7 +91,7 @@
         }
       },
       "block_order": [
-        "judge_me_reviews_review_widget_MBRmWW"
+        "judge_me_reviews_review_widget_qmmHhc"
       ],
       "settings": {
         "include_margins": true
