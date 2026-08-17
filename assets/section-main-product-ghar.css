@@ -3,7 +3,8 @@
    price, size, quantity, Add to Cart, Buy Now — sits above the fold at 375px.
    Detail blocks come after. Desktop two-column layout starts at 750px. */
 
-.ghar-pdp {
+.ghar-pdp,
+.ghar-pdp__top {
   display: flex;
   flex-direction: column;
   gap: 1.6rem;
@@ -394,13 +395,20 @@
 
 @media screen and (min-width: 750px) {
   .ghar-pdp {
+    display: block;
+    max-width: var(--page-width);
+    margin: 0 auto;
+    padding: 0 5rem;
+  }
+
+  /* Only the media and the buy panel are two columns. The detail rows and the
+     review widget sit below at full width, as normal blocks. */
+  .ghar-pdp__top {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 4rem;
     align-items: start;
-    max-width: var(--page-width);
-    margin: 0 auto;
-    padding: 0 5rem;
+    margin-bottom: 4rem;
   }
 
   .ghar-pdp__media {
@@ -415,9 +423,9 @@
     display: none;
   }
 
+  /* Deliberately not sticky. A sticky grid item is contained by the whole
+     grid, not its own row, so it slides down over whatever follows it. */
   .ghar-pdp__info {
-    position: sticky;
-    top: 2rem;
     padding: 0;
   }
 
@@ -427,7 +435,7 @@
 
   .ghar-pdp__details,
   .ghar-pdp__review-widget {
-    grid-column: 1 / -1;
+    max-width: 80rem;
     padding: 0;
   }
 

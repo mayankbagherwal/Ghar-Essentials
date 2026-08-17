@@ -43,6 +43,12 @@
 
 <div class="color-{{ section.settings.color_scheme | default: 'scheme-1' }} gradient">
   <div class="ghar-pdp section-{{ section.id }}-padding">
+    {%- comment -%}
+      Media and buy panel share a two-column wrapper. Keeping them in their own
+      grid rather than the page-level one stops the buy panel from being able to
+      travel over the detail rows below it.
+    {%- endcomment -%}
+    <div class="ghar-pdp__top">
     {%- comment -%} Media. Swipeable on mobile with CSS scroll-snap, stacked on desktop. {%- endcomment -%}
     <div class="ghar-pdp__media-col">
       <ul class="ghar-pdp__media" role="list">
@@ -275,6 +281,7 @@
         </div>
       {%- endif -%}
     </ghar-product-info>
+    </div>
 
     {%- comment -%} Detail blocks: benefits visible, the rest collapsed. {%- endcomment -%}
     {%- if section.blocks.size > 0 -%}
