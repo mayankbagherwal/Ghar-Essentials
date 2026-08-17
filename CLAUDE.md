@@ -9,8 +9,20 @@ Treat every commit as a deployment.
 
 ## Golden rules — never break these
 
-1. Never hand-edit `config/settings_data.json`. Shopify writes this file
-   from the theme editor. Editing it manually wipes saved settings.
+1. Treat `config/settings_data.json` as Shopify's file. It is written by the
+   theme editor, and a careless edit wipes settings the owner has saved.
+
+   Narrow exception, granted by the owner: colour schemes may be edited
+   directly while the store is pre-launch and those settings are still
+   Dawn defaults — there is nothing saved to lose. Rules for doing it:
+   - Colour scheme values only. Never fonts, logo, cart type, or anything
+     that references an uploaded file.
+   - Change values in place. Never restructure the file, and never touch
+     the `current` key.
+   - Say so before doing it, and re-validate the JSON afterwards.
+
+   Once the owner starts customising in the theme editor, this exception
+   ends and the file goes back to being off-limits.
 2. Never delete or rename existing files in `templates/`, `layout/`, or
    `config/`. Dawn expects them.
 3. Never add a build step. No Tailwind, webpack, or Vite. Shopify serves
