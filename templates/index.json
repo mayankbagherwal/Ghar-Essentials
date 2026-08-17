@@ -1,8 +1,30 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "hero": {
       "type": "hero-primary",
-      "settings": {}
+      "settings": {
+        "image_mobile": "shopify://shop_images/IMG_1987.png",
+        "image_desktop": "shopify://shop_images/IMG_1987.png",
+        "overlay_opacity": 35,
+        "heading": "Clean ghar, bina harsh chemicals",
+        "subheading": "Plant-based cleaners for your kitchen, bathroom and floors.",
+        "button_label": "Shop bestsellers",
+        "button_link": "",
+        "microproof": "",
+        "text_position": "bottom",
+        "color_scheme": "",
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
     },
     "trust_strip": {
       "type": "trust-strip",
@@ -39,6 +61,7 @@
         "delivery"
       ],
       "settings": {
+        "heading": "",
         "color_scheme": "scheme-2",
         "padding_top": 20,
         "padding_bottom": 20
@@ -49,10 +72,16 @@
       "settings": {
         "heading": "Our bestsellers",
         "subheading": "The cleaners most Ghar Essentials homes start with.",
+        "collection": "",
         "products_to_show": 6,
         "columns_desktop": 4,
         "tax_note": "Inclusive of all taxes",
+        "secondary_badge": "",
         "view_all_label": "See all products",
+        "view_all_link": "",
+        "accent_color": "#f4d021",
+        "accent_text_color": "#1a1a1a",
+        "discount_color": "#1b7a46",
         "color_scheme": "scheme-1",
         "padding_top": 32,
         "padding_bottom": 32
