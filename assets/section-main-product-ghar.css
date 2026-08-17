@@ -168,6 +168,19 @@
 
 /* Quantity + buy buttons */
 
+/* product-form is a custom element, so it is display:inline by default.
+   Left inline, its block children escape the flow and overlap the quantity
+   stepper. Everything below depends on this being a block. */
+.ghar-pdp product-form,
+.ghar-pdp .form {
+  display: block;
+  width: 100%;
+}
+
+.ghar-pdp__quantity-wrapper {
+  margin-bottom: 1.6rem;
+}
+
 .ghar-pdp__quantity-label {
   display: block;
   margin-bottom: 0.8rem;
@@ -250,11 +263,28 @@
   margin-left: 0.6rem;
 }
 
-.ghar-pdp .shopify-payment-button__button {
+/* Shopify's Buy it now button ships bright blue by default, which fights the
+   brand palette. Recoloured to the lemon accent so the two buttons read as a
+   pair: dark green primary, lemon secondary. */
+.ghar-pdp .shopify-payment-button {
+  width: 100%;
+}
+
+.ghar-pdp .shopify-payment-button__button--unbranded {
+  width: 100%;
   min-height: 5rem;
+  border: 0;
   border-radius: 0.4rem;
+  background-color: var(--ghar-accent);
+  color: var(--ghar-accent-text);
+  font-family: var(--font-body-family);
   font-size: 1.7rem;
   font-weight: 700;
+}
+
+.ghar-pdp .shopify-payment-button__button--unbranded:hover:not([disabled]) {
+  background-color: var(--ghar-accent);
+  opacity: 0.88;
 }
 
 .ghar-pdp__payment-notes {
@@ -403,9 +433,12 @@
 
   .ghar-pdp__buttons {
     flex-direction: row;
+    align-items: stretch;
   }
 
-  .ghar-pdp__buttons > * {
+  .ghar-pdp__buttons > *,
+  .ghar-pdp__buttons .shopify-payment-button {
     flex: 1 1 0;
+    min-width: 0;
   }
 }

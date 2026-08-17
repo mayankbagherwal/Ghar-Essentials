@@ -220,6 +220,14 @@
   margin-top: 0.4rem;
 }
 
+/* product-form is a custom element and defaults to display:inline, which lets
+   its block children escape the card layout. Same fix as the product page. */
+.ghar-card product-form,
+.ghar-card .form {
+  display: block;
+  width: 100%;
+}
+
 /* Always visible — the two-tap purchase path depends on it */
 .ghar-card__atc {
   display: flex;
