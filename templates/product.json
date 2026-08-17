@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -5,7 +14,10 @@
       "blocks": {
         "benefits": {
           "type": "benefits",
-          "settings": {}
+          "settings": {
+            "heading": "Why you'll like it",
+            "content": "<ul><li>Cuts everyday kitchen grease without hard scrubbing</li><li>Made with plant-based cleansers derived from coconut [SUBSTANTIATE BEFORE LAUNCH]</li><li>No added SLES, phthalates, sulphates or phosphates [SUBSTANTIATE BEFORE LAUNCH]</li><li>Safe to use around food preparation areas [SUBSTANTIATE BEFORE LAUNCH]</li></ul>"
+          }
         },
         "how_to_use": {
           "type": "collapsible",
@@ -19,7 +31,7 @@
           "type": "collapsible",
           "settings": {
             "heading": "Ingredients",
-            "content": "<p>Full ingredient list to be published here before launch. [SUBSTANTIATE BEFORE LAUNCH]</p><p><strong>Not added:<\/strong> SLES, phthalates, sulphates, phosphates. [SUBSTANTIATE BEFORE LAUNCH]<\/p>",
+            "content": "<p>Full ingredient list to be published here before launch. [SUBSTANTIATE BEFORE LAUNCH]</p><p><strong>Not added:</strong> SLES, phthalates, sulphates, phosphates. [SUBSTANTIATE BEFORE LAUNCH]</p>",
             "open_by_default": false
           }
         },
@@ -27,7 +39,7 @@
           "type": "collapsible",
           "settings": {
             "heading": "Delivery and returns",
-            "content": "<p>Cash on delivery is available across India.<\/p><p>Orders are delivered in 3-5 working days. [SUBSTANTIATE BEFORE LAUNCH]<\/p><p>Unopened bottles can be returned within 7 days of delivery. [SUBSTANTIATE BEFORE LAUNCH]<\/p>",
+            "content": "<p>Cash on delivery is available across India.</p><p>Orders are delivered in 3-5 working days. [SUBSTANTIATE BEFORE LAUNCH]</p><p>Unopened bottles can be returned within 7 days of delivery. [SUBSTANTIATE BEFORE LAUNCH]</p>",
             "open_by_default": false
           }
         }
@@ -46,7 +58,6 @@
         "show_buy_now": true,
         "variant_label": "Choose size",
         "quantity_label": "Quantity",
-        "gallery_hint": "Swipe for more photos",
         "show_review_hooks": true,
         "accent_color": "#f4d021",
         "accent_text_color": "#1a1a1a",
@@ -58,8 +69,32 @@
     "disclosures": {
       "type": "disclosures",
       "settings": {
+        "heading": "Disclosures",
+        "heading_size": "h2",
+        "open_by_default": true,
+        "color_scheme": "",
         "padding_top": 36,
         "padding_bottom": 0
+      }
+    },
+    "1786995882853225db": {
+      "type": "apps",
+      "blocks": {
+        "judge_me_reviews_review_widget_MBRmWW": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "review_data": "sample_data",
+            "max_width": 1200,
+            "show_shop_reviews": false,
+            "empty_state": "empty_widget"
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_review_widget_MBRmWW"
+      ],
+      "settings": {
+        "include_margins": true
       }
     },
     "related-products": {
@@ -84,6 +119,7 @@
   "order": [
     "main",
     "disclosures",
+    "1786995882853225db",
     "related-products"
   ]
 }
