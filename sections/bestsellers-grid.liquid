@@ -26,7 +26,7 @@
   assign products_count = section.settings.collection.all_products_count
 -%}
 
-<div class="color-{{ section.settings.color_scheme }} gradient">
+<div class="color-{{ section.settings.color_scheme | default: 'scheme-1' }} gradient">
   <div id="Bestsellers-{{ section.id }}" class="bestsellers page-width section-{{ section.id }}-padding">
     {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
       <div class="bestsellers__header">

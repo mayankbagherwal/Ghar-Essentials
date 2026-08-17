@@ -14,7 +14,7 @@
   }
 {%- endstyle -%}
 
-<div class="color-{{ section.settings.color_scheme }} gradient">
+<div class="color-{{ section.settings.color_scheme | default: 'scheme-2' }} gradient">
   <div class="trust-strip page-width section-{{ section.id }}-padding">
     {%- if section.settings.heading != blank -%}
       <h2 class="trust-strip__heading">{{ section.settings.heading | escape }}</h2>

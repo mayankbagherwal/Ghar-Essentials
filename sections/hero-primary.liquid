@@ -18,7 +18,7 @@
   }
 {%- endstyle -%}
 
-<div class="color-{{ section.settings.color_scheme }} gradient">
+<div class="color-{{ section.settings.color_scheme | default: 'scheme-1' }} gradient">
   <div id="Hero-{{ section.id }}" class="hero section-{{ section.id }}-padding">
     <div class="hero__media">
       {%- if section.settings.video != blank -%}
