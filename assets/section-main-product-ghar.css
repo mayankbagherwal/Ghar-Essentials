@@ -10,45 +10,91 @@
   gap: 1.6rem;
 }
 
-/* Media — a CSS scroll-snap gallery on mobile, no JavaScript involved */
+/* Gallery: one large image with a thumbnail rail. Which image shows is driven
+   by hidden radio inputs and CSS sibling selectors - no JavaScript, so it
+   works before scripts load and keeps the page fast on mobile data.
+   The per-image rules are generated in the section's style block. */
 
-.ghar-pdp__media {
-  display: flex;
+.ghar-gallery {
+  display: grid;
   gap: 0.8rem;
-  margin: 0;
   padding: 0 1.5rem;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  list-style: none;
-  scrollbar-width: none;
 }
 
-.ghar-pdp__media::-webkit-scrollbar {
+.ghar-gallery__radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.ghar-gallery__main {
+  overflow: hidden;
+  border-radius: 0.8rem;
+  background-color: rgba(var(--color-foreground), 0.04);
+}
+
+/* Hidden by default; the generated :checked rules reveal exactly one. The
+   first radio always carries `checked` in the markup, so one is always shown.
+   No :first-child fallback here - it would leave two slides visible at once. */
+.ghar-gallery__slide {
   display: none;
 }
 
-.ghar-pdp__media-item {
-  flex: 0 0 100%;
-  scroll-snap-align: center;
+/* The no-media placeholder has no radios to drive it. */
+.ghar-gallery--placeholder .ghar-gallery__slide {
+  display: block;
 }
 
-.ghar-pdp__media-item img,
-.ghar-pdp__media-item .placeholder-svg {
+.ghar-gallery__image {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 0.8rem;
-  background-color: rgba(var(--color-foreground), 0.03);
+  object-fit: contain;
 }
 
-.ghar-pdp__media-hint {
-  margin: 0.6rem 0 0;
-  font-size: 1.3rem;
-  text-align: center;
-  color: rgba(var(--color-foreground), 0.6);
+.ghar-gallery__thumbs {
+  display: flex;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.ghar-gallery__thumbs::-webkit-scrollbar {
+  display: none;
+}
+
+.ghar-gallery__thumb {
+  flex: 0 0 auto;
+}
+
+.ghar-gallery__thumb label {
+  display: block;
+  width: 6.4rem;
+  overflow: hidden;
+  border: 0.2rem solid transparent;
+  border-radius: 0.6rem;
+  background-color: rgba(var(--color-foreground), 0.04);
+  cursor: pointer;
+  opacity: 0.65;
+  transition: opacity 0.15s ease, border-color 0.15s ease;
+}
+
+.ghar-gallery__thumb label:hover {
+  opacity: 1;
+}
+
+.ghar-gallery__thumb-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
 }
 
 /* Buy panel */
@@ -411,16 +457,43 @@
     margin-bottom: 4rem;
   }
 
-  .ghar-pdp__media {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
+  /* Thumbnail rail to the left of the main image, matching how the category's
+     established stores lay a product page out. */
+  .ghar-gallery {
+    grid-template-columns: 7.2rem minmax(0, 1fr);
     gap: 1.2rem;
     padding: 0;
-    overflow: visible;
   }
 
-  .ghar-pdp__media-hint {
-    display: none;
+  .ghar-gallery__thumbs {
+    grid-row: 1;
+    grid-column: 1;
+    flex-direction: column;
+    max-height: 100%;
+    overflow-x: visible;
+    overflow-y: auto;
+  }
+
+  .ghar-gallery__main {
+    grid-row: 1;
+    grid-column: 2;
+  }
+
+  .ghar-gallery__thumb label {
+    width: 100%;
+  }
+
+  /* A single image needs no rail, so let it use the full width. The class is
+     set in Liquid rather than with :has(), so it behaves the same on older
+     mobile browsers. */
+  .ghar-gallery--placeholder,
+  .ghar-gallery--single {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ghar-gallery--placeholder .ghar-gallery__main,
+  .ghar-gallery--single .ghar-gallery__main {
+    grid-column: 1;
   }
 
   /* Deliberately not sticky. A sticky grid item is contained by the whole

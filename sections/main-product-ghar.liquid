@@ -14,6 +14,21 @@
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
   }
+
+  {%- comment -%}
+    One pair of rules per image: show the matching slide, and mark the matching
+    thumbnail as selected. Generated here because the count varies per product.
+  {%- endcomment -%}
+  {%- for media in product.media -%}
+    #GharMedia-{{ section.id }}-{{ forloop.index }}:checked ~ .ghar-gallery__main .ghar-gallery__slide:nth-child({{ forloop.index }}) {
+      display: block;
+    }
+
+    #GharMedia-{{ section.id }}-{{ forloop.index }}:checked ~ .ghar-gallery__thumbs .ghar-gallery__thumb:nth-child({{ forloop.index }}) label {
+      border-color: rgb(var(--color-foreground));
+      opacity: 1;
+    }
+  {%- endfor -%}
 {%- endstyle -%}
 
 {%- liquid
@@ -51,40 +66,85 @@
     <div class="ghar-pdp__top">
     {%- comment -%} Media. Swipeable on mobile with CSS scroll-snap, stacked on desktop. {%- endcomment -%}
     <div class="ghar-pdp__media-col">
-      <ul class="ghar-pdp__media" role="list">
-        {%- if product.media.size > 0 -%}
+      {%- if product.media.size > 0 -%}
+        {%- comment -%}
+          Thumbnail rail plus one large image. The radios drive which image is
+          shown through CSS sibling selectors, so switching photos costs no
+          JavaScript at all - it works before scripts load, and on a slow
+          connection it works even if they never do.
+        {%- endcomment -%}
+        <div class="ghar-gallery{% if product.media.size == 1 %} ghar-gallery--single{% endif %}">
           {%- for media in product.media -%}
-            {%- liquid
-              assign media_loading = 'lazy'
-              assign media_priority = 'auto'
-              if forloop.first
-                assign media_loading = 'eager'
-                assign media_priority = 'high'
-              endif
-              assign media_alt = media.alt | default: product.title
-            -%}
-            <li class="ghar-pdp__media-item">
-              {{
-                media
-                | image_url: width: 1200
-                | image_tag:
-                  loading: media_loading,
-                  fetchpriority: media_priority,
-                  widths: '375,550,750,900,1100,1200',
-                  sizes: '(min-width: 750px) 50vw, 100vw',
-                  alt: media_alt
-              }}
-            </li>
+            <input
+              type="radio"
+              class="ghar-gallery__radio"
+              id="GharMedia-{{ section.id }}-{{ forloop.index }}"
+              name="GharGallery-{{ section.id }}"
+              {% if forloop.first %}
+                checked
+              {% endif %}
+            >
           {%- endfor -%}
-        {%- else -%}
-          <li class="ghar-pdp__media-item">
-            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
-          </li>
-        {%- endif -%}
-      </ul>
 
-      {%- if product.media.size > 1 and section.settings.gallery_hint != blank -%}
-        <p class="ghar-pdp__media-hint">{{ section.settings.gallery_hint | escape }}</p>
+          <div class="ghar-gallery__main">
+            {%- for media in product.media -%}
+              {%- liquid
+                assign media_loading = 'lazy'
+                assign media_priority = 'auto'
+                if forloop.first
+                  assign media_loading = 'eager'
+                  assign media_priority = 'high'
+                endif
+                assign media_alt = media.alt | default: product.title
+              -%}
+              <div class="ghar-gallery__slide">
+                {{
+                  media
+                  | image_url: width: 1200
+                  | image_tag:
+                    loading: media_loading,
+                    fetchpriority: media_priority,
+                    widths: '375,550,750,900,1100,1200',
+                    sizes: '(min-width: 750px) 44vw, 100vw',
+                    class: 'ghar-gallery__image',
+                    alt: media_alt
+                }}
+              </div>
+            {%- endfor -%}
+          </div>
+
+          {%- if product.media.size > 1 -%}
+            <ul class="ghar-gallery__thumbs" role="list">
+              {%- for media in product.media -%}
+                <li class="ghar-gallery__thumb">
+                  <label for="GharMedia-{{ section.id }}-{{ forloop.index }}">
+                    <span class="visually-hidden">
+                      {{ 'products.product.media.gallery_viewer' | t }} {{ forloop.index }}
+                    </span>
+                    {{
+                      media
+                      | image_url: width: 200
+                      | image_tag:
+                        loading: 'lazy',
+                        widths: '80,120,160,200',
+                        sizes: '80px',
+                        class: 'ghar-gallery__thumb-image',
+                        alt: ''
+                    }}
+                  </label>
+                </li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
+      {%- else -%}
+        <div class="ghar-gallery ghar-gallery--placeholder">
+          <div class="ghar-gallery__main">
+            <div class="ghar-gallery__slide">
+              {{ 'product-1' | placeholder_svg_tag: 'ghar-gallery__image placeholder-svg' }}
+            </div>
+          </div>
+        </div>
       {%- endif -%}
     </div>
 
@@ -378,13 +438,6 @@
       "id": "quantity_label",
       "label": "Quantity label",
       "default": "Quantity"
-    },
-    {
-      "type": "text",
-      "id": "gallery_hint",
-      "label": "Mobile gallery hint",
-      "info": "Shown under the images on mobile when a product has more than one photo.",
-      "default": "Swipe for more photos"
     },
     {
       "type": "header",
