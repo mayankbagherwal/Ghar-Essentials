@@ -1,0 +1,119 @@
+{{ 'section-announcement-offer-bar.css' | asset_url | stylesheet_tag }}
+{%- if section.blocks.size > 1 or section.settings.dismissible -%}
+  <script src="{{ 'section-announcement-offer-bar.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- if section.blocks.size > 0 -%}
+  <ghar-offer-bar
+    class="offer-bar color-{{ section.settings.color_scheme | default: 'scheme-3' }}{% if section.settings.sticky %} offer-bar--sticky{% endif %}"
+    data-rotate-seconds="{{ section.settings.rotate_seconds }}"
+    data-storage-key="ghar-offer-bar-{{ section.id }}"
+  >
+    <div class="offer-bar__inner page-width">
+      <div class="offer-bar__messages">
+        {%- for block in section.blocks -%}
+          <div
+            class="offer-bar__message{% if forloop.first %} is-active{% endif %}"
+            data-offer-message
+            {{ block.shopify_attributes }}
+          >
+            {%- if block.settings.link != blank -%}
+              <a class="offer-bar__link" href="{{ block.settings.link }}">{{ block.settings.text | escape }}</a>
+            {%- else -%}
+              <span>{{ block.settings.text | escape }}</span>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+
+      {%- if section.settings.dismissible -%}
+        <button
+          type="button"
+          class="offer-bar__close"
+          data-offer-close
+          aria-label="{{ 'accessibility.close' | t }}"
+        >
+          &times;
+        </button>
+      {%- endif -%}
+    </div>
+  </ghar-offer-bar>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Offer bar",
+  "tag": "section",
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "info": "Scheme 3 is the lemon-yellow offer style.",
+      "default": "scheme-3"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "Stick to the top of the screen",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "dismissible",
+      "label": "Let shoppers close it",
+      "info": "Once closed it stays hidden on that phone until the message changes.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "rotate_seconds",
+      "min": 3,
+      "max": 12,
+      "step": 1,
+      "unit": "s",
+      "label": "Seconds between messages",
+      "default": 5
+    }
+  ],
+  "blocks": [
+    {
+      "type": "message",
+      "name": "Message",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Free delivery on orders above Rs. 499"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link (optional)"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Offer bar",
+      "blocks": [
+        {
+          "type": "message",
+          "settings": { "text": "Free delivery on orders above Rs. 499" }
+        },
+        {
+          "type": "message",
+          "settings": { "text": "Cash on delivery available across India" }
+        },
+        {
+          "type": "message",
+          "settings": { "text": "Extra 5% off when you pay online" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

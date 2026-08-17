@@ -1,0 +1,82 @@
+/* "What are you cleaning today?" - routes a shopper straight to the product
+   that solves their problem. Swipeable row on mobile, grid on desktop. */
+
+.problem-picker__heading {
+  margin: 0 0 1.6rem;
+  font-size: 2.2rem;
+  line-height: 1.2;
+}
+
+.problem-picker__list {
+  display: flex;
+  gap: 1.2rem;
+  margin: 0 -1.5rem;
+  padding: 0 1.5rem 0.4rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.problem-picker__list::-webkit-scrollbar {
+  display: none;
+}
+
+.problem-picker__item {
+  flex: 0 0 13rem;
+  scroll-snap-align: start;
+}
+
+.problem-picker__tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  text-decoration: none;
+  color: rgb(var(--color-foreground));
+}
+
+.problem-picker__media {
+  display: block;
+  overflow: hidden;
+  border-radius: 0.8rem;
+  background-color: rgba(var(--color-foreground), 0.05);
+}
+
+.problem-picker__image,
+.problem-picker__placeholder {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.problem-picker__label {
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+@media screen and (min-width: 750px) {
+  .problem-picker__heading {
+    margin-bottom: 2.4rem;
+    font-size: 2.8rem;
+  }
+
+  .problem-picker__list {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
+  .problem-picker__item {
+    flex: initial;
+  }
+
+  .problem-picker__label {
+    font-size: 1.6rem;
+  }
+}
