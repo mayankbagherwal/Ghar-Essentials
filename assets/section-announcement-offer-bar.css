@@ -2,10 +2,10 @@
    discount - three of the strongest trust signals for a first-time buyer, so
    they rotate rather than compete for one line.
 
-   Motion: the outgoing line rises and fades out while the incoming one lifts
-   from just below and settles into place. Transform and opacity only, so the
-   whole thing runs on the compositor and never touches layout - that is what
-   keeps it smooth on a mid-range Android, not just on a desk. */
+   Motion: the outgoing line slides off to the left while the next one comes
+   in from the right and settles. Transform and opacity only, so the whole
+   thing runs on the compositor and never touches layout - that is what keeps
+   it smooth on a mid-range Android, not just on a desk. */
 
 .offer-bar {
   display: block;
@@ -44,17 +44,19 @@
   line-height: 1.35;
   text-align: center;
 
-  /* Waiting position: just below the line, invisible. */
+  /* Waiting position: off to the right, invisible. */
   opacity: 0;
-  transform: translate3d(0, 105%, 0);
+  transform: translate3d(40%, 0, 0);
   pointer-events: none;
 
   /* Apple's sheet curve: quick to leave, long slow settle, no overshoot.
-     Opacity finishes earlier than the movement so the text is gone before it
-     reaches the edge, which stops it looking like it is being clipped. */
+     Opacity finishes earlier than the movement so the text has faded before
+     it reaches the edge and never looks clipped. The travel is short and the
+     duration long on purpose - a small distance moved slowly reads as calm,
+     where a long distance moved slowly just reads as sluggish. */
   transition:
-    transform 0.52s cubic-bezier(0.32, 0.72, 0, 1),
-    opacity 0.34s cubic-bezier(0.32, 0.72, 0, 1);
+    transform 0.85s cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 0.55s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .offer-bar__message.is-active {
@@ -65,7 +67,7 @@
 
 .offer-bar__message.is-leaving {
   opacity: 0;
-  transform: translate3d(0, -105%, 0);
+  transform: translate3d(-40%, 0, 0);
 }
 
 /* Snaps a message back to the waiting position without animating it there. */

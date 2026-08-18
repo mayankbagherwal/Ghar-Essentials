@@ -1,8 +1,8 @@
 /*
   Offer bar rotation.
 
-  One message is visible; the rest wait just below the line. On each tick the
-  visible one rises out of view while the next lifts into its place. All of it
+  One message is visible; the rest wait off to the right. On each tick the
+  visible one slides away to the left while the next comes in behind it. All of it
   is CSS transitions on transform and opacity - this file only moves classes
   around and keeps the timing honest.
 
@@ -13,7 +13,7 @@
     can collapse both states into one style recalculation and the element
     simply appears, with no movement at all.
   - A message that has finished leaving is returned to the waiting position
-    the same way, so it never slides back down through the bar in view.
+    the same way, so it never slides back across the bar in view.
   - Rotation pauses while the tab is hidden. Timers keep firing in a
     background tab, so without this you return to a bar mid-transition, or
     several transitions deep.
@@ -135,8 +135,9 @@ if (!customElements.get('ghar-offer-bar')) {
         element.addEventListener('transitionend', done);
 
         /* transitionend does not fire if the transition never runs - reduced
-           motion, or a tab hidden mid-flight - so back it with a timeout. */
-        element.gharSettleTimer = window.setTimeout(done, 900);
+           motion, or a tab hidden mid-flight - so back it with a timeout.
+           It has to outlast the 0.85s transform, hence 1.4s. */
+        element.gharSettleTimer = window.setTimeout(done, 1400);
       }
     }
   );
