@@ -2,18 +2,6 @@
 <script src="{{ 'section-header-ghar.js' | asset_url }}" defer="defer"></script>
 
 {%- style -%}
-  .section-{{ section.id }}-padding {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
-  }
-
-  @media screen and (min-width: 990px) {
-    .section-{{ section.id }}-padding {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
-  }
-
   #GharHeader-{{ section.id }} {
     --ghar-header-height: {{ section.settings.header_height }}px;
     --ghar-header-height-mobile: {{ section.settings.header_height_mobile }}px;
@@ -21,6 +9,9 @@
     --ghar-logo-width-mobile: {{ section.settings.logo_width_mobile }}px;
     --ghar-logo-height: {{ section.settings.logo_height }}px;
     --ghar-logo-height-mobile: {{ section.settings.logo_height_mobile }}px;
+    --ghar-logo-inset: {{ section.settings.logo_inset }}px;
+    --ghar-header-gutter: {{ section.settings.header_gutter }}px;
+    --ghar-header-gutter-mobile: {{ section.settings.header_gutter_mobile }}px;
   }
 {%- endstyle -%}
 
@@ -33,7 +24,7 @@
   id="GharHeader-{{ section.id }}"
   class="ghar-header color-{{ section.settings.color_scheme | default: 'scheme-1' }} gradient{% if section.settings.sticky %} ghar-header--sticky{% endif %}"
 >
-  <div class="ghar-header__inner page-width section-{{ section.id }}-padding">
+  <div class="ghar-header__inner page-width">
     {%- comment -%} Left: menu toggle on mobile, search plus first menu on desktop {%- endcomment -%}
     <div class="ghar-header__side ghar-header__side--start">
       <details class="ghar-header__drawer" data-ghar-drawer>
@@ -256,7 +247,7 @@
       "step": 4,
       "unit": "px",
       "label": "Header height on desktop",
-      "info": "The logo grows to fill this, so set the bar height you want and the mark sizes itself to it.",
+      "info": "A hard height, not a minimum. The bar is exactly this tall whatever the logo is set to.",
       "default": 80
     },
     {
@@ -268,6 +259,37 @@
       "unit": "px",
       "label": "Header height on mobile",
       "default": 64
+    },
+    {
+      "type": "range",
+      "id": "logo_inset",
+      "min": 0,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Space above and below the logo",
+      "info": "Breathing room inside the bar. The logo is never allowed to exceed the bar height minus this, so the header keeps the height you set no matter where the logo slider is.",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "header_gutter",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Side padding on desktop",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "header_gutter_mobile",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Side padding on mobile",
+      "default": 20
     },
     {
       "type": "range",
@@ -395,26 +417,6 @@
       "id": "color_scheme",
       "label": "Colour scheme",
       "default": "scheme-1"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "unit": "px",
-      "label": "Padding top",
-      "default": 12
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "unit": "px",
-      "label": "Padding bottom",
-      "default": 12
     }
   ]
 }

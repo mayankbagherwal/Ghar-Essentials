@@ -41,9 +41,9 @@
       "settings": {
         "logo": "shopify://shop_images/IMG_2055.png",
         "header_height": 60,
-        "header_height_mobile": 52,
-        "logo_height": 56,
-        "logo_height_mobile": 70,
+        "header_height_mobile": 56,
+        "logo_height": 48,
+        "logo_height_mobile": 40,
         "logo_width": 320,
         "logo_width_mobile": 200,
         "wordmark": "ghar",
@@ -58,8 +58,9 @@
         "show_account": true,
         "sticky": true,
         "color_scheme": "scheme-2",
-        "padding_top": 12,
-        "padding_bottom": 12
+        "logo_inset": 6,
+        "header_gutter": 40,
+        "header_gutter_mobile": 20
       }
     }
   },
