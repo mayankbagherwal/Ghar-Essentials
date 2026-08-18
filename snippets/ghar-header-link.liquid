@@ -1,0 +1,42 @@
+{% comment %}
+  One desktop header link. Links with sub-links render as a details dropdown,
+  so the menu opens without JavaScript; the header element only adds
+  close-on-outside-click and Escape on top.
+
+  Accepts: link, index, side ('l' or 'r'), section_id
+{% endcomment %}
+<li class="ghar-header__item">
+  {%- if link.links.size > 0 -%}
+    <details class="ghar-header__dropdown" data-ghar-dropdown>
+      <summary class="ghar-header__summary">
+        <span>{{ link.title | escape }}</span>
+        <span class="ghar-header__caret" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
+      </summary>
+      <ul class="ghar-header__submenu" role="list">
+        {%- for child in link.links -%}
+          <li>
+            <a
+              class="ghar-header__sublink{% if child.current %} is-current{% endif %}"
+              href="{{ child.url }}"
+              {% if child.current %}
+                aria-current="page"
+              {% endif %}
+            >
+              {{- child.title | escape -}}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </details>
+  {%- else -%}
+    <a
+      class="ghar-header__link{% if link.current %} is-current{% endif %}"
+      href="{{ link.url }}"
+      {% if link.current %}
+        aria-current="page"
+      {% endif %}
+    >
+      {{- link.title | escape -}}
+    </a>
+  {%- endif -%}
+</li>

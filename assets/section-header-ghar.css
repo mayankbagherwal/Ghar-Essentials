@@ -1,0 +1,347 @@
+/* Ghar Essentials header: logo centred, menu split either side on desktop.
+   Mobile keeps the usual burger / logo / cart row with a slide-out drawer.
+   Menus are details/summary so they open without JavaScript; the custom
+   element only adds close-on-outside-click and Escape.
+   Brand book: Poppins nav at 16px, warm white ground, ink text, 44px targets. */
+
+.ghar-header {
+  display: block;
+  position: relative;
+  z-index: 5;
+  border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.1);
+}
+
+.ghar-header--sticky {
+  position: sticky;
+  top: 0;
+}
+
+.ghar-header__inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.ghar-header__side {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.ghar-header__side--end {
+  justify-content: flex-end;
+}
+
+/* Icon buttons */
+
+.ghar-header__icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 4.4rem;
+  height: 4.4rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: rgb(var(--color-foreground));
+  cursor: pointer;
+  list-style: none;
+}
+
+.ghar-header__icon-button::-webkit-details-marker {
+  display: none;
+}
+
+.ghar-header__icon {
+  display: inline-flex;
+  width: 2.2rem;
+  height: 2.2rem;
+}
+
+.ghar-header__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ghar-header__cart-count {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.8rem;
+  height: 1.8rem;
+  padding: 0 0.4rem;
+  border-radius: 1rem;
+  background-color: #f2c230;
+  color: #12211b;
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* Logo lockup */
+
+.ghar-header__centre {
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.ghar-header__logo {
+  display: block;
+  margin: 0;
+  font-size: inherit;
+  line-height: 1;
+}
+
+.ghar-header__logo a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+
+.ghar-header__logo-image {
+  display: block;
+  width: var(--ghar-logo-width-mobile, 130px);
+  height: auto;
+}
+
+.ghar-header__wordmark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.ghar-header__wordmark-name {
+  font-family: var(--font-heading-family);
+  font-size: 2.4rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.ghar-header__wordmark-sub {
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+}
+
+/* Desktop navigation — hidden until there is room for it */
+
+.ghar-header__nav {
+  display: none;
+}
+
+.ghar-header__list {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ghar-header__link,
+.ghar-header__summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 4.4rem;
+  color: rgb(var(--color-foreground));
+  font-family: var(--font-heading-family);
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  list-style: none;
+}
+
+.ghar-header__summary::-webkit-details-marker {
+  display: none;
+}
+
+.ghar-header__link:hover,
+.ghar-header__summary:hover {
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+.ghar-header__link.is-current {
+  text-decoration: underline;
+  text-underline-offset: 0.4rem;
+}
+
+.ghar-header__caret {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.15s ease-out;
+}
+
+.ghar-header__caret svg {
+  width: 100%;
+  height: 100%;
+}
+
+[open] > .ghar-header__summary .ghar-header__caret,
+[open] > .ghar-header__drawer-summary .ghar-header__caret {
+  transform: rotate(180deg);
+}
+
+/* Desktop dropdown */
+
+.ghar-header__dropdown {
+  position: relative;
+}
+
+.ghar-header__submenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 6;
+  min-width: 20rem;
+  margin: 0;
+  padding: 0.8rem 0;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.12);
+  border-radius: 0.8rem;
+  background-color: rgb(var(--color-background));
+  box-shadow: 0 0.6rem 2rem rgba(0, 0, 0, 0.08);
+  list-style: none;
+}
+
+.ghar-header__sublink {
+  display: block;
+  padding: 1rem 1.6rem;
+  color: rgb(var(--color-foreground));
+  font-size: 1.6rem;
+  text-decoration: none;
+}
+
+.ghar-header__sublink:hover,
+.ghar-header__sublink.is-current {
+  background-color: rgba(var(--color-foreground), 0.06);
+}
+
+/* Mobile drawer */
+
+.ghar-header__drawer-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  width: min(86vw, 36rem);
+  height: 100dvh;
+  padding: 7rem 2rem 2rem;
+  overflow-y: auto;
+  background-color: rgb(var(--color-background));
+  box-shadow: 0 0 4rem rgba(0, 0, 0, 0.25);
+}
+
+.ghar-header__drawer-list,
+.ghar-header__drawer-sublist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ghar-header__drawer-item {
+  border-bottom: 0.1rem solid rgba(var(--color-foreground), 0.1);
+}
+
+.ghar-header__drawer-link,
+.ghar-header__drawer-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 5.2rem;
+  color: rgb(var(--color-foreground));
+  font-family: var(--font-heading-family);
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  list-style: none;
+}
+
+.ghar-header__drawer-summary::-webkit-details-marker {
+  display: none;
+}
+
+.ghar-header__drawer-sublink {
+  display: block;
+  padding: 1.2rem 0 1.2rem 1.6rem;
+  color: rgb(var(--color-foreground));
+  font-size: 1.6rem;
+  text-decoration: none;
+}
+
+.ghar-header__drawer-note {
+  margin: 2.4rem 0 0;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+/* Dim the page behind the open drawer */
+.ghar-header__drawer[open] .ghar-header__burger::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 19;
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+.ghar-header__drawer[open] .ghar-header__burger {
+  position: relative;
+  z-index: 21;
+}
+
+@media screen and (min-width: 990px) {
+  .ghar-header__inner {
+    gap: 2rem;
+  }
+
+  .ghar-header__side {
+    gap: 1.2rem;
+  }
+
+  .ghar-header__nav {
+    display: block;
+  }
+
+  .ghar-header__drawer,
+  .ghar-header__search-mobile {
+    display: none;
+  }
+
+  .ghar-header__logo-image {
+    width: var(--ghar-logo-width, 180px);
+  }
+
+  .ghar-header__wordmark-name {
+    font-size: 3rem;
+  }
+
+  .ghar-header__nav--right .ghar-header__list {
+    justify-content: flex-end;
+  }
+
+  .ghar-header__nav--right .ghar-header__submenu {
+    left: auto;
+    right: 0;
+  }
+}
+
+@media screen and (max-width: 989px) {
+  .ghar-header__search-link {
+    display: none;
+  }
+}

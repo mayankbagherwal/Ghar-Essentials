@@ -1,0 +1,292 @@
+{{ 'section-header-ghar.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-header-ghar.js' | asset_url }}" defer="defer"></script>
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 990px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+
+  #GharHeader-{{ section.id }} {
+    --ghar-logo-width: {{ section.settings.logo_width }}px;
+    --ghar-logo-width-mobile: {{ section.settings.logo_width_mobile }}px;
+  }
+{%- endstyle -%}
+
+{%- liquid
+  assign menu_left = section.settings.menu_left
+  assign menu_right = section.settings.menu_right
+-%}
+
+<ghar-header
+  id="GharHeader-{{ section.id }}"
+  class="ghar-header color-{{ section.settings.color_scheme | default: 'scheme-1' }} gradient{% if section.settings.sticky %} ghar-header--sticky{% endif %}"
+>
+  <div class="ghar-header__inner page-width section-{{ section.id }}-padding">
+    {%- comment -%} Left: menu toggle on mobile, search plus first menu on desktop {%- endcomment -%}
+    <div class="ghar-header__side ghar-header__side--start">
+      <details class="ghar-header__drawer" data-ghar-drawer>
+        <summary class="ghar-header__icon-button ghar-header__burger" aria-label="{{ 'sections.header.menu' | t }}">
+          <span class="ghar-header__icon" aria-hidden="true">{{- 'icon-hamburger.svg' | inline_asset_content -}}</span>
+        </summary>
+
+        <div class="ghar-header__drawer-panel">
+          <nav class="ghar-header__drawer-nav" aria-label="{{ 'sections.header.menu' | t }}">
+            <ul class="ghar-header__drawer-list" role="list">
+              {%- for link in menu_left.links -%}
+                {%- render 'ghar-header-mobile-link', link: link -%}
+              {%- endfor -%}
+              {%- for link in menu_right.links -%}
+                {%- render 'ghar-header-mobile-link', link: link -%}
+              {%- endfor -%}
+            </ul>
+          </nav>
+
+          {%- if section.settings.drawer_note != blank -%}
+            <p class="ghar-header__drawer-note">{{ section.settings.drawer_note | escape }}</p>
+          {%- endif -%}
+        </div>
+      </details>
+
+      {%- if section.settings.show_search -%}
+        <a
+          class="ghar-header__icon-button ghar-header__search-link"
+          href="{{ routes.search_url }}"
+          aria-label="{{ 'general.search.search' | t }}"
+        >
+          <span class="ghar-header__icon" aria-hidden="true">{{- 'icon-search.svg' | inline_asset_content -}}</span>
+        </a>
+      {%- endif -%}
+
+      {%- if menu_left.links.size > 0 -%}
+        <nav class="ghar-header__nav ghar-header__nav--left" aria-label="{{ 'sections.header.menu' | t }}">
+          <ul class="ghar-header__list" role="list">
+            {%- for link in menu_left.links -%}
+              {%- render 'ghar-header-link', link: link, index: forloop.index, side: 'l', section_id: section.id -%}
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Centre: the logo lockup {%- endcomment -%}
+    <div class="ghar-header__centre">
+      {%- capture logo_markup -%}
+        {%- if section.settings.logo != blank -%}
+          {{
+            section.settings.logo
+            | image_url: width: 600
+            | image_tag:
+              loading: 'eager',
+              fetchpriority: 'high',
+              widths: '120,180,240,360,480,600',
+              sizes: '(min-width: 990px) 180px, 130px',
+              class: 'ghar-header__logo-image',
+              alt: shop.name
+          }}
+        {%- else -%}
+          {%- comment -%}
+            Text lockup until the logo file is uploaded: lowercase wordmark over
+            letterspaced ESSENTIALS, matching the mark in the brand book.
+          {%- endcomment -%}
+          <span class="ghar-header__wordmark">
+            <span class="ghar-header__wordmark-name">{{ section.settings.wordmark | escape }}</span>
+            <span class="ghar-header__wordmark-sub">{{ section.settings.wordmark_sub | escape }}</span>
+          </span>
+        {%- endif -%}
+      {%- endcapture -%}
+
+      {%- if request.page_type == 'index' -%}
+        <h1 class="ghar-header__logo">
+          <a href="{{ routes.root_url }}">{{ logo_markup }}</a>
+        </h1>
+      {%- else -%}
+        <a class="ghar-header__logo" href="{{ routes.root_url }}">{{ logo_markup }}</a>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Right: second menu on desktop, account and cart everywhere {%- endcomment -%}
+    <div class="ghar-header__side ghar-header__side--end">
+      {%- if menu_right.links.size > 0 -%}
+        <nav class="ghar-header__nav ghar-header__nav--right" aria-label="{{ 'sections.header.menu' | t }}">
+          <ul class="ghar-header__list" role="list">
+            {%- for link in menu_right.links -%}
+              {%- render 'ghar-header-link', link: link, index: forloop.index, side: 'r', section_id: section.id -%}
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+
+      {%- if section.settings.show_search -%}
+        <a
+          class="ghar-header__icon-button ghar-header__search-mobile"
+          href="{{ routes.search_url }}"
+          aria-label="{{ 'general.search.search' | t }}"
+        >
+          <span class="ghar-header__icon" aria-hidden="true">{{- 'icon-search.svg' | inline_asset_content -}}</span>
+        </a>
+      {%- endif -%}
+
+      {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
+        <a
+          class="ghar-header__icon-button ghar-header__account"
+          href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+          aria-label="{%- if customer -%}{{ 'customer.account.title' | t }}{%- else -%}{{ 'customer.log_in' | t }}{%- endif -%}"
+        >
+          <span class="ghar-header__icon" aria-hidden="true">{{- 'icon-account.svg' | inline_asset_content -}}</span>
+        </a>
+      {%- endif -%}
+
+      <a
+        class="ghar-header__icon-button ghar-header__cart"
+        href="{{ routes.cart_url }}"
+        aria-label="{{ 'templates.cart.cart' | t }}"
+      >
+        <span class="ghar-header__icon" aria-hidden="true">
+          {%- if cart.item_count > 0 -%}
+            {{- 'icon-cart.svg' | inline_asset_content -}}
+          {%- else -%}
+            {{- 'icon-cart-empty.svg' | inline_asset_content -}}
+          {%- endif -%}
+        </span>
+        {%- if cart.item_count > 0 -%}
+          <span class="ghar-header__cart-count" aria-hidden="true">{{ cart.item_count }}</span>
+          <span class="visually-hidden">{{ 'sections.header.cart_count' | t: count: cart.item_count }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+  </div>
+</ghar-header>
+
+{% schema %}
+{
+  "name": "Header (Ghar)",
+  "class": "ghar-header-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "The green house-and-leaf mark with the wordmark beside it. PNG or SVG with a transparent background, at least 600px wide. Until one is uploaded the header falls back to a text version of the lockup."
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "min": 90,
+      "max": 260,
+      "step": 10,
+      "unit": "px",
+      "label": "Logo width on desktop",
+      "default": 180
+    },
+    {
+      "type": "range",
+      "id": "logo_width_mobile",
+      "min": 80,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Logo width on mobile",
+      "default": 130
+    },
+    {
+      "type": "text",
+      "id": "wordmark",
+      "label": "Fallback wordmark",
+      "default": "ghar"
+    },
+    {
+      "type": "text",
+      "id": "wordmark_sub",
+      "label": "Fallback wordmark second line",
+      "default": "ESSENTIALS"
+    },
+    {
+      "type": "header",
+      "content": "Menus"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_left",
+      "label": "Menu left of the logo",
+      "info": "Two or three links reads best. Any link with sub-links becomes a dropdown.",
+      "default": "main-menu"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_right",
+      "label": "Menu right of the logo",
+      "info": "Two or three links. On mobile both menus appear together in the slide-out drawer."
+    },
+    {
+      "type": "text",
+      "id": "drawer_note",
+      "label": "Note at the bottom of the mobile menu",
+      "default": "Cash on delivery available across India"
+    },
+    {
+      "type": "header",
+      "content": "Icons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_search",
+      "label": "Show search",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_account",
+      "label": "Show account",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "checkbox",
+      "id": "sticky",
+      "label": "Stick to the top when scrolling",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 12
+    }
+  ]
+}
+{% endschema %}
