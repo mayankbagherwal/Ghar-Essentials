@@ -1,0 +1,249 @@
+{{ 'section-footer-details.css' | asset_url | stylesheet_tag }}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- comment -%}
+  Company details. In India this block is a trust signal, not legal
+  boilerplate - a first-time buyer looks for a real address and a real phone
+  number before paying an unknown brand. Everything here is a setting.
+{%- endcomment -%}
+<div class="color-{{ section.settings.color_scheme | default: 'scheme-4' }} gradient">
+  <div class="footer-details page-width section-{{ section.id }}-padding">
+    <div class="footer-details__grid">
+      <div class="footer-details__col">
+        {%- if section.settings.company_name != blank -%}
+          <p class="footer-details__name">{{ section.settings.company_name | escape }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.address != blank -%}
+          <address class="footer-details__address">{{ section.settings.address }}</address>
+        {%- endif -%}
+
+        {%- if section.settings.gst != blank -%}
+          <p class="footer-details__line">{{ section.settings.gst_label | escape }} {{ section.settings.gst | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      <div class="footer-details__col">
+        {%- if section.settings.contact_heading != blank -%}
+          <p class="footer-details__heading">{{ section.settings.contact_heading | escape }}</p>
+        {%- endif -%}
+
+        <ul class="footer-details__contacts" role="list">
+          {%- if section.settings.phone != blank -%}
+            <li>
+              <a class="footer-details__link" href="tel:{{ section.settings.phone | replace: ' ', '' }}">
+                {{- section.settings.phone | escape -}}
+              </a>
+            </li>
+          {%- endif -%}
+
+          {%- if section.settings.email != blank -%}
+            <li>
+              <a class="footer-details__link" href="mailto:{{ section.settings.email }}">
+                {{- section.settings.email | escape -}}
+              </a>
+            </li>
+          {%- endif -%}
+
+          {%- if section.settings.whatsapp != blank -%}
+            <li>
+              <a
+                class="footer-details__link footer-details__link--whatsapp"
+                href="{{ section.settings.whatsapp }}"
+                rel="noopener"
+                target="_blank"
+              >
+                {{- section.settings.whatsapp_label | escape -}}
+              </a>
+            </li>
+          {%- endif -%}
+
+          {%- if section.settings.hours != blank -%}
+            <li class="footer-details__muted">{{ section.settings.hours | escape }}</li>
+          {%- endif -%}
+        </ul>
+      </div>
+
+      {%- if section.blocks.size > 0 -%}
+        <div class="footer-details__col">
+          {%- if section.settings.policies_heading != blank -%}
+            <p class="footer-details__heading">{{ section.settings.policies_heading | escape }}</p>
+          {%- endif -%}
+          <ul class="footer-details__policies" role="list">
+            {%- for block in section.blocks -%}
+              <li {{ block.shopify_attributes }}>
+                <a class="footer-details__link" href="{{ block.settings.link | default: '#' }}">
+                  {{- block.settings.label | escape -}}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.legal_line != blank -%}
+      <p class="footer-details__legal">{{ section.settings.legal_line | escape }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Footer details",
+  "tag": "section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Company"
+    },
+    {
+      "type": "text",
+      "id": "company_name",
+      "label": "Registered company name",
+      "default": "[ADD REGISTERED COMPANY NAME]"
+    },
+    {
+      "type": "richtext",
+      "id": "address",
+      "label": "Registered address",
+      "default": "<p>[ADD FULL REGISTERED ADDRESS, INCLUDING PIN CODE]</p>"
+    },
+    {
+      "type": "text",
+      "id": "gst_label",
+      "label": "GST label",
+      "default": "GSTIN"
+    },
+    {
+      "type": "text",
+      "id": "gst",
+      "label": "GST number",
+      "default": "[ADD GST NUMBER]"
+    },
+    {
+      "type": "header",
+      "content": "Contact"
+    },
+    {
+      "type": "text",
+      "id": "contact_heading",
+      "label": "Heading",
+      "default": "Talk to us"
+    },
+    {
+      "type": "text",
+      "id": "phone",
+      "label": "Phone number",
+      "default": "[ADD PHONE NUMBER]"
+    },
+    {
+      "type": "text",
+      "id": "email",
+      "label": "Email address",
+      "default": "[ADD SUPPORT EMAIL]"
+    },
+    {
+      "type": "url",
+      "id": "whatsapp",
+      "label": "WhatsApp link",
+      "info": "In the form https://wa.me/91XXXXXXXXXX - no spaces, no plus sign."
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_label",
+      "label": "WhatsApp link text",
+      "default": "Message us on WhatsApp"
+    },
+    {
+      "type": "text",
+      "id": "hours",
+      "label": "Hours",
+      "default": "Mon to Sat, 10am to 7pm"
+    },
+    {
+      "type": "header",
+      "content": "Policies"
+    },
+    {
+      "type": "text",
+      "id": "policies_heading",
+      "label": "Heading",
+      "default": "Policies"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "text",
+      "id": "legal_line",
+      "label": "Bottom line",
+      "default": "Prices inclusive of all taxes. Country of origin: India."
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "info": "Scheme 4 is the deep Forest green the brand book gives the footer.",
+      "default": "scheme-4"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 32
+    }
+  ],
+  "blocks": [
+    {
+      "type": "policy",
+      "name": "Policy link",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Shipping policy" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer details",
+      "blocks": [
+        { "type": "policy", "settings": { "label": "Shipping policy" } },
+        { "type": "policy", "settings": { "label": "Returns and refunds" } },
+        { "type": "policy", "settings": { "label": "Privacy policy" } },
+        { "type": "policy", "settings": { "label": "Terms of service" } },
+        { "type": "policy", "settings": { "label": "Contact us" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

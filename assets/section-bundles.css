@@ -1,0 +1,228 @@
+/* Bundles - the AOV engine. Per-unit price and savings are calculated from the
+   product, never typed in, so the value line cannot drift out of date.
+   Brand book: Poppins headings, lemon badges, 48px buttons at 8px radius. */
+
+.bundles__header {
+  margin-bottom: 1.6rem;
+}
+
+.bundles__heading {
+  margin: 0 0 0.4rem;
+  font-size: 2.4rem;
+  line-height: 1.2;
+}
+
+.bundles__subheading {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.45;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.bundles__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bundles__card {
+  position: relative;
+  display: flex;
+  gap: 1.2rem;
+  height: 100%;
+  padding: 1.2rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.12);
+  border-radius: 0.8rem;
+  background-color: rgb(var(--color-background));
+}
+
+.bundles__card--highlight {
+  border-color: rgb(var(--color-foreground));
+  border-width: 0.2rem;
+}
+
+.bundles__flag {
+  position: absolute;
+  top: -1rem;
+  right: 1.2rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.6rem;
+  background-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.bundles__media {
+  position: relative;
+  flex: 0 0 12rem;
+  align-self: flex-start;
+  overflow: hidden;
+  border-radius: 0.6rem;
+  background-color: rgba(var(--color-foreground), 0.04);
+}
+
+.bundles__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+}
+
+/* Lemon with ink text - the only place other than the offer bar it is allowed */
+.bundles__badge {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.6rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.4rem;
+  background-color: #f2c230;
+  color: #12211b;
+  font-size: 1.3rem;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.bundles__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.bundles__title {
+  margin: 0;
+  font-family: var(--font-heading-family);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.bundles__description {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.bundles__prices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.8rem;
+  margin-top: auto;
+}
+
+.bundles__price {
+  font-size: 2rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.bundles__mrp {
+  font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.bundles__value {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  color: #0f7a4e;
+}
+
+.bundles__tax {
+  margin: 0;
+  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.bundles__form product-form,
+.bundles__form .form {
+  display: block;
+  width: 100%;
+}
+
+.bundles__atc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 4.8rem;
+  margin-top: 0.4rem;
+  border: 0;
+  border-radius: 0.8rem;
+  background-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  font-family: var(--font-body-family);
+  font-size: 1.6rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bundles__atc:disabled,
+.bundles__atc[aria-disabled='true'] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.bundles__atc .loading__spinner {
+  width: 1.8rem;
+  height: 1.8rem;
+  margin-left: 0.6rem;
+}
+
+.bundles__error {
+  margin: 0.4rem 0 0;
+  font-size: 1.3rem;
+}
+
+.bundles__empty {
+  margin: 0;
+  padding: 1.2rem;
+  border: 0.1rem dashed rgba(var(--color-foreground), 0.3);
+  border-radius: 0.6rem;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+@media screen and (min-width: 750px) {
+  .bundles__header {
+    margin-bottom: 2.4rem;
+  }
+
+  .bundles__heading {
+    font-size: 3.2rem;
+  }
+
+  .bundles__list {
+    grid-template-columns: repeat(auto-fit, minmax(32rem, 1fr));
+    gap: 2rem;
+  }
+
+  .bundles__card {
+    flex-direction: column;
+    padding: 1.6rem;
+  }
+
+  .bundles__media {
+    flex: initial;
+    width: 100%;
+  }
+
+  .bundles__title {
+    font-size: 2.4rem;
+  }
+}

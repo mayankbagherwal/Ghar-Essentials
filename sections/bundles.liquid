@@ -1,0 +1,315 @@
+{{ 'section-bundles.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="color-{{ section.settings.color_scheme | default: 'scheme-2' }} gradient">
+  <div class="bundles page-width section-{{ section.id }}-padding">
+    {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
+      <div class="bundles__header">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="bundles__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p class="bundles__subheading">{{ section.settings.subheading | escape }}</p>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <ul class="bundles__list" role="list">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign bundle_product = block.settings.product
+          assign bundle_variant = bundle_product.selected_or_first_available_variant
+
+          assign saving = 0
+          assign discount_percent = 0
+          if bundle_variant.compare_at_price > bundle_variant.price
+            assign saving = bundle_variant.compare_at_price | minus: bundle_variant.price
+            assign discount_percent = saving | times: 100.0 | divided_by: bundle_variant.compare_at_price | round
+          endif
+
+          assign per_unit = 0
+          if block.settings.units_in_pack > 1
+            assign per_unit = bundle_variant.price | divided_by: block.settings.units_in_pack
+          endif
+
+          assign bundle_title = block.settings.title | default: bundle_product.title
+        -%}
+
+        <li class="bundles__item" {{ block.shopify_attributes }}>
+          <div class="bundles__card{% if block.settings.highlight %} bundles__card--highlight{% endif %}">
+            {%- if block.settings.highlight and block.settings.highlight_label != blank -%}
+              <span class="bundles__flag">{{ block.settings.highlight_label | escape }}</span>
+            {%- endif -%}
+
+            <div class="bundles__media">
+              {%- if block.settings.image != blank -%}
+                {{
+                  block.settings.image
+                  | image_url: width: 600
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '200,300,400,600',
+                    sizes: '(min-width: 750px) 320px, 45vw',
+                    class: 'bundles__image',
+                    alt: bundle_title
+                }}
+              {%- elsif bundle_product.featured_media != blank -%}
+                {{
+                  bundle_product.featured_media
+                  | image_url: width: 600
+                  | image_tag:
+                    loading: 'lazy',
+                    widths: '200,300,400,600',
+                    sizes: '(min-width: 750px) 320px, 45vw',
+                    class: 'bundles__image',
+                    alt: bundle_title
+                }}
+              {%- else -%}
+                {{ 'product-1' | placeholder_svg_tag: 'bundles__image placeholder-svg' }}
+              {%- endif -%}
+
+              {%- if discount_percent > 0 -%}
+                <span class="bundles__badge">{{ discount_percent }}% OFF</span>
+              {%- endif -%}
+            </div>
+
+            <div class="bundles__body">
+              <h3 class="bundles__title">{{ bundle_title | escape }}</h3>
+
+              {%- if block.settings.description != blank -%}
+                <p class="bundles__description">{{ block.settings.description | escape }}</p>
+              {%- endif -%}
+
+              {%- if bundle_product != blank -%}
+                <div class="bundles__prices">
+                  <span class="bundles__price">{{ bundle_variant.price | money }}</span>
+                  {%- if discount_percent > 0 -%}
+                    <s class="bundles__mrp">{{ bundle_variant.compare_at_price | money }}</s>
+                  {%- endif -%}
+                </div>
+
+                {%- comment -%}
+                  The value line the spec asks for. Both halves are calculated
+                  from the product, so they can never drift out of date.
+                {%- endcomment -%}
+                {%- if per_unit > 0 or saving > 0 -%}
+                  <p class="bundles__value">
+                    {%- if per_unit > 0 -%}
+                      {{ per_unit | money }} {{ block.settings.per_unit_label | escape }}
+                    {%- endif -%}
+                    {%- if per_unit > 0 and saving > 0 %} &middot; {% endif -%}
+                    {%- if saving > 0 -%}
+                      {{ block.settings.save_label | escape }} {{ saving | money }}
+                    {%- endif -%}
+                  </p>
+                {%- endif -%}
+
+                {%- if section.settings.tax_note != blank -%}
+                  <p class="bundles__tax">{{ section.settings.tax_note | escape }}</p>
+                {%- endif -%}
+
+                <div class="bundles__form">
+                  <product-form data-section-id="{{ section.id }}">
+                    {%- form 'product',
+                      bundle_product,
+                      id: block.id,
+                      class: 'form',
+                      novalidate: 'novalidate',
+                      data-type: 'add-to-cart-form'
+                    -%}
+                      <input
+                        type="hidden"
+                        name="id"
+                        value="{{ bundle_variant.id }}"
+                        class="product-variant-id"
+                      >
+                      <input type="hidden" name="quantity" value="1">
+                      <button
+                        type="submit"
+                        name="add"
+                        class="bundles__atc"
+                        {% if bundle_product.available == false %}
+                          disabled
+                        {% endif %}
+                      >
+                        <span>
+                          {%- if bundle_product.available -%}
+                            {{- section.settings.button_label | escape -}}
+                          {%- else -%}
+                            {{- 'products.product.sold_out' | t -}}
+                          {%- endif -%}
+                        </span>
+                        <span class="sold-out-message hidden">
+                          {{- 'products.product.sold_out' | t -}}
+                        </span>
+                        {%- render 'loading-spinner' -%}
+                      </button>
+                      <div class="product-form__error-message-wrapper bundles__error" role="alert" hidden>
+                        <span class="product-form__error-message"></span>
+                      </div>
+                    {%- endform -%}
+                  </product-form>
+                </div>
+              {%- else -%}
+                <p class="bundles__empty">
+                  Pick a product for this bundle in the section settings. Set its
+                  compare-at price in the admin and the savings line fills itself in.
+                </p>
+              {%- endif -%}
+            </div>
+          </div>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Bundles",
+  "tag": "section",
+  "class": "section",
+  "max_blocks": 6,
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Buy the set, pay less per bottle"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Refill packs and combos for a household that cleans every week."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button text",
+      "default": "Add bundle to cart"
+    },
+    {
+      "type": "text",
+      "id": "tax_note",
+      "label": "Tax line",
+      "default": "Inclusive of all taxes"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 40
+    }
+  ],
+  "blocks": [
+    {
+      "type": "bundle",
+      "name": "Bundle",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Bundle product",
+          "info": "Create the combo as its own product in the admin, with its own price and a compare-at price adding up the singles. The savings line is calculated from those two, so it can never go stale."
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title override",
+          "info": "Leave empty to use the product's own title."
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "One-line description",
+          "default": "Kitchen, bathroom and floor - the three we sell most of."
+        },
+        {
+          "type": "range",
+          "id": "units_in_pack",
+          "min": 1,
+          "max": 12,
+          "step": 1,
+          "label": "Bottles in this pack",
+          "info": "Used to work out the per-bottle price. Set 1 to hide that line.",
+          "default": 3
+        },
+        {
+          "type": "text",
+          "id": "per_unit_label",
+          "label": "Per-unit wording",
+          "default": "per bottle"
+        },
+        {
+          "type": "text",
+          "id": "save_label",
+          "label": "Savings wording",
+          "default": "you save"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "Optional - falls back to the product's own photo. A flat-lay of the bottles together on a real counter, square, about 800x800px. Natural daylight, no white studio background."
+        },
+        {
+          "type": "checkbox",
+          "id": "highlight",
+          "label": "Highlight this bundle",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "highlight_label",
+          "label": "Highlight flag text",
+          "default": "Best value"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bundles",
+      "blocks": [
+        { "type": "bundle", "settings": { "highlight": true } },
+        { "type": "bundle" }
+      ]
+    }
+  ]
+}
+{% endschema %}

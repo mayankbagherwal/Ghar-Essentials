@@ -1,1 +1,74 @@
-{"name":"t:sections.footer.name","type":"footer","sections":{"footer":{"type":"footer","settings":{"color_scheme":"scheme-1","newsletter_enable":true,"newsletter_heading":"Subscribe to our emails","enable_follow_on_shop":true,"show_social":true,"enable_country_selector":true,"enable_language_selector":true,"payment_enable":true,"show_policy":true,"margin_top":0,"padding_top":36,"padding_bottom":36}}},"order":["footer"]}
+{
+  "name": "t:sections.footer.name",
+  "type": "footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "color_scheme": "scheme-1",
+        "newsletter_enable": true,
+        "newsletter_heading": "Subscribe to our emails",
+        "enable_follow_on_shop": true,
+        "show_social": true,
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "payment_enable": true,
+        "show_policy": true,
+        "margin_top": 0,
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
+    },
+    "footer_details": {
+      "type": "footer-details",
+      "blocks": {
+        "shipping": {
+          "type": "policy",
+          "settings": {
+            "label": "Shipping policy"
+          }
+        },
+        "returns": {
+          "type": "policy",
+          "settings": {
+            "label": "Returns and refunds"
+          }
+        },
+        "privacy": {
+          "type": "policy",
+          "settings": {
+            "label": "Privacy policy"
+          }
+        },
+        "terms": {
+          "type": "policy",
+          "settings": {
+            "label": "Terms of service"
+          }
+        },
+        "contact": {
+          "type": "policy",
+          "settings": {
+            "label": "Contact us"
+          }
+        }
+      },
+      "block_order": [
+        "shipping",
+        "returns",
+        "privacy",
+        "terms",
+        "contact"
+      ],
+      "settings": {
+        "color_scheme": "scheme-4",
+        "padding_top": 40,
+        "padding_bottom": 32
+      }
+    }
+  },
+  "order": [
+    "footer_details",
+    "footer"
+  ]
+}
