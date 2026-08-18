@@ -188,10 +188,10 @@
       {%- endif -%}
 
       {%- comment -%}
-        Rating row. App blocks added here in the theme editor - Judge.me's own
-        preview badge, for instance - render in this slot, directly under the
-        price. The plain div below is Judge.me's legacy hook and stays as a
-        fallback for installs that inject rather than use app blocks.
+        Rating row, directly under the price. Judge.me's own Star Ratings block
+        renders here once added from Add block. No hand-written hook div: with
+        the app installed as a theme app extension, a second hook only produces
+        a duplicate star row.
       {%- endcomment -%}
       <div class="ghar-pdp__reviews">
         {%- for block in section.blocks -%}
@@ -199,10 +199,6 @@
             {%- render block -%}
           {%- endif -%}
         {%- endfor -%}
-
-        {%- if section.settings.show_review_hooks -%}
-          <div class="jdgm-widget jdgm-preview-badge" data-id="{{ product.id }}"></div>
-        {%- endif -%}
       </div>
 
       {%- comment -%}
@@ -388,12 +384,7 @@
       </div>
     {%- endif -%}
 
-    {%- if section.settings.show_review_hooks -%}
-      {%- comment -%} Judge.me injects the full review list here once installed. {%- endcomment -%}
-      <div class="ghar-pdp__review-widget">
-        <div class="jdgm-widget jdgm-review-widget" data-id="{{ product.id }}"></div>
-      </div>
-    {%- endif -%}
+
   </div>
 </div>
 
@@ -454,17 +445,6 @@
       "id": "quantity_label",
       "label": "Quantity label",
       "default": "Quantity"
-    },
-    {
-      "type": "header",
-      "content": "Reviews"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_review_hooks",
-      "label": "Show review widgets",
-      "info": "Leave on. Judge.me fills these in automatically once the app is installed.",
-      "default": true
     },
     {
       "type": "header",
