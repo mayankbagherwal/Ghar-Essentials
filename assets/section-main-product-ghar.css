@@ -289,10 +289,10 @@
   width: 100%;
   min-width: 0;
   min-height: 4.8rem;
-  border: 0;
+  border: 0.2rem solid rgb(var(--color-button));
   border-radius: 0.8rem;
-  background-color: rgb(var(--color-foreground));
-  color: rgb(var(--color-background));
+  background-color: rgb(var(--color-button));
+  color: rgb(var(--color-button-text));
   font-family: var(--font-body-family);
   font-size: 1.7rem;
   font-weight: 600;
@@ -311,9 +311,10 @@
   margin-left: 0.6rem;
 }
 
-/* Shopify's Buy it now button ships bright blue by default, which fights the
-   brand palette. Recoloured to the lemon accent so the two buttons read as a
-   pair: dark green primary, lemon secondary. */
+/* Brand book section 08: Add to Cart is the filled green button, Buy Now is
+   the outlined one. Shopify ships this button bright blue, so it is restyled
+   to the outline. Lemon is deliberately not used here - the palette reserves
+   it for the offer bar and % OFF badges and nothing else. */
 .ghar-pdp .shopify-payment-button {
   width: 100%;
 }
@@ -321,18 +322,17 @@
 .ghar-pdp .shopify-payment-button__button--unbranded {
   width: 100%;
   min-height: 4.8rem;
-  border: 0;
+  border: 0.2rem solid rgb(var(--color-button));
   border-radius: 0.8rem;
-  background-color: var(--ghar-accent);
-  color: var(--ghar-accent-text);
+  background-color: transparent;
+  color: rgb(var(--color-button));
   font-family: var(--font-body-family);
   font-size: 1.7rem;
   font-weight: 600;
 }
 
 .ghar-pdp .shopify-payment-button__button--unbranded:hover:not([disabled]) {
-  background-color: var(--ghar-accent);
-  opacity: 0.88;
+  background-color: rgba(var(--color-button), 0.08);
 }
 
 .ghar-pdp__payment-notes {
