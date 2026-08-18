@@ -30,6 +30,23 @@
   object-fit: contain;
 }
 
+/* The drawn icons take the brand green rather than the surrounding text
+   colour, except on a dark scheme where they follow the text instead. */
+.trust-strip__icon--drawn {
+  display: inline-flex;
+  color: #0f7a4e;
+}
+
+.color-scheme-4 .trust-strip__icon--drawn,
+.color-scheme-3 .trust-strip__icon--drawn {
+  color: currentColor;
+}
+
+.trust-strip__icon--drawn .ghar-icon {
+  width: 4rem;
+  height: 4rem;
+}
+
 .trust-strip__label {
   font-size: 1.5rem;
   font-weight: 600;

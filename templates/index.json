@@ -70,25 +70,29 @@
         "plant": {
           "type": "item",
           "settings": {
-            "label": "Plant-based cleansers"
+            "label": "Plant-based cleansers",
+            "icon_name": "leaf"
           }
         },
         "safe": {
           "type": "item",
           "settings": {
-            "label": "Safe around food & kids"
+            "label": "Safe around food & kids",
+            "icon_name": "shield"
           }
         },
         "cod": {
           "type": "item",
           "settings": {
-            "label": "Cash on delivery"
+            "label": "Cash on delivery",
+            "icon_name": "cash"
           }
         },
         "delivery": {
           "type": "item",
           "settings": {
-            "label": "Delivers in 3-5 days"
+            "label": "Delivers in 3-5 days",
+            "icon_name": "truck"
           }
         }
       },

@@ -34,7 +34,7 @@
     <div class="ghar-header__side ghar-header__side--start">
       <details class="ghar-header__drawer" data-ghar-drawer>
         <summary class="ghar-header__icon-button ghar-header__burger" aria-label="{{ 'sections.header.menu' | t }}">
-          <span class="ghar-header__icon" aria-hidden="true">{{- 'icon-hamburger.svg' | inline_asset_content -}}</span>
+          <span class="ghar-header__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'menu' -%}</span>
         </summary>
 
         <div class="ghar-header__drawer-panel">
@@ -63,7 +63,7 @@
           aria-expanded="false"
           aria-label="{{ 'general.search.search' | t }}"
         >
-          <span class="ghar-header__icon" aria-hidden="true">{{- 'icon-search.svg' | inline_asset_content -}}</span>
+          <span class="ghar-header__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'search' -%}</span>
         </button>
       {%- endif -%}
 
@@ -134,7 +134,7 @@
           aria-expanded="false"
           aria-label="{{ 'general.search.search' | t }}"
         >
-          <span class="ghar-header__icon" aria-hidden="true">{{- 'icon-search.svg' | inline_asset_content -}}</span>
+          <span class="ghar-header__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'search' -%}</span>
         </button>
       {%- endif -%}
 
@@ -144,7 +144,7 @@
           href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
           aria-label="{%- if customer -%}{{ 'customer.account.title' | t }}{%- else -%}{{ 'customer.log_in' | t }}{%- endif -%}"
         >
-          <span class="ghar-header__icon" aria-hidden="true">{{- 'icon-account.svg' | inline_asset_content -}}</span>
+          <span class="ghar-header__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'user' -%}</span>
         </a>
       {%- endif -%}
 
@@ -154,11 +154,7 @@
         aria-label="{{ 'templates.cart.cart' | t }}"
       >
         <span class="ghar-header__icon" aria-hidden="true">
-          {%- if cart.item_count > 0 -%}
-            {{- 'icon-cart.svg' | inline_asset_content -}}
-          {%- else -%}
-            {{- 'icon-cart-empty.svg' | inline_asset_content -}}
-          {%- endif -%}
+          {%- render 'ghar-icon', icon: 'bag' -%}
         </span>
         {%- if cart.item_count > 0 -%}
           <span class="ghar-header__cart-count" aria-hidden="true">{{ cart.item_count }}</span>
@@ -178,7 +174,7 @@
       <div class="ghar-search__inner page-width">
         <form class="ghar-search__form" action="{{ routes.search_url }}" method="get" role="search">
           <input type="hidden" name="options[prefix]" value="last">
-          <span class="ghar-search__icon" aria-hidden="true">{{- 'icon-search.svg' | inline_asset_content -}}</span>
+          <span class="ghar-search__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'search' -%}</span>
           <input
             class="ghar-search__input"
             type="search"

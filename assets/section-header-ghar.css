@@ -66,13 +66,6 @@
   height: 100%;
 }
 
-/* Dawn draws the cart on a 40x40 canvas and the other icons on 18x19, so at a
-   shared box size the cart glyph comes out about half as big. A larger box
-   brings it back to the same optical weight as account and search. */
-.ghar-header__cart .ghar-header__icon {
-  width: 3.4rem;
-  height: 3.4rem;
-}
 
 .ghar-header__cart-count {
   position: absolute;
@@ -389,6 +382,14 @@
 }
 
 .ghar-search__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Every icon is drawn on the same 24 grid now, so one rule sizes them all and
+   the cart no longer needs a size of its own to look right beside the others. */
+.ghar-icon {
+  display: block;
   width: 100%;
   height: 100%;
 }

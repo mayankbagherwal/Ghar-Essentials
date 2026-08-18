@@ -10,7 +10,7 @@
     <details class="ghar-header__dropdown" data-ghar-dropdown>
       <summary class="ghar-header__summary">
         <span>{{ link.title | escape }}</span>
-        <span class="ghar-header__caret" aria-hidden="true">{{- 'icon-caret.svg' | inline_asset_content -}}</span>
+        <span class="ghar-header__caret" aria-hidden="true">{%- render 'ghar-icon', icon: 'chevron' -%}</span>
       </summary>
       <ul class="ghar-header__submenu" role="list">
         {%- for child in link.links -%}

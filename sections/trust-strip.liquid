@@ -23,12 +23,21 @@
     <ul class="trust-strip__list" role="list">
       {%- for block in section.blocks -%}
         <li class="trust-strip__item" {{ block.shopify_attributes }}>
+          {%- comment -%}
+            A custom upload wins if there is one. Otherwise the built-in icon
+            is drawn inline - 24px grid, 2px stroke, brand green - so the strip
+            looks finished without waiting on artwork.
+          {%- endcomment -%}
           {%- if block.settings.icon != blank -%}
             {{
               block.settings.icon
               | image_url: width: 120
               | image_tag: loading: 'lazy', widths: '60,90,120', sizes: '60px', class: 'trust-strip__icon', alt: ''
             }}
+          {%- elsif block.settings.icon_name != 'none' -%}
+            <span class="trust-strip__icon trust-strip__icon--drawn">
+              {%- render 'ghar-icon', icon: block.settings.icon_name -%}
+            </span>
           {%- endif -%}
 
           {%- if block.settings.label != blank -%}
@@ -86,9 +95,58 @@
       "name": "Trust point",
       "settings": [
         {
+          "type": "select",
+          "id": "icon_name",
+          "label": "Icon",
+          "info": "Drawn in the brand's own line style. Upload below only if you want to replace it.",
+          "options": [
+            {
+              "value": "leaf",
+              "label": "Leaf"
+            },
+            {
+              "value": "shield",
+              "label": "Shield"
+            },
+            {
+              "value": "cash",
+              "label": "Cash"
+            },
+            {
+              "value": "truck",
+              "label": "Delivery van"
+            },
+            {
+              "value": "clock",
+              "label": "Clock"
+            },
+            {
+              "value": "drop",
+              "label": "Drop"
+            },
+            {
+              "value": "spray",
+              "label": "Spray bottle"
+            },
+            {
+              "value": "bottle",
+              "label": "Bottle"
+            },
+            {
+              "value": "sparkle",
+              "label": "Sparkle"
+            },
+            {
+              "value": "none",
+              "label": "No icon"
+            }
+          ],
+          "default": "leaf"
+        },
+        {
           "type": "image_picker",
           "id": "icon",
-          "label": "Icon",
+          "label": "Custom icon (optional)",
           "info": "A simple flat line icon on a transparent background, square, about 120x120px. Use one visual style across all four - same stroke weight, same single colour (your brand green works well). A leaf, a shield, a rupee note or truck, and a calendar or clock cover the four defaults. PNG with transparency or SVG."
         },
         {
@@ -107,25 +165,29 @@
         {
           "type": "item",
           "settings": {
-            "label": "Plant-based cleansers"
+            "label": "Plant-based cleansers",
+            "icon_name": "leaf"
           }
         },
         {
           "type": "item",
           "settings": {
-            "label": "Safe around food & kids"
+            "label": "Safe around food & kids",
+            "icon_name": "shield"
           }
         },
         {
           "type": "item",
           "settings": {
-            "label": "Cash on delivery"
+            "label": "Cash on delivery",
+            "icon_name": "cash"
           }
         },
         {
           "type": "item",
           "settings": {
-            "label": "Delivers in 3-5 days"
+            "label": "Delivers in 3-5 days",
+            "icon_name": "truck"
           }
         }
       ]
