@@ -7,6 +7,16 @@ Anything marked **[SUBSTANTIATE BEFORE LAUNCH]** is a claim that needs proof you
 can show if challenged — ASCI's Green Claims Guidelines apply to all of it.
 Do not launch with those markers still visible on the site.
 
+## Settled — no longer open questions
+
+- **Discount depth.** The 47% off on the kitchen cleaner is deliberate and set
+  by the owner. It sits above the 15–25% band in BUILD-SPEC §10 and the brand
+  book, and that trade-off has been considered and accepted.
+- **Judge.me sample reviews.** Switched on intentionally while the site is
+  being built, so layout can be checked with stars in place. The owner removes
+  them before going live. Three places carry them: the product page Star
+  Ratings block, and the two homepage carousels.
+
 ---
 
 ## 1. Shopify admin — before anything looks right
@@ -61,7 +71,7 @@ and framing across the range — this is most of what makes a store look premium
 
 | Placeholder | Where | Note |
 |---|---|---|
-| `[ADD REAL PROOF - e.g. 4.7 stars from 200 verified reviews]` | Hero → Small proof line | Leave empty until reviews are real. Never invent a number |
+| `[ADD REAL PROOF - e.g. 4.7 stars from 200 verified reviews]` | Hero → Small proof line | Fill in from the real Judge.me count once there are enough reviews to quote |
 | Coconut-derived cleanser claim | Product page → Benefit bullets | **[SUBSTANTIATE BEFORE LAUNCH]** |
 | "No added SLES, phthalates, sulphates, phosphates" | Product page → Benefit bullets and Ingredients | **[SUBSTANTIATE BEFORE LAUNCH]** |
 | "Safe to use around food preparation areas" | Product page → Benefit bullets | **[SUBSTANTIATE BEFORE LAUNCH]** |
