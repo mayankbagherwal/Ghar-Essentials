@@ -40,8 +40,8 @@
       "type": "header-ghar",
       "settings": {
         "logo": "shopify://shop_images/IMG_2055.png",
-        "header_height": 80,
-        "header_height_mobile": 64,
+        "header_height": 60,
+        "header_height_mobile": 52,
         "logo_height": 56,
         "logo_height_mobile": 70,
         "logo_width": 320,
