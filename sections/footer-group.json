@@ -11,73 +11,72 @@
   "name": "t:sections.footer.name",
   "type": "footer",
   "sections": {
-    "footer": {
-      "type": "footer",
-      "settings": {
-        "color_scheme": "scheme-1",
-        "newsletter_enable": true,
-        "newsletter_heading": "Subscribe to our emails",
-        "enable_follow_on_shop": true,
-        "show_social": true,
-        "enable_country_selector": true,
-        "enable_language_selector": true,
-        "payment_enable": true,
-        "show_policy": true,
-        "margin_top": 0,
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
-    },
     "footer_details": {
       "type": "footer-details",
       "blocks": {
-        "shipping": {
-          "type": "policy",
+        "newsletter": {
+          "type": "newsletter",
           "settings": {
-            "label": "Shipping policy"
+            "heading": "Stay informed",
+            "text": "Offers and restocks, once or twice a month. No spam.",
+            "placeholder": "Enter your email"
           }
         },
-        "returns": {
-          "type": "policy",
+        "about": {
+          "type": "text",
           "settings": {
-            "label": "Returns and refunds"
+            "heading": "About us",
+            "content": "<p>Ghar Essentials makes plant-based cleaners strong enough for an Indian kitchen and safe enough for the family standing in it.</p>"
           }
         },
-        "privacy": {
-          "type": "policy",
+        "shop": {
+          "type": "menu",
           "settings": {
-            "label": "Privacy policy"
-          }
-        },
-        "terms": {
-          "type": "policy",
-          "settings": {
-            "label": "Terms of service"
+            "heading": "Shop",
+            "menu": "main-menu"
           }
         },
         "contact": {
-          "type": "policy",
+          "type": "contact",
           "settings": {
-            "label": "Contact us"
+            "heading": "Get in touch",
+            "company": "[ADD REGISTERED COMPANY NAME]",
+            "address": "<p>[ADD FULL REGISTERED ADDRESS, INCLUDING PIN CODE]</p>",
+            "gst_label": "GSTIN",
+            "gst": "[ADD GST NUMBER]",
+            "phone": "[ADD PHONE NUMBER]",
+            "email": "[ADD SUPPORT EMAIL]",
+            "whatsapp": "",
+            "whatsapp_label": "Message us on WhatsApp",
+            "hours": "Mon to Sat, 10am to 7pm"
+          }
+        },
+        "useful": {
+          "type": "menu",
+          "settings": {
+            "heading": "Useful links",
+            "menu": "footer"
           }
         }
       },
       "block_order": [
-        "shipping",
-        "returns",
-        "privacy",
-        "terms",
-        "contact"
+        "newsletter",
+        "about",
+        "shop",
+        "contact",
+        "useful"
       ],
       "settings": {
         "color_scheme": "scheme-4",
+        "legal_line": "Prices inclusive of all taxes. Country of origin: India.",
+        "copyright": "[ADD REGISTERED COMPANY NAME]",
         "padding_top": 40,
-        "padding_bottom": 32
+        "padding_bottom": 32,
+        "show_payment_icons": true
       }
     }
   },
   "order": [
-    "footer_details",
-    "footer"
+    "footer_details"
   ]
 }

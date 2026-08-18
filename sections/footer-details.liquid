@@ -1,4 +1,5 @@
 {{ 'section-footer-details.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-footer-details.js' | asset_url }}" defer="defer"></script>
 
 {%- style -%}
   .section-{{ section.id }}-padding {
@@ -15,192 +16,159 @@
 {%- endstyle -%}
 
 {%- comment -%}
-  Company details. In India this block is a trust signal, not legal
-  boilerplate - a first-time buyer looks for a real address and a real phone
-  number before paying an unknown brand. Everything here is a setting.
+  Collapsible on a phone, columns on a desktop. Each group is a details
+  element rendered open, so with no JavaScript the whole footer is simply
+  expanded and readable. The custom element closes them on small screens,
+  which is the enhancement rather than the requirement.
 {%- endcomment -%}
 <div class="color-{{ section.settings.color_scheme | default: 'scheme-4' }} gradient">
-  <div class="footer-details page-width section-{{ section.id }}-padding">
-    <div class="footer-details__grid">
-      <div class="footer-details__col">
-        {%- if section.settings.company_name != blank -%}
-          <p class="footer-details__name">{{ section.settings.company_name | escape }}</p>
-        {%- endif -%}
+  <ghar-footer class="footer page-width section-{{ section.id }}-padding">
+    <div class="footer__groups">
+      {%- for block in section.blocks -%}
+        <details class="footer__group" data-footer-group open {{ block.shopify_attributes }}>
+          <summary class="footer__summary">
+            <span>{{ block.settings.heading | escape }}</span>
+            <span class="footer__caret" aria-hidden="true">
+              {%- render 'ghar-icon', icon: 'chevron', size: '18' -%}
+            </span>
+          </summary>
 
-        {%- if section.settings.address != blank -%}
-          <address class="footer-details__address">{{ section.settings.address }}</address>
-        {%- endif -%}
+          <div class="footer__content">
+            {%- case block.type -%}
+              {%- when 'newsletter' -%}
+                {%- if block.settings.text != blank -%}
+                  <p class="footer__text">{{ block.settings.text | escape }}</p>
+                {%- endif -%}
+                {%- form 'customer', class: 'footer__form' -%}
+                  <input type="hidden" name="contact[tags]" value="newsletter">
+                  <label class="visually-hidden" for="FooterEmail-{{ block.id }}">
+                    {{- 'newsletter.label' | t -}}
+                  </label>
+                  <div class="footer__field">
+                    <input
+                      id="FooterEmail-{{ block.id }}"
+                      class="footer__input"
+                      type="email"
+                      name="contact[email]"
+                      placeholder="{{ block.settings.placeholder | escape }}"
+                      autocomplete="email"
+                      required
+                    >
+                    <button type="submit" class="footer__submit" aria-label="{{ 'newsletter.button_label' | t }}">
+                      &rarr;
+                    </button>
+                  </div>
+                  {%- if form.posted_successfully? -%}
+                    <p class="footer__success">{{ 'newsletter.success' | t }}</p>
+                  {%- endif -%}
+                {%- endform -%}
 
-        {%- if section.settings.gst != blank -%}
-          <p class="footer-details__line">{{ section.settings.gst_label | escape }} {{ section.settings.gst | escape }}</p>
-        {%- endif -%}
-      </div>
+              {%- when 'menu' -%}
+                {%- if block.settings.menu != blank -%}
+                  <ul class="footer__links" role="list">
+                    {%- for link in block.settings.menu.links -%}
+                      <li><a class="footer__link" href="{{ link.url }}">{{ link.title | escape }}</a></li>
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
 
-      <div class="footer-details__col">
-        {%- if section.settings.contact_heading != blank -%}
-          <p class="footer-details__heading">{{ section.settings.contact_heading | escape }}</p>
-        {%- endif -%}
+              {%- when 'text' -%}
+                <div class="footer__text rte">{{ block.settings.content }}</div>
 
-        <ul class="footer-details__contacts" role="list">
-          {%- if section.settings.phone != blank -%}
-            <li>
-              <a class="footer-details__link" href="tel:{{ section.settings.phone | replace: ' ', '' }}">
-                {{- section.settings.phone | escape -}}
-              </a>
-            </li>
-          {%- endif -%}
-
-          {%- if section.settings.email != blank -%}
-            <li>
-              <a class="footer-details__link" href="mailto:{{ section.settings.email }}">
-                {{- section.settings.email | escape -}}
-              </a>
-            </li>
-          {%- endif -%}
-
-          {%- if section.settings.whatsapp != blank -%}
-            <li>
-              <a
-                class="footer-details__link footer-details__link--whatsapp"
-                href="{{ section.settings.whatsapp }}"
-                rel="noopener"
-                target="_blank"
-              >
-                {{- section.settings.whatsapp_label | escape -}}
-              </a>
-            </li>
-          {%- endif -%}
-
-          {%- if section.settings.hours != blank -%}
-            <li class="footer-details__muted">{{ section.settings.hours | escape }}</li>
-          {%- endif -%}
-        </ul>
-      </div>
-
-      {%- if section.blocks.size > 0 -%}
-        <div class="footer-details__col">
-          {%- if section.settings.policies_heading != blank -%}
-            <p class="footer-details__heading">{{ section.settings.policies_heading | escape }}</p>
-          {%- endif -%}
-          <ul class="footer-details__policies" role="list">
-            {%- for block in section.blocks -%}
-              <li {{ block.shopify_attributes }}>
-                <a class="footer-details__link" href="{{ block.settings.link | default: '#' }}">
-                  {{- block.settings.label | escape -}}
-                </a>
-              </li>
-            {%- endfor -%}
-          </ul>
-        </div>
-      {%- endif -%}
+              {%- when 'contact' -%}
+                {%- if block.settings.company != blank -%}
+                  <p class="footer__company">{{ block.settings.company | escape }}</p>
+                {%- endif -%}
+                {%- if block.settings.address != blank -%}
+                  <address class="footer__address">{{ block.settings.address }}</address>
+                {%- endif -%}
+                {%- if block.settings.gst != blank -%}
+                  <p class="footer__text">{{ block.settings.gst_label | escape }} {{ block.settings.gst | escape }}</p>
+                {%- endif -%}
+                <ul class="footer__links" role="list">
+                  {%- if block.settings.phone != blank -%}
+                    <li>
+                      <a class="footer__link" href="tel:{{ block.settings.phone | replace: ' ', '' }}">
+                        {{- block.settings.phone | escape -}}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                  {%- if block.settings.email != blank -%}
+                    <li><a class="footer__link" href="mailto:{{ block.settings.email }}">{{ block.settings.email | escape }}</a></li>
+                  {%- endif -%}
+                  {%- if block.settings.whatsapp != blank -%}
+                    <li>
+                      <a class="footer__link" href="{{ block.settings.whatsapp }}" rel="noopener" target="_blank">
+                        {{- block.settings.whatsapp_label | escape -}}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                </ul>
+                {%- if block.settings.hours != blank -%}
+                  <p class="footer__muted">{{ block.settings.hours | escape }}</p>
+                {%- endif -%}
+            {%- endcase -%}
+          </div>
+        </details>
+      {%- endfor -%}
     </div>
 
-    {%- if section.settings.legal_line != blank -%}
-      <p class="footer-details__legal">{{ section.settings.legal_line | escape }}</p>
-    {%- endif -%}
-  </div>
+    <div class="footer__bottom">
+      {%- if section.settings.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+        {%- comment -%}
+          Carried over from Dawn's footer, which this replaces. Seeing the
+          payment marks matters to a first-time buyer deciding whether to
+          trust an unknown store with a card.
+        {%- endcomment -%}
+        <ul class="footer__payment" role="list">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag: class: 'footer__payment-icon' }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.legal_line != blank -%}
+        <p class="footer__muted">{{ section.settings.legal_line | escape }}</p>
+      {%- endif -%}
+      <p class="footer__muted">
+        &copy; {{ 'now' | date: '%Y' }}
+        {{ section.settings.copyright | default: shop.name | escape }}
+      </p>
+    </div>
+  </ghar-footer>
 </div>
 
 {% schema %}
 {
-  "name": "Footer details",
+  "name": "Footer",
   "tag": "section",
-  "max_blocks": 8,
+  "max_blocks": 6,
   "settings": [
-    {
-      "type": "header",
-      "content": "Company"
-    },
-    {
-      "type": "text",
-      "id": "company_name",
-      "label": "Registered company name",
-      "default": "[ADD REGISTERED COMPANY NAME]"
-    },
-    {
-      "type": "richtext",
-      "id": "address",
-      "label": "Registered address",
-      "default": "<p>[ADD FULL REGISTERED ADDRESS, INCLUDING PIN CODE]</p>"
-    },
-    {
-      "type": "text",
-      "id": "gst_label",
-      "label": "GST label",
-      "default": "GSTIN"
-    },
-    {
-      "type": "text",
-      "id": "gst",
-      "label": "GST number",
-      "default": "[ADD GST NUMBER]"
-    },
-    {
-      "type": "header",
-      "content": "Contact"
-    },
-    {
-      "type": "text",
-      "id": "contact_heading",
-      "label": "Heading",
-      "default": "Talk to us"
-    },
-    {
-      "type": "text",
-      "id": "phone",
-      "label": "Phone number",
-      "default": "[ADD PHONE NUMBER]"
-    },
-    {
-      "type": "text",
-      "id": "email",
-      "label": "Email address",
-      "default": "[ADD SUPPORT EMAIL]"
-    },
-    {
-      "type": "url",
-      "id": "whatsapp",
-      "label": "WhatsApp link",
-      "info": "In the form https://wa.me/91XXXXXXXXXX - no spaces, no plus sign."
-    },
-    {
-      "type": "text",
-      "id": "whatsapp_label",
-      "label": "WhatsApp link text",
-      "default": "Message us on WhatsApp"
-    },
-    {
-      "type": "text",
-      "id": "hours",
-      "label": "Hours",
-      "default": "Mon to Sat, 10am to 7pm"
-    },
-    {
-      "type": "header",
-      "content": "Policies"
-    },
-    {
-      "type": "text",
-      "id": "policies_heading",
-      "label": "Heading",
-      "default": "Policies"
-    },
-    {
-      "type": "header",
-      "content": "Section"
-    },
-    {
-      "type": "text",
-      "id": "legal_line",
-      "label": "Bottom line",
-      "default": "Prices inclusive of all taxes. Country of origin: India."
-    },
     {
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "Colour scheme",
       "info": "Scheme 4 is the deep Forest green the brand book gives the footer.",
       "default": "scheme-4"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment icons",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "legal_line",
+      "label": "Legal line",
+      "default": "Prices inclusive of all taxes. Country of origin: India."
+    },
+    {
+      "type": "text",
+      "id": "copyright",
+      "label": "Copyright name",
+      "info": "Leave empty to use the store name.",
+      "default": "[ADD REGISTERED COMPANY NAME]"
     },
     {
       "type": "range",
@@ -225,23 +193,62 @@
   ],
   "blocks": [
     {
-      "type": "policy",
-      "name": "Policy link",
+      "type": "newsletter",
+      "name": "Email signup",
+      "limit": 1,
       "settings": [
-        { "type": "text", "id": "label", "label": "Label", "default": "Shipping policy" },
-        { "type": "url", "id": "link", "label": "Link" }
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Stay informed" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Offers and restocks, once or twice a month. No spam." },
+        { "type": "text", "id": "placeholder", "label": "Field placeholder", "default": "Enter your email" }
+      ]
+    },
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Shop" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "info": "Build the menu in Content, Menus, then pick it here." }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "About us" },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Ghar Essentials makes plant-based cleaners strong enough for an Indian kitchen and safe enough for the family standing in it.</p>"
+        }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Contact and company",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Get in touch" },
+        { "type": "text", "id": "company", "label": "Registered company name", "default": "[ADD REGISTERED COMPANY NAME]" },
+        { "type": "richtext", "id": "address", "label": "Registered address", "default": "<p>[ADD FULL REGISTERED ADDRESS, INCLUDING PIN CODE]</p>" },
+        { "type": "text", "id": "gst_label", "label": "GST label", "default": "GSTIN" },
+        { "type": "text", "id": "gst", "label": "GST number", "default": "[ADD GST NUMBER]" },
+        { "type": "text", "id": "phone", "label": "Phone", "default": "[ADD PHONE NUMBER]" },
+        { "type": "text", "id": "email", "label": "Email", "default": "[ADD SUPPORT EMAIL]" },
+        { "type": "url", "id": "whatsapp", "label": "WhatsApp link", "info": "In the form https://wa.me/91XXXXXXXXXX" },
+        { "type": "text", "id": "whatsapp_label", "label": "WhatsApp link text", "default": "Message us on WhatsApp" },
+        { "type": "text", "id": "hours", "label": "Hours", "default": "Mon to Sat, 10am to 7pm" }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Footer details",
+      "name": "Footer",
       "blocks": [
-        { "type": "policy", "settings": { "label": "Shipping policy" } },
-        { "type": "policy", "settings": { "label": "Returns and refunds" } },
-        { "type": "policy", "settings": { "label": "Privacy policy" } },
-        { "type": "policy", "settings": { "label": "Terms of service" } },
-        { "type": "policy", "settings": { "label": "Contact us" } }
+        { "type": "newsletter" },
+        { "type": "text" },
+        { "type": "menu", "settings": { "heading": "Shop" } },
+        { "type": "contact" },
+        { "type": "menu", "settings": { "heading": "Useful links" } }
       ]
     }
   ]
