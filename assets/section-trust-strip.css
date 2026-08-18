@@ -3,9 +3,21 @@
    next card peeking, which reads as "there is more" rather than as a cut-off
    grid. Brand book: Leaf tint ground, Poppins labels, 16px body, green icons. */
 
+/* One gutter value for the section and for the row that bleeds past it. They
+   used to be written separately - page-width's padding on one side, a hard
+   -1.5rem on the other - so any change to either left the first card out of
+   line with the heading above it. */
+.trust {
+  --ghar-gutter: 2rem;
+}
+
+.trust.page-width {
+  padding-left: var(--ghar-gutter);
+  padding-right: var(--ghar-gutter);
+}
+
 .trust__header {
   margin-bottom: 1.6rem;
-  text-align: center;
 }
 
 .trust__heading {
@@ -24,8 +36,10 @@
 .trust__list {
   display: flex;
   gap: 1.2rem;
-  margin: 0 -1.5rem;
-  padding: 0 1.5rem;
+  margin-left: calc(var(--ghar-gutter) * -1);
+  margin-right: calc(var(--ghar-gutter) * -1);
+  padding-left: var(--ghar-gutter);
+  padding-right: var(--ghar-gutter);
   overflow-x: auto;
   scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
@@ -129,6 +143,10 @@
 }
 
 @media screen and (min-width: 750px) {
+  .trust {
+    --ghar-gutter: 5rem;
+  }
+
   .trust__header {
     margin-bottom: 2.4rem;
   }

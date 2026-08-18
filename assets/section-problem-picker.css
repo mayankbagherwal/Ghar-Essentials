@@ -1,6 +1,15 @@
 /* "What are you cleaning today?" - routes a shopper straight to the product
    that solves their problem. Swipeable row on mobile, grid on desktop. */
 
+.problem-picker {
+  --ghar-gutter: 2rem;
+}
+
+.problem-picker.page-width {
+  padding-left: var(--ghar-gutter);
+  padding-right: var(--ghar-gutter);
+}
+
 .problem-picker__heading {
   margin: 0 0 1.6rem;
   font-size: 2.4rem;
@@ -10,8 +19,9 @@
 .problem-picker__list {
   display: flex;
   gap: 1.2rem;
-  margin: 0 -1.5rem;
-  padding: 0 1.5rem 0.4rem;
+  margin-left: calc(var(--ghar-gutter) * -1);
+  margin-right: calc(var(--ghar-gutter) * -1);
+  padding: 0 var(--ghar-gutter) 0.4rem;
   overflow-x: auto;
   scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
@@ -58,7 +68,16 @@
 }
 
 @media screen and (min-width: 750px) {
-  .problem-picker__heading {
+  .problem-picker {
+  --ghar-gutter: 2rem;
+}
+
+.problem-picker.page-width {
+  padding-left: var(--ghar-gutter);
+  padding-right: var(--ghar-gutter);
+}
+
+.problem-picker__heading {
     margin-bottom: 2.4rem;
     font-size: 3.2rem;
   }
