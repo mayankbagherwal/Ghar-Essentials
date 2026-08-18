@@ -159,11 +159,6 @@
     >
       <h1 class="ghar-pdp__title">{{ product.title | escape }}</h1>
 
-      {%- if section.settings.show_review_hooks -%}
-        {%- comment -%} Judge.me injects the star rating here once installed. {%- endcomment -%}
-        <div class="jdgm-widget jdgm-preview-badge ghar-pdp__reviews" data-id="{{ product.id }}"></div>
-      {%- endif -%}
-
       <div class="ghar-pdp__prices">
         <span class="ghar-pdp__price" data-ghar-price>{{ current_variant.price | money }}</span>
 
@@ -191,6 +186,24 @@
       {%- if section.settings.tax_note != blank -%}
         <p class="ghar-pdp__tax">{{ section.settings.tax_note | escape }}</p>
       {%- endif -%}
+
+      {%- comment -%}
+        Rating row. App blocks added here in the theme editor - Judge.me's own
+        preview badge, for instance - render in this slot, directly under the
+        price. The plain div below is Judge.me's legacy hook and stays as a
+        fallback for installs that inject rather than use app blocks.
+      {%- endcomment -%}
+      <div class="ghar-pdp__reviews">
+        {%- for block in section.blocks -%}
+          {%- if block.type == '@app' -%}
+            {%- render block -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- if section.settings.show_review_hooks -%}
+          <div class="jdgm-widget jdgm-preview-badge" data-id="{{ product.id }}"></div>
+        {%- endif -%}
+      </div>
 
       {%- comment -%}
         Variant pills. Which one looks selected is handled entirely in CSS;
@@ -348,6 +361,9 @@
       <div class="ghar-pdp__details">
         {%- for block in section.blocks -%}
           {%- case block.type -%}
+            {%- when '@app' -%}
+              {%- comment -%} Already rendered in the rating row above. {%- endcomment -%}
+
             {%- when 'benefits' -%}
               <div class="ghar-pdp__benefits" {{ block.shopify_attributes }}>
                 {%- if block.settings.heading != blank -%}
@@ -498,6 +514,9 @@
     }
   ],
   "blocks": [
+    {
+      "type": "@app"
+    },
     {
       "type": "benefits",
       "name": "Benefit bullets",
