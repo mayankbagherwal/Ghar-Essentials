@@ -9,6 +9,44 @@
  */
 {
   "sections": {
+    "announcement_offer_bar_QPcL73": {
+      "type": "announcement-offer-bar",
+      "blocks": {
+        "message_f8WNUa": {
+          "type": "message",
+          "settings": {
+            "text": "Free delivery on orders above Rs. 499",
+            "link": ""
+          }
+        },
+        "message_tAnTGb": {
+          "type": "message",
+          "settings": {
+            "text": "Cash on delivery available across India",
+            "link": ""
+          }
+        },
+        "message_xizi6d": {
+          "type": "message",
+          "settings": {
+            "text": "Extra 5% off when you pay online",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "message_f8WNUa",
+        "message_tAnTGb",
+        "message_xizi6d"
+      ],
+      "name": "Offer bar",
+      "settings": {
+        "color_scheme": "",
+        "sticky": false,
+        "dismissible": true,
+        "rotate_seconds": 5
+      }
+    },
     "hero": {
       "type": "hero-primary",
       "settings": {
@@ -67,6 +105,60 @@
         "padding_bottom": 20
       }
     },
+    "problem_picker_GC7dBg": {
+      "type": "problem-picker",
+      "blocks": {
+        "tile_j7fxdy": {
+          "type": "tile",
+          "settings": {
+            "label": "Kitchen grease",
+            "link": ""
+          }
+        },
+        "tile_7gb8PU": {
+          "type": "tile",
+          "settings": {
+            "label": "Chimney & stove",
+            "link": ""
+          }
+        },
+        "tile_KPMiBU": {
+          "type": "tile",
+          "settings": {
+            "label": "Bathroom & tiles",
+            "link": ""
+          }
+        },
+        "tile_GHFakP": {
+          "type": "tile",
+          "settings": {
+            "label": "Floors",
+            "link": ""
+          }
+        },
+        "tile_PYF4pL": {
+          "type": "tile",
+          "settings": {
+            "label": "Hard-water stains",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "tile_j7fxdy",
+        "tile_7gb8PU",
+        "tile_KPMiBU",
+        "tile_GHFakP",
+        "tile_PYF4pL"
+      ],
+      "name": "Problem picker",
+      "settings": {
+        "heading": "What are you cleaning today?",
+        "color_scheme": "",
+        "padding_top": 32,
+        "padding_bottom": 32
+      }
+    },
     "bestsellers": {
       "type": "bestsellers-grid",
       "settings": {
@@ -116,7 +208,7 @@
             "corner_styling": "soft",
             "header_text_color": "#000000",
             "text_color": "#000000",
-            "card_color": "#F9F9F9",
+            "card_color": "#f9f9f9",
             "stars_color": "",
             "arrows_color": "#000000",
             "transition_speed": 5,
@@ -146,7 +238,7 @@
             "max_width": 1100,
             "corner_styling": "soft",
             "quote_marks_style": "serif",
-            "card_color": "#F9F9F9",
+            "card_color": "#f9f9f9",
             "stars_and_quote_marks_color": "#108474",
             "text_color": "#000000",
             "arrows_color": "#000000",
@@ -172,12 +264,60 @@
       "settings": {
         "include_margins": true
       }
+    },
+    "bundles_JKm8G6": {
+      "type": "bundles",
+      "blocks": {
+        "bundle_yBYU6E": {
+          "type": "bundle",
+          "settings": {
+            "product": "",
+            "title": "",
+            "description": "Kitchen, bathroom and floor - the three we sell most of.",
+            "units_in_pack": 3,
+            "per_unit_label": "per bottle",
+            "save_label": "you save",
+            "highlight": true,
+            "highlight_label": "Best value"
+          }
+        },
+        "bundle_QHJTCc": {
+          "type": "bundle",
+          "settings": {
+            "product": "",
+            "title": "",
+            "description": "Kitchen, bathroom and floor - the three we sell most of.",
+            "units_in_pack": 3,
+            "per_unit_label": "per bottle",
+            "save_label": "you save",
+            "highlight": false,
+            "highlight_label": "Best value"
+          }
+        }
+      },
+      "block_order": [
+        "bundle_yBYU6E",
+        "bundle_QHJTCc"
+      ],
+      "name": "Bundles",
+      "settings": {
+        "heading": "Buy the set, pay less per bottle",
+        "subheading": "Refill packs and combos for a household that cleans every week.",
+        "button_label": "Add bundle to cart",
+        "tax_note": "Inclusive of all taxes",
+        "color_scheme": "",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
     }
   },
   "order": [
+    "announcement_offer_bar_QPcL73",
     "hero",
     "trust_strip",
+    "problem_picker_GC7dBg",
     "bestsellers",
-    "1786997154f2c6d0da"
+    "1786997154f2c6d0da",
+    "bundles_JKm8G6"
   ]
 }
