@@ -51,7 +51,7 @@
       "settings": {
         "image_mobile": "shopify://shop_images/IMG_2035.png",
         "image_desktop": "shopify://shop_images/IMG_2034.png",
-        "overlay_opacity": 35,
+        "overlay_opacity": 15,
         "heading": "Clean ghar, bina harsh chemicals",
         "subheading": "Plant-based cleaners for your kitchen, bathroom and floors.",
         "button_label": "Shop bestsellers",
