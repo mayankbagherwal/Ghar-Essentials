@@ -3,7 +3,7 @@
 
 .problem-picker__heading {
   margin: 0 0 1.6rem;
-  font-size: 2.2rem;
+  font-size: 2.4rem;
   line-height: 1.2;
 }
 
@@ -60,7 +60,7 @@
 @media screen and (min-width: 750px) {
   .problem-picker__heading {
     margin-bottom: 2.4rem;
-    font-size: 2.8rem;
+    font-size: 3.2rem;
   }
 
   .problem-picker__list {

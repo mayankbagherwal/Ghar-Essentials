@@ -59,9 +59,9 @@
         "variant_label": "Choose size",
         "quantity_label": "Quantity",
         "show_review_hooks": true,
-        "accent_color": "#f4d021",
-        "accent_text_color": "#1a1a1a",
-        "discount_color": "#1b7a46",
+        "accent_color": "#f2c230",
+        "accent_text_color": "#12211b",
+        "discount_color": "#0f7a4e",
         "padding_top": 24,
         "padding_bottom": 36
       }

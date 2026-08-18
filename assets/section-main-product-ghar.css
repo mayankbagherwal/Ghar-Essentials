@@ -100,9 +100,9 @@
 /* Buy panel */
 
 .ghar-pdp__info {
-  --ghar-accent: #f4d021;
-  --ghar-accent-text: #1a1a1a;
-  --ghar-discount: #1b7a46;
+  --ghar-accent: #f2c230;
+  --ghar-accent-text: #12211b;
+  --ghar-discount: #0f7a4e;
 
   display: flex;
   flex-direction: column;
@@ -131,6 +131,7 @@
 .ghar-pdp__price {
   font-size: 2.6rem;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
   line-height: 1.1;
 }
 
@@ -141,11 +142,11 @@
 
 .ghar-pdp__off {
   padding: 0.4rem 0.8rem;
-  border-radius: 0.4rem;
+  border-radius: 0.8rem;
   background-color: var(--ghar-accent);
   color: var(--ghar-accent-text);
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .ghar-pdp__tax {
@@ -239,7 +240,7 @@
   display: inline-flex;
   align-items: center;
   border: 0.1rem solid rgba(var(--color-foreground), 0.3);
-  border-radius: 0.4rem;
+  border-radius: 0.8rem;
 }
 
 .ghar-pdp__quantity-button {
@@ -287,14 +288,14 @@
   justify-content: center;
   width: 100%;
   min-width: 0;
-  min-height: 5rem;
+  min-height: 4.8rem;
   border: 0;
-  border-radius: 0.4rem;
+  border-radius: 0.8rem;
   background-color: rgb(var(--color-foreground));
   color: rgb(var(--color-background));
   font-family: var(--font-body-family);
   font-size: 1.7rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
 }
 
@@ -319,14 +320,14 @@
 
 .ghar-pdp .shopify-payment-button__button--unbranded {
   width: 100%;
-  min-height: 5rem;
+  min-height: 4.8rem;
   border: 0;
-  border-radius: 0.4rem;
+  border-radius: 0.8rem;
   background-color: var(--ghar-accent);
   color: var(--ghar-accent-text);
   font-family: var(--font-body-family);
   font-size: 1.7rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .ghar-pdp .shopify-payment-button__button--unbranded:hover:not([disabled]) {
@@ -503,7 +504,7 @@
   }
 
   .ghar-pdp__title {
-    font-size: 3rem;
+    font-size: 3.2rem;
   }
 
   .ghar-pdp__details,

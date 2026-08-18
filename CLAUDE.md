@@ -141,6 +141,11 @@ Audience is real people in India on mobile data. Slow pages lose sales.
 
 ## Design direction
 
+`BRANDBOOK.md` at the repo root is the source of truth for colour, type and
+layout. Its palette, type scale, button spec and claim rules override anything
+below and any instinct of your own.
+
+
 - Normal, readable text. No tiny micro-labels, no 10px captions, no
   whisper-thin type.
 - Everyday readable fonts by default. Display fonts only for a headline or
