@@ -393,15 +393,26 @@
   padding-bottom: 1.6rem;
 }
 
+/* Fully rounded rather than a boxy field. It matches the variant pills on the
+   product page and the recent-search chips below it, so the search reads as
+   part of the same set of controls instead of a form dropped on top. */
 .ghar-search__form {
   display: flex;
   align-items: center;
   gap: 0.8rem;
   width: 100%;
-  padding: 0 0.8rem 0 1.2rem;
-  border: 0.2rem solid rgb(var(--color-foreground));
-  border-radius: 0.8rem;
+  padding: 0.5rem 0.6rem 0.5rem 1.6rem;
+  border: 0.15rem solid rgba(var(--color-foreground), 0.25);
+  border-radius: 4rem;
   background-color: rgb(var(--color-background));
+  transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+/* The ring moves to the container on focus, so the field lights up as one
+   piece instead of the browser outlining the bare input inside it. */
+.ghar-search__form:focus-within {
+  border-color: rgb(var(--color-button));
+  box-shadow: 0 0 0 0.3rem rgba(var(--color-button), 0.18);
 }
 
 .ghar-search__icon {
@@ -428,7 +439,7 @@
 .ghar-search__input {
   flex: 1 1 auto;
   min-width: 0;
-  height: 5rem;
+  height: 4rem;
   border: 0;
   background: none;
   color: rgb(var(--color-foreground));
@@ -449,10 +460,10 @@
 
 .ghar-search__submit {
   flex: 0 0 auto;
-  min-height: 3.8rem;
-  padding: 0 1.6rem;
+  min-height: 4rem;
+  padding: 0 2rem;
   border: 0;
-  border-radius: 0.6rem;
+  border-radius: 4rem;
   background-color: rgb(var(--color-foreground));
   color: rgb(var(--color-background));
   font-family: var(--font-body-family);
@@ -463,8 +474,9 @@
 
 .ghar-search__close {
   flex: 0 0 auto;
-  width: 4.4rem;
-  height: 4.4rem;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
   border: 0;
   background: none;
   color: rgb(var(--color-foreground));
