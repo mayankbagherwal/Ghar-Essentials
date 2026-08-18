@@ -41,7 +41,7 @@
       ],
       "name": "Offer bar",
       "settings": {
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-4",
         "sticky": false,
         "dismissible": true,
         "rotate_seconds": 5
