@@ -19,6 +19,8 @@
     --ghar-header-height-mobile: {{ section.settings.header_height_mobile }}px;
     --ghar-logo-width: {{ section.settings.logo_width }}px;
     --ghar-logo-width-mobile: {{ section.settings.logo_width_mobile }}px;
+    --ghar-logo-height: {{ section.settings.logo_height }}px;
+    --ghar-logo-height-mobile: {{ section.settings.logo_height_mobile }}px;
   }
 {%- endstyle -%}
 
@@ -107,7 +109,7 @@
               loading: 'eager',
               fetchpriority: 'high',
               widths: '120,180,240,360,480,600',
-              sizes: '(min-width: 990px) 180px, 130px',
+              sizes: '(min-width: 990px) 320px, 200px',
               class: 'ghar-header__logo-image',
               alt: shop.name
           }}
@@ -142,6 +144,18 @@
             {%- endfor -%}
           </ul>
         </nav>
+      {%- endif -%}
+
+      {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
+        <a
+          class="ghar-header__icon-button ghar-header__account"
+          href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+          aria-label="{%- if customer -%}{{ 'customer.account.title' | t }}{%- else -%}{{ 'customer.log_in' | t }}{%- endif -%}"
+        >
+          <span class="ghar-header__icon" aria-hidden="true">
+            {%- render 'ghar-icon', icon: 'user', stroke: '2.4' -%}
+          </span>
+        </a>
       {%- endif -%}
 
       {%- if section.settings.show_search -%}
@@ -257,12 +271,34 @@
     },
     {
       "type": "range",
+      "id": "logo_height",
+      "min": 24,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Logo height on desktop",
+      "info": "This is the one that makes the logo bigger. It can exceed the bar height if you want the mark to sit proud of it.",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "logo_height_mobile",
+      "min": 20,
+      "max": 96,
+      "step": 2,
+      "unit": "px",
+      "label": "Logo height on mobile",
+      "default": 40
+    },
+    {
+      "type": "range",
       "id": "logo_width",
       "min": 90,
       "max": 320,
       "step": 10,
       "unit": "px",
       "label": "Maximum logo width on desktop",
+      "info": "Only a ceiling. Height below is what actually sizes the logo.",
       "default": 180
     },
     {

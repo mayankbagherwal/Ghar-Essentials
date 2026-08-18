@@ -107,15 +107,15 @@
   text-decoration: none;
 }
 
-/* Height-led rather than width-led. The bar height is what the eye reads, and
-   a logo with generous internal padding looked small when width was the only
-   control. It now fills the bar, with width only acting as a ceiling. */
+/* The logo height is set outright, not derived from the bar height. Deriving
+   it meant the cap was always bar minus padding, so the width slider could
+   never take effect - the height ceiling bit first every time. Width is now
+   only a ceiling for very wide lockups. */
 .ghar-header__logo-image {
   display: block;
   width: auto;
-  max-width: var(--ghar-logo-width-mobile, 130px);
-  height: auto;
-  max-height: calc(var(--ghar-header-height-mobile, 64px) - 1.6rem);
+  max-width: var(--ghar-logo-width-mobile, 200px);
+  height: var(--ghar-logo-height-mobile, 40px);
 }
 
 .ghar-header__wordmark {
@@ -353,8 +353,8 @@
   }
 
   .ghar-header__logo-image {
-    max-width: var(--ghar-logo-width, 180px);
-    max-height: calc(var(--ghar-header-height, 80px) - 2rem);
+    max-width: var(--ghar-logo-width, 320px);
+    height: var(--ghar-logo-height, 56px);
   }
 
   .ghar-header__wordmark-name {
@@ -372,7 +372,8 @@
 }
 
 @media screen and (max-width: 989px) {
-  .ghar-header__search-link {
+  .ghar-header__search-link,
+  .ghar-header__account {
     display: none;
   }
 }

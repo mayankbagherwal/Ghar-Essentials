@@ -57,7 +57,9 @@
         "sticky": true,
         "color_scheme": "scheme-1",
         "padding_top": 12,
-        "padding_bottom": 12
+        "padding_bottom": 12,
+        "logo_height": 56,
+        "logo_height_mobile": 40
       }
     }
   },
