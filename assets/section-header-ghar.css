@@ -316,8 +316,23 @@
   color: rgba(var(--color-foreground), 0.75);
 }
 
-/* Dim the page behind the open drawer */
-.ghar-header__drawer[open] .ghar-header__burger::before {
+/* Dim the page behind the open drawer.
+
+   This belongs on the details element, not on the burger. It used to be a
+   ::before of the burger, and because the burger carries z-index 21 that
+   z-index opened a stacking context - so the overlay painted at 21 whatever
+   its own z-index said, landing on top of the panel and swallowing every
+   click. The details element itself has no z-index, so its ::before joins the
+   header's stacking context and the intended order actually holds:
+
+     19  dim overlay
+     20  drawer panel
+     21  burger, so it stays tappable to close the drawer
+
+   Tapping the dim area closes the drawer too; that is handled in the JS,
+   since a click on a pseudo-element reports its originating element as the
+   target. */
+.ghar-header__drawer[open]::before {
   content: '';
   position: fixed;
   inset: 0;

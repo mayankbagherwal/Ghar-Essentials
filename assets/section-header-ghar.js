@@ -47,7 +47,17 @@ if (!customElements.get('ghar-header')) {
 
       onDocumentClick(event) {
         this.menus.forEach((menu) => {
-          if (menu.open && !menu.contains(event.target)) menu.open = false;
+          if (!menu.open) return;
+
+          /* The dim overlay is a pseudo-element of the drawer, so a tap on it
+             reports the drawer itself as the target. Treating that as a tap
+             outside is what makes tap-to-dismiss work. */
+          if (event.target === menu) {
+            menu.open = false;
+            return;
+          }
+
+          if (!menu.contains(event.target)) menu.open = false;
         });
       }
 
