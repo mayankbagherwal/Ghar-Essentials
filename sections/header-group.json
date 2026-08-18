@@ -40,8 +40,8 @@
       "type": "header-ghar",
       "settings": {
         "logo": "shopify://shop_images/IMG_2055.png",
-        "logo_width": 90,
-        "logo_width_mobile": 80,
+        "logo_width": 260,
+        "logo_width_mobile": 170,
         "wordmark": "ghar",
         "wordmark_sub": "ESSENTIALS",
         "menu_left": "main-menu",
@@ -55,7 +55,9 @@
         "sticky": true,
         "color_scheme": "scheme-1",
         "padding_top": 12,
-        "padding_bottom": 12
+        "padding_bottom": 12,
+        "header_height": 80,
+        "header_height_mobile": 64
       }
     }
   },

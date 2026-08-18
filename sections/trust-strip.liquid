@@ -15,34 +15,50 @@
 {%- endstyle -%}
 
 <div class="color-{{ section.settings.color_scheme | default: 'scheme-2' }} gradient">
-  <div class="trust-strip page-width section-{{ section.id }}-padding">
-    {%- if section.settings.heading != blank -%}
-      <h2 class="trust-strip__heading">{{ section.settings.heading | escape }}</h2>
+  <div class="trust page-width section-{{ section.id }}-padding">
+    {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
+      <div class="trust__header">
+        {%- if section.settings.heading != blank -%}
+          <h2 class="trust__heading">{{ section.settings.heading | escape }}</h2>
+        {%- endif -%}
+        {%- if section.settings.subheading != blank -%}
+          <p class="trust__subheading">{{ section.settings.subheading | escape }}</p>
+        {%- endif -%}
+      </div>
     {%- endif -%}
 
-    <ul class="trust-strip__list" role="list">
+    {%- comment -%}
+      Cards rather than a bare row of labels. On a phone they scroll sideways
+      with the next one peeking, which signals there is more to see; on desktop
+      they sit as an even grid.
+    {%- endcomment -%}
+    <ul class="trust__list trust__list--{{ section.settings.layout }}" role="list">
       {%- for block in section.blocks -%}
-        <li class="trust-strip__item" {{ block.shopify_attributes }}>
-          {%- comment -%}
-            A custom upload wins if there is one. Otherwise the built-in icon
-            is drawn inline - 24px grid, 2px stroke, brand green - so the strip
-            looks finished without waiting on artwork.
-          {%- endcomment -%}
-          {%- if block.settings.icon != blank -%}
-            {{
-              block.settings.icon
-              | image_url: width: 120
-              | image_tag: loading: 'lazy', widths: '60,90,120', sizes: '60px', class: 'trust-strip__icon', alt: ''
-            }}
-          {%- elsif block.settings.icon_name != 'none' -%}
-            <span class="trust-strip__icon trust-strip__icon--drawn">
-              {%- render 'ghar-icon', icon: block.settings.icon_name -%}
-            </span>
-          {%- endif -%}
+        <li class="trust__item" {{ block.shopify_attributes }}>
+          <div class="trust__card">
+            {%- if block.settings.icon != blank -%}
+              <span class="trust__badge">
+                {{
+                  block.settings.icon
+                  | image_url: width: 120
+                  | image_tag: loading: 'lazy', widths: '48,72,96,120', sizes: '48px', class: 'trust__icon-image', alt: ''
+                }}
+              </span>
+            {%- elsif block.settings.icon_name != 'none' -%}
+              <span class="trust__badge">
+                {%- render 'ghar-icon', icon: block.settings.icon_name, stroke: '2.2' -%}
+              </span>
+            {%- endif -%}
 
-          {%- if block.settings.label != blank -%}
-            <span class="trust-strip__label">{{ block.settings.label | escape }}</span>
-          {%- endif -%}
+            <div class="trust__text">
+              {%- if block.settings.label != blank -%}
+                <p class="trust__label">{{ block.settings.label | escape }}</p>
+              {%- endif -%}
+              {%- if block.settings.description != blank -%}
+                <p class="trust__description">{{ block.settings.description | escape }}</p>
+              {%- endif -%}
+            </div>
+          </div>
         </li>
       {%- endfor -%}
     </ul>
@@ -59,13 +75,30 @@
     {
       "type": "text",
       "id": "heading",
-      "label": "Heading (optional)",
-      "info": "Usually best left empty. The strip works harder without one."
+      "label": "Heading",
+      "info": "Optional. Leave empty for a plain row of cards.",
+      "default": "Why homes keep reordering"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Card layout",
+      "options": [
+        { "value": "cards", "label": "Cards with a description" },
+        { "value": "compact", "label": "Compact, icon and label only" }
+      ],
+      "default": "cards"
     },
     {
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "Colour scheme",
+      "info": "Scheme 2 is the soft Leaf tint the brand book gives alternating bands.",
       "default": "scheme-2"
     },
     {
@@ -76,7 +109,7 @@
       "step": 4,
       "unit": "px",
       "label": "Padding top",
-      "default": 20
+      "default": 36
     },
     {
       "type": "range",
@@ -86,7 +119,7 @@
       "step": 4,
       "unit": "px",
       "label": "Padding bottom",
-      "default": 20
+      "default": 36
     }
   ],
   "blocks": [
@@ -98,48 +131,18 @@
           "type": "select",
           "id": "icon_name",
           "label": "Icon",
-          "info": "Drawn in the brand's own line style. Upload below only if you want to replace it.",
+          "info": "Drawn in the brand's own line style. Upload below only to replace it.",
           "options": [
-            {
-              "value": "leaf",
-              "label": "Leaf"
-            },
-            {
-              "value": "shield",
-              "label": "Shield"
-            },
-            {
-              "value": "cash",
-              "label": "Cash"
-            },
-            {
-              "value": "truck",
-              "label": "Delivery van"
-            },
-            {
-              "value": "clock",
-              "label": "Clock"
-            },
-            {
-              "value": "drop",
-              "label": "Drop"
-            },
-            {
-              "value": "spray",
-              "label": "Spray bottle"
-            },
-            {
-              "value": "bottle",
-              "label": "Bottle"
-            },
-            {
-              "value": "sparkle",
-              "label": "Sparkle"
-            },
-            {
-              "value": "none",
-              "label": "No icon"
-            }
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "cash", "label": "Cash" },
+            { "value": "truck", "label": "Delivery van" },
+            { "value": "clock", "label": "Clock" },
+            { "value": "drop", "label": "Drop" },
+            { "value": "spray", "label": "Spray bottle" },
+            { "value": "bottle", "label": "Bottle" },
+            { "value": "sparkle", "label": "Sparkle" },
+            { "value": "none", "label": "No icon" }
           ],
           "default": "leaf"
         },
@@ -147,13 +150,20 @@
           "type": "image_picker",
           "id": "icon",
           "label": "Custom icon (optional)",
-          "info": "A simple flat line icon on a transparent background, square, about 120x120px. Use one visual style across all four - same stroke weight, same single colour (your brand green works well). A leaf, a shield, a rupee note or truck, and a calendar or clock cover the four defaults. PNG with transparency or SVG."
+          "info": "Square, about 120x120px, transparent background. Only needed if you want to replace the drawn icon."
         },
         {
           "type": "text",
           "id": "label",
           "label": "Label",
           "default": "Plant-based cleansers"
+        },
+        {
+          "type": "text",
+          "id": "description",
+          "label": "One-line description",
+          "info": "Shown in the Cards layout. Keep it to a single specific sentence.",
+          "default": "Made with cleansers derived from coconut."
         }
       ]
     }
@@ -162,34 +172,10 @@
     {
       "name": "Trust strip",
       "blocks": [
-        {
-          "type": "item",
-          "settings": {
-            "label": "Plant-based cleansers",
-            "icon_name": "leaf"
-          }
-        },
-        {
-          "type": "item",
-          "settings": {
-            "label": "Safe around food & kids",
-            "icon_name": "shield"
-          }
-        },
-        {
-          "type": "item",
-          "settings": {
-            "label": "Cash on delivery",
-            "icon_name": "cash"
-          }
-        },
-        {
-          "type": "item",
-          "settings": {
-            "label": "Delivers in 3-5 days",
-            "icon_name": "truck"
-          }
-        }
+        { "type": "item", "settings": { "icon_name": "leaf", "label": "Plant-based cleansers", "description": "Made with cleansers derived from coconut." } },
+        { "type": "item", "settings": { "icon_name": "shield", "label": "Safe around food & kids", "description": "For everyday kitchen surfaces." } },
+        { "type": "item", "settings": { "icon_name": "cash", "label": "Cash on delivery", "description": "Pay when it reaches your door." } },
+        { "type": "item", "settings": { "icon_name": "truck", "label": "Delivers in 3-5 days", "description": "Shipped across India." } }
       ]
     }
   ]

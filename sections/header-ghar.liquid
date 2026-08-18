@@ -15,6 +15,8 @@
   }
 
   #GharHeader-{{ section.id }} {
+    --ghar-header-height: {{ section.settings.header_height }}px;
+    --ghar-header-height-mobile: {{ section.settings.header_height_mobile }}px;
     --ghar-logo-width: {{ section.settings.logo_width }}px;
     --ghar-logo-width-mobile: {{ section.settings.logo_width_mobile }}px;
   }
@@ -34,7 +36,7 @@
     <div class="ghar-header__side ghar-header__side--start">
       <details class="ghar-header__drawer" data-ghar-drawer>
         <summary class="ghar-header__icon-button ghar-header__burger" aria-label="{{ 'sections.header.menu' | t }}">
-          <span class="ghar-header__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'menu' -%}</span>
+          <span class="ghar-header__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'menu', stroke: '2.4' -%}</span>
         </summary>
 
         <div class="ghar-header__drawer-panel">
@@ -48,6 +50,22 @@
               {%- endfor -%}
             </ul>
           </nav>
+
+          {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
+            <a
+              class="ghar-header__drawer-account"
+              href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
+            >
+              {%- render 'ghar-icon', icon: 'user', size: '20' -%}
+              <span>
+                {%- if customer -%}
+                  {{- 'customer.account.title' | t -}}
+                {%- else -%}
+                  {{- 'customer.log_in' | t -}}
+                {%- endif -%}
+              </span>
+            </a>
+          {%- endif -%}
 
           {%- if section.settings.drawer_note != blank -%}
             <p class="ghar-header__drawer-note">{{ section.settings.drawer_note | escape }}</p>
@@ -63,7 +81,7 @@
           aria-expanded="false"
           aria-label="{{ 'general.search.search' | t }}"
         >
-          <span class="ghar-header__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'search' -%}</span>
+          <span class="ghar-header__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'search', stroke: '2.4' -%}</span>
         </button>
       {%- endif -%}
 
@@ -134,18 +152,8 @@
           aria-expanded="false"
           aria-label="{{ 'general.search.search' | t }}"
         >
-          <span class="ghar-header__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'search' -%}</span>
+          <span class="ghar-header__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'search', stroke: '2.4' -%}</span>
         </button>
-      {%- endif -%}
-
-      {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
-        <a
-          class="ghar-header__icon-button ghar-header__account"
-          href="{%- if customer -%}{{ routes.account_url }}{%- else -%}{{ routes.account_login_url }}{%- endif -%}"
-          aria-label="{%- if customer -%}{{ 'customer.account.title' | t }}{%- else -%}{{ 'customer.log_in' | t }}{%- endif -%}"
-        >
-          <span class="ghar-header__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'user' -%}</span>
-        </a>
       {%- endif -%}
 
       <a
@@ -154,7 +162,7 @@
         aria-label="{{ 'templates.cart.cart' | t }}"
       >
         <span class="ghar-header__icon" aria-hidden="true">
-          {%- render 'ghar-icon', icon: 'bag' -%}
+          {%- render 'ghar-icon', icon: 'bag', stroke: '2.4' -%}
         </span>
         {%- if cart.item_count > 0 -%}
           <span class="ghar-header__cart-count" aria-hidden="true">{{ cart.item_count }}</span>
@@ -174,7 +182,7 @@
       <div class="ghar-search__inner page-width">
         <form class="ghar-search__form" action="{{ routes.search_url }}" method="get" role="search">
           <input type="hidden" name="options[prefix]" value="last">
-          <span class="ghar-search__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'search' -%}</span>
+          <span class="ghar-search__icon" aria-hidden="true">{%- render 'ghar-icon', icon: 'search', stroke: '2.4' -%}</span>
           <input
             class="ghar-search__input"
             type="search"
@@ -228,12 +236,33 @@
     },
     {
       "type": "range",
+      "id": "header_height",
+      "min": 60,
+      "max": 140,
+      "step": 4,
+      "unit": "px",
+      "label": "Header height on desktop",
+      "info": "The logo grows to fill this, so set the bar height you want and the mark sizes itself to it.",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "header_height_mobile",
+      "min": 52,
+      "max": 110,
+      "step": 2,
+      "unit": "px",
+      "label": "Header height on mobile",
+      "default": 64
+    },
+    {
+      "type": "range",
       "id": "logo_width",
       "min": 90,
-      "max": 260,
+      "max": 320,
       "step": 10,
       "unit": "px",
-      "label": "Logo width on desktop",
+      "label": "Maximum logo width on desktop",
       "default": 180
     },
     {
@@ -243,7 +272,7 @@
       "max": 200,
       "step": 10,
       "unit": "px",
-      "label": "Logo width on mobile",
+      "label": "Maximum logo width on mobile",
       "default": 130
     },
     {

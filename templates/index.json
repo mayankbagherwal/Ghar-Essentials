@@ -71,28 +71,32 @@
           "type": "item",
           "settings": {
             "label": "Plant-based cleansers",
-            "icon_name": "leaf"
+            "icon_name": "leaf",
+            "description": "Made with cleansers derived from coconut."
           }
         },
         "safe": {
           "type": "item",
           "settings": {
             "label": "Safe around food & kids",
-            "icon_name": "shield"
+            "icon_name": "shield",
+            "description": "For everyday kitchen surfaces."
           }
         },
         "cod": {
           "type": "item",
           "settings": {
             "label": "Cash on delivery",
-            "icon_name": "cash"
+            "icon_name": "cash",
+            "description": "Pay when it reaches your door."
           }
         },
         "delivery": {
           "type": "item",
           "settings": {
             "label": "Delivers in 3-5 days",
-            "icon_name": "truck"
+            "icon_name": "truck",
+            "description": "Shipped across India."
           }
         }
       },
@@ -103,10 +107,12 @@
         "delivery"
       ],
       "settings": {
-        "heading": "",
-        "color_scheme": "scheme-4",
-        "padding_top": 20,
-        "padding_bottom": 20
+        "heading": "Why homes keep reordering",
+        "color_scheme": "scheme-2",
+        "padding_top": 36,
+        "padding_bottom": 36,
+        "subheading": "",
+        "layout": "cards"
       }
     },
     "problem_picker_GC7dBg": {

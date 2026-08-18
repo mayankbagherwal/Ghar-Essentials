@@ -21,6 +21,7 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 0.8rem;
+  min-height: var(--ghar-header-height-mobile, 64px);
 }
 
 .ghar-header__side {
@@ -57,8 +58,8 @@
 
 .ghar-header__icon {
   display: inline-flex;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2.4rem;
+  height: 2.4rem;
 }
 
 .ghar-header__icon svg {
@@ -106,10 +107,15 @@
   text-decoration: none;
 }
 
+/* Height-led rather than width-led. The bar height is what the eye reads, and
+   a logo with generous internal padding looked small when width was the only
+   control. It now fills the bar, with width only acting as a ceiling. */
 .ghar-header__logo-image {
   display: block;
-  width: var(--ghar-logo-width-mobile, 130px);
+  width: auto;
+  max-width: var(--ghar-logo-width-mobile, 130px);
   height: auto;
+  max-height: calc(var(--ghar-header-height-mobile, 64px) - 1.6rem);
 }
 
 .ghar-header__wordmark {
@@ -284,6 +290,25 @@
   text-decoration: none;
 }
 
+.ghar-header__drawer-account {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 5.2rem;
+  margin-top: 1.6rem;
+  color: rgb(var(--color-foreground));
+  font-family: var(--font-heading-family);
+  font-size: 1.7rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ghar-header__drawer-account .ghar-icon {
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 auto;
+}
+
 .ghar-header__drawer-note {
   margin: 2.4rem 0 0;
   font-size: 1.5rem;
@@ -323,8 +348,13 @@
     display: none;
   }
 
+  .ghar-header__inner {
+    min-height: var(--ghar-header-height, 80px);
+  }
+
   .ghar-header__logo-image {
-    width: var(--ghar-logo-width, 180px);
+    max-width: var(--ghar-logo-width, 180px);
+    max-height: calc(var(--ghar-header-height, 80px) - 2rem);
   }
 
   .ghar-header__wordmark-name {

@@ -1,72 +1,162 @@
-/* Four short trust points. At 375px this is a 2x2 grid, one row on desktop.
-   These are the first thing a first-time buyer reads, so the text stays 15px+. */
+/* Trust strip. Rebuilt as cards: an icon in a soft round badge, a bold label,
+   and one specific line under it. On a phone the row scrolls sideways with the
+   next card peeking, which reads as "there is more" rather than as a cut-off
+   grid. Brand book: Leaf tint ground, Poppins labels, 16px body, green icons. */
 
-.trust-strip__heading {
-  margin: 0 0 1.6rem;
-  font-size: 1.8rem;
+.trust__header {
+  margin-bottom: 1.6rem;
   text-align: center;
 }
 
-.trust-strip__list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.6rem 1.2rem;
+.trust__heading {
+  margin: 0 0 0.4rem;
+  font-size: 2.4rem;
+  line-height: 1.2;
+}
+
+.trust__subheading {
   margin: 0;
-  padding: 0;
-  list-style: none;
+  font-size: 1.6rem;
+  line-height: 1.45;
+  color: rgba(var(--color-foreground), 0.75);
 }
 
-.trust-strip__item {
+.trust__list {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.8rem;
-  text-align: center;
+  gap: 1.2rem;
+  margin: 0 -1.5rem;
+  padding: 0 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  list-style: none;
+  scrollbar-width: none;
 }
 
-.trust-strip__icon {
-  width: 4rem;
-  height: 4rem;
+.trust__list::-webkit-scrollbar {
+  display: none;
+}
+
+.trust__item {
+  flex: 0 0 78%;
+  scroll-snap-align: start;
+}
+
+.trust__card {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.2rem;
+  height: 100%;
+  padding: 1.6rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.14);
+  border-radius: 1.2rem;
+  background-color: rgb(var(--color-background));
+}
+
+/* The icon sits in a tinted disc so it reads as a deliberate mark rather than
+   a stray glyph floating above text. */
+.trust__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 4.8rem;
+  height: 4.8rem;
+  border-radius: 50%;
+  background-color: rgba(var(--color-foreground), 0.07);
+  color: rgb(var(--color-button));
+}
+
+.trust__badge .ghar-icon {
+  width: 2.6rem;
+  height: 2.6rem;
+}
+
+.trust__icon-image {
+  width: 2.8rem;
+  height: 2.8rem;
   object-fit: contain;
 }
 
-/* The drawn icons take the brand green rather than the surrounding text
-   colour, except on a dark scheme where they follow the text instead. */
-.trust-strip__icon--drawn {
-  display: inline-flex;
-  color: #0f7a4e;
+.trust__text {
+  min-width: 0;
 }
 
-.color-scheme-4 .trust-strip__icon--drawn,
-.color-scheme-3 .trust-strip__icon--drawn {
-  color: currentColor;
-}
-
-.trust-strip__icon--drawn .ghar-icon {
-  width: 4rem;
-  height: 4rem;
-}
-
-.trust-strip__label {
-  font-size: 1.5rem;
+.trust__label {
+  margin: 0;
+  font-family: var(--font-heading-family);
+  font-size: 1.7rem;
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.3;
   color: rgb(var(--color-foreground));
 }
 
+.trust__description {
+  margin: 0.4rem 0 0;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+/* Compact: icon over label, no description, four across even on a phone. */
+.trust__list--compact {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+
+.trust__list--compact .trust__item {
+  flex: initial;
+}
+
+.trust__list--compact .trust__card {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.2rem 0.8rem;
+  text-align: center;
+}
+
+.trust__list--compact .trust__description {
+  display: none;
+}
+
+.trust__list--compact .trust__badge {
+  width: 4.2rem;
+  height: 4.2rem;
+}
+
 @media screen and (min-width: 750px) {
-  .trust-strip__list {
+  .trust__header {
+    margin-bottom: 2.4rem;
+  }
+
+  .trust__heading {
+    font-size: 3.2rem;
+  }
+
+  .trust__list {
+    display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 2.4rem;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
   }
 
-  .trust-strip__item {
-    flex-direction: row;
-    justify-content: center;
-    text-align: left;
+  .trust__item {
+    flex: initial;
   }
 
-  .trust-strip__label {
-    font-size: 1.6rem;
+  .trust__card {
+    flex-direction: column;
+    gap: 1.4rem;
+    padding: 2.4rem 2rem;
+  }
+
+  .trust__label {
+    font-size: 1.8rem;
   }
 }
