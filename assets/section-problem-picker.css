@@ -19,9 +19,8 @@
 .problem-picker__list {
   display: flex;
   gap: 1.2rem;
-  margin-left: calc(var(--ghar-gutter) * -1);
-  margin-right: calc(var(--ghar-gutter) * -1);
-  padding: 0 var(--ghar-gutter) 0.4rem;
+  margin: 0;
+  padding: 0 0 0.4rem;
   overflow-x: auto;
   scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
@@ -69,15 +68,10 @@
 
 @media screen and (min-width: 750px) {
   .problem-picker {
-  --ghar-gutter: 2rem;
-}
+    --ghar-gutter: 5rem;
+  }
 
-.problem-picker.page-width {
-  padding-left: var(--ghar-gutter);
-  padding-right: var(--ghar-gutter);
-}
-
-.problem-picker__heading {
+  .problem-picker__heading {
     margin-bottom: 2.4rem;
     font-size: 3.2rem;
   }

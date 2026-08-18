@@ -3,10 +3,14 @@
    next card peeking, which reads as "there is more" rather than as a cut-off
    grid. Brand book: Leaf tint ground, Poppins labels, 16px body, green icons. */
 
-/* One gutter value for the section and for the row that bleeds past it. They
-   used to be written separately - page-width's padding on one side, a hard
-   -1.5rem on the other - so any change to either left the first card out of
-   line with the heading above it. */
+/* The scrolling row sits inside the section's padding rather than being pulled
+   out to the screen edge and pushed back in. The pull-and-push version kept
+   leaving the first card flush against the edge while the heading above it was
+   correctly indented: two values in different places that had to agree, and a
+   negative margin on a scroll container that browsers do not treat uniformly.
+   Keeping the row inside the padding means the first card starts exactly where
+   the heading does, by definition. The next card still peeks, because the
+   container is narrower than its contents. */
 .trust {
   --ghar-gutter: 2rem;
 }
@@ -36,10 +40,8 @@
 .trust__list {
   display: flex;
   gap: 1.2rem;
-  margin-left: calc(var(--ghar-gutter) * -1);
-  margin-right: calc(var(--ghar-gutter) * -1);
-  padding-left: var(--ghar-gutter);
-  padding-right: var(--ghar-gutter);
+  margin: 0;
+  padding: 0;
   overflow-x: auto;
   scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
