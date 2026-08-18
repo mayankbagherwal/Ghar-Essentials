@@ -141,10 +141,50 @@
   color: rgba(var(--color-foreground), 0.7);
 }
 
-/* Judge.me injects stars into this div once the app is installed.
-   The reserved height stops the grid shifting when that happens. */
+/* The Judge.me preview badge: stars and a review count.
+
+   The reserved height keeps the price row still whether the badge arrives with
+   the page (metafield) or a moment later (Judge.me's script), so a card never
+   jumps under a thumb that is already reaching for it.
+
+   Judge.me ships its own stylesheet and this only settles the badge into the
+   card: the stars are sized to sit with the 15px size line above them, the
+   app's own outer margins are cleared so the rhythm of the card is ours, and
+   the count is set in the body face rather than whatever the app defaults to.
+   Star colour is deliberately left to Judge.me so the owner can set it in the
+   app without a code change. */
 .ghar-card__reviews {
   min-height: 2rem;
+  display: flex;
+  align-items: center;
+  margin: 0.4rem 0 0;
+}
+
+.ghar-card__reviews .jdgm-prev-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.ghar-card__reviews .jdgm-prev-badge__stars {
+  display: inline-flex;
+  align-items: center;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.ghar-card__reviews .jdgm-star {
+  padding: 0 0.05rem;
+}
+
+.ghar-card__reviews .jdgm-prev-badge__text {
+  font-family: var(--font-body-family);
+  font-size: 1.3rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgba(var(--color-foreground), 0.7);
 }
 
 .ghar-card__prices {

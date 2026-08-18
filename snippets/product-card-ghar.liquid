@@ -172,10 +172,30 @@
       {%- endif -%}
 
       {%- comment -%}
-        5. Review row. Judge.me finds this div and injects the stars once the app
-        is installed. Height is reserved in CSS so nothing shifts when it loads.
+        5. Review row - the Judge.me preview badge (stars + review count).
+
+        A card is rendered inside a loop, so it cannot take a Shopify app block
+        the way the product page does. Judge.me's own markup is used instead,
+        and it has two halves that both matter:
+
+        - The metafield prints the badge HTML with the page, so the stars are
+          there in the first paint rather than appearing a moment later.
+        - The class and data attributes are what Judge.me's script looks for.
+          It fills the div in if the metafield has not been written yet, and
+          keeps it in step after that.
+
+        Height is reserved in CSS so the price row does not jump if the script
+        fills the div in after load. Judge.me prints nothing for a product with
+        no reviews unless "show badge when there are no reviews" is turned on
+        in its settings.
       {%- endcomment -%}
-      <div class="jdgm-widget jdgm-preview-badge ghar-card__reviews" data-id="{{ card_product.id }}"></div>
+      <div
+        class="jdgm-widget jdgm-preview-badge ghar-card__reviews"
+        data-id="{{ card_product.id }}"
+        data-template="{{ template | split: '.' | first }}"
+      >
+        {{- card_product.metafields.judgeme.badge -}}
+      </div>
 
       {%- comment -%} 6. Price row {%- endcomment -%}
       <div class="ghar-card__prices">
