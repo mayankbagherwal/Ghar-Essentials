@@ -43,7 +43,6 @@
       "settings": {
         "color_scheme": "scheme-4",
         "sticky": false,
-        "dismissible": true,
         "rotate_seconds": 5
       }
     },
@@ -165,7 +164,7 @@
       "name": "Problem picker",
       "settings": {
         "heading": "What are you cleaning today?",
-        "color_scheme": "",
+        "color_scheme": "scheme-2",
         "padding_top": 32,
         "padding_bottom": 32
       }
@@ -185,7 +184,7 @@
         "accent_color": "#f2c230",
         "accent_text_color": "#12211b",
         "discount_color": "#0f7a4e",
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-2",
         "padding_top": 32,
         "padding_bottom": 32
       }
