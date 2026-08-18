@@ -94,7 +94,6 @@
           "type": "item",
           "settings": {
             "icon_name": "truck",
-            "icon": "shopify://shop_images/IMG_2097.png",
             "label": "Delivers in 3-5 days",
             "description": "Shipped across India."
           }
