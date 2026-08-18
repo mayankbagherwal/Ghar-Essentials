@@ -40,8 +40,10 @@
       "type": "header-ghar",
       "settings": {
         "logo": "shopify://shop_images/IMG_2055.png",
-        "logo_width": 260,
-        "logo_width_mobile": 170,
+        "header_height": 80,
+        "header_height_mobile": 64,
+        "logo_width": 320,
+        "logo_width_mobile": 200,
         "wordmark": "ghar",
         "wordmark_sub": "ESSENTIALS",
         "menu_left": "main-menu",
@@ -53,11 +55,9 @@
         "recent_clear": "Clear",
         "show_account": true,
         "sticky": true,
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-2",
         "padding_top": 12,
-        "padding_bottom": 12,
-        "header_height": 80,
-        "header_height_mobile": 64
+        "padding_bottom": 12
       }
     }
   },
