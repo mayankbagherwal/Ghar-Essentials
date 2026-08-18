@@ -12,6 +12,10 @@
     "main": {
       "type": "main-product-ghar",
       "blocks": {
+        "judge_me_reviews_preview_badge_aTa4WB": {
+          "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {}
+        },
         "benefits": {
           "type": "benefits",
           "settings": {
@@ -45,6 +49,7 @@
         }
       },
       "block_order": [
+        "judge_me_reviews_preview_badge_aTa4WB",
         "benefits",
         "how_to_use",
         "ingredients",
@@ -58,7 +63,6 @@
         "show_buy_now": true,
         "variant_label": "Choose size",
         "quantity_label": "Quantity",
-        "show_review_hooks": true,
         "accent_color": "#f2c230",
         "accent_text_color": "#12211b",
         "discount_color": "#0f7a4e",

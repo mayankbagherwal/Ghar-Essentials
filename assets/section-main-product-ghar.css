@@ -116,19 +116,9 @@
   line-height: 1.25;
 }
 
-/* Rating row, directly under the price. Height is reserved so the buy panel
-   does not jump when Judge.me loads its stars in. The empty:: rule keeps the
-   gap from doubling while there are no reviews yet. */
+/* Judge.me drops the stars in here. Height reserved so nothing jumps. */
 .ghar-pdp__reviews {
   min-height: 2rem;
-}
-
-.ghar-pdp__reviews:empty {
-  min-height: 0;
-}
-
-.ghar-pdp__reviews .jdgm-widget {
-  margin: 0;
 }
 
 .ghar-pdp__prices {
