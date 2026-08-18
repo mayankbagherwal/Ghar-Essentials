@@ -1,5 +1,5 @@
 {{ 'section-announcement-offer-bar.css' | asset_url | stylesheet_tag }}
-{%- if section.blocks.size > 1 or section.settings.dismissible -%}
+{%- if section.blocks.size > 1 -%}
   <script src="{{ 'section-announcement-offer-bar.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
 
@@ -7,10 +7,14 @@
   <ghar-offer-bar
     class="offer-bar color-{{ section.settings.color_scheme | default: 'scheme-3' }}{% if section.settings.sticky %} offer-bar--sticky{% endif %}"
     data-rotate-seconds="{{ section.settings.rotate_seconds }}"
-    data-storage-key="ghar-offer-bar-{{ section.id }}"
   >
     <div class="offer-bar__inner page-width">
-      <div class="offer-bar__messages">
+      {%- comment -%}
+        Every message sits in the same grid cell, so the bar is as tall as the
+        tallest one and nothing is positioned absolutely. One is visible; the
+        rest wait just below the line, ready to rise into place.
+      {%- endcomment -%}
+      <div class="offer-bar__messages" aria-live="polite">
         {%- for block in section.blocks -%}
           <div
             class="offer-bar__message{% if forloop.first %} is-active{% endif %}"
@@ -25,17 +29,6 @@
           </div>
         {%- endfor -%}
       </div>
-
-      {%- if section.settings.dismissible -%}
-        <button
-          type="button"
-          class="offer-bar__close"
-          data-offer-close
-          aria-label="{{ 'accessibility.close' | t }}"
-        >
-          &times;
-        </button>
-      {%- endif -%}
     </div>
   </ghar-offer-bar>
 {%- endif -%}
@@ -50,7 +43,7 @@
       "type": "color_scheme",
       "id": "color_scheme",
       "label": "Colour scheme",
-      "info": "Scheme 3 is the lemon-yellow offer style.",
+      "info": "Scheme 3 is the lemon the brand book reserves for the offer bar and discount badges.",
       "default": "scheme-3"
     },
     {
@@ -58,13 +51,6 @@
       "id": "sticky",
       "label": "Stick to the top of the screen",
       "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "dismissible",
-      "label": "Let shoppers close it",
-      "info": "Once closed it stays hidden on that phone until the message changes.",
-      "default": true
     },
     {
       "type": "range",
@@ -100,18 +86,9 @@
     {
       "name": "Offer bar",
       "blocks": [
-        {
-          "type": "message",
-          "settings": { "text": "Free delivery on orders above Rs. 499" }
-        },
-        {
-          "type": "message",
-          "settings": { "text": "Cash on delivery available across India" }
-        },
-        {
-          "type": "message",
-          "settings": { "text": "Extra 5% off when you pay online" }
-        }
+        { "type": "message", "settings": { "text": "Free delivery on orders above Rs. 499" } },
+        { "type": "message", "settings": { "text": "Cash on delivery available across India" } },
+        { "type": "message", "settings": { "text": "Extra 5% off when you pay online" } }
       ]
     }
   ]

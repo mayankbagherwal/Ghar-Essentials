@@ -1,11 +1,30 @@
 /*
-  Offer bar: rotates between messages and remembers a dismissal.
+  Offer bar rotation.
 
-  The dismissal key includes a hash of the message text, so publishing a new
-  offer brings the bar back for someone who closed the old one.
+  One message is visible; the rest wait just below the line. On each tick the
+  visible one rises out of view while the next lifts into its place. All of it
+  is CSS transitions on transform and opacity - this file only moves classes
+  around and keeps the timing honest.
 
-  Being a custom element, connectedCallback runs again whenever the theme
-  editor re-renders the section.
+  Details that make it feel right rather than merely work:
+
+  - The incoming message is snapped to its waiting position with transitions
+    off, then released on the next animation frame. Without that the browser
+    can collapse both states into one style recalculation and the element
+    simply appears, with no movement at all.
+  - A message that has finished leaving is returned to the waiting position
+    the same way, so it never slides back down through the bar in view.
+  - Rotation pauses while the tab is hidden. Timers keep firing in a
+    background tab, so without this you return to a bar mid-transition, or
+    several transitions deep.
+  - Rotation pauses on hover and on keyboard focus, so a message with a link
+    in it cannot be pulled away while someone is reading or tabbing to it.
+  - If the device asks for reduced motion, the classes still change but the
+    stylesheet drops the movement.
+
+  Being a custom element, connectedCallback runs again on theme editor
+  re-renders, and disconnectedCallback clears the timer so nothing is left
+  running against a detached element.
 */
 if (!customElements.get('ghar-offer-bar')) {
   customElements.define(
@@ -13,72 +32,111 @@ if (!customElements.get('ghar-offer-bar')) {
     class GharOfferBar extends HTMLElement {
       connectedCallback() {
         this.messages = Array.from(this.querySelectorAll('[data-offer-message]'));
-        if (this.messages.length === 0) return;
+        if (this.messages.length < 2) return;
 
-        if (this.isDismissed()) {
-          this.hidden = true;
-          return;
-        }
+        this.index = Math.max(0, this.messages.findIndex((el) => el.classList.contains('is-active')));
+        this.interval = (parseInt(this.dataset.rotateSeconds, 10) || 5) * 1000;
+        this.paused = false;
 
-        const closeButton = this.querySelector('[data-offer-close]');
-        if (closeButton) {
-          closeButton.addEventListener('click', () => this.dismiss());
-        }
+        this.onVisibility = this.onVisibility.bind(this);
+        this.pause = this.pause.bind(this);
+        this.resume = this.resume.bind(this);
 
-        this.startRotating();
+        document.addEventListener('visibilitychange', this.onVisibility);
+        this.addEventListener('mouseenter', this.pause);
+        this.addEventListener('mouseleave', this.resume);
+        this.addEventListener('focusin', this.pause);
+        this.addEventListener('focusout', this.resume);
+
+        this.start();
       }
 
       disconnectedCallback() {
-        this.stopRotating();
+        this.stop();
+        document.removeEventListener('visibilitychange', this.onVisibility);
       }
 
-      startRotating() {
-        if (this.messages.length < 2 || this.timer) return;
-
-        const seconds = parseInt(this.dataset.rotateSeconds, 10) || 5;
-        let index = 0;
-
-        this.timer = setInterval(() => {
-          this.messages[index].classList.remove('is-active');
-          index = (index + 1) % this.messages.length;
-          this.messages[index].classList.add('is-active');
-        }, seconds * 1000);
+      start() {
+        this.stop();
+        if (this.paused || document.hidden) return;
+        this.timer = window.setInterval(() => this.advance(), this.interval);
       }
 
-      stopRotating() {
+      stop() {
         if (!this.timer) return;
-        clearInterval(this.timer);
+        window.clearInterval(this.timer);
         this.timer = null;
       }
 
-      /* Cheap stable hash of the current messages, so changing the offer
-         re-shows the bar to everyone who dismissed the previous one. */
-      get storageKey() {
-        const text = this.messages.map((el) => el.textContent.trim()).join('|');
-        let hash = 0;
-        for (let i = 0; i < text.length; i += 1) {
-          hash = (hash << 5) - hash + text.charCodeAt(i);
-          hash |= 0;
-        }
-        return `${this.dataset.storageKey}-${hash}`;
+      pause() {
+        this.paused = true;
+        this.stop();
       }
 
-      isDismissed() {
-        try {
-          return window.localStorage.getItem(this.storageKey) === '1';
-        } catch (error) {
-          return false;
+      resume() {
+        this.paused = false;
+        this.start();
+      }
+
+      onVisibility() {
+        if (document.hidden) {
+          this.stop();
+        } else {
+          this.start();
         }
       }
 
-      dismiss() {
-        this.stopRotating();
-        this.hidden = true;
-        try {
-          window.localStorage.setItem(this.storageKey, '1');
-        } catch (error) {
-          /* Private browsing blocks storage. Hiding for this page view is enough. */
-        }
+      advance() {
+        const current = this.messages[this.index];
+        const nextIndex = (this.index + 1) % this.messages.length;
+        const next = this.messages[nextIndex];
+        if (!current || !next || current === next) return;
+
+        /* Put the incoming message at its waiting position with transitions
+           off, so the browser has a start value to animate away from. */
+        next.classList.add('is-reset');
+        next.classList.remove('is-active', 'is-leaving');
+
+        /* Reading a layout value flushes the styles above before the ones
+           below are applied, which is what forces two distinct frames. */
+        void next.offsetHeight;
+
+        window.requestAnimationFrame(() => {
+          next.classList.remove('is-reset');
+          next.classList.add('is-active');
+
+          current.classList.remove('is-active');
+          current.classList.add('is-leaving');
+        });
+
+        this.settle(current);
+        this.index = nextIndex;
+      }
+
+      /* Return the outgoing message to the waiting position once it has
+         finished leaving, without letting it animate on the way back. */
+      settle(element) {
+        const done = (event) => {
+          if (event) {
+            /* Two properties are in flight and opacity finishes first. Acting
+               on that one would snap the message back while it is still
+               sliding, so only the transform end counts as finished. */
+            if (event.target !== element || event.propertyName !== 'transform') return;
+          }
+          element.removeEventListener('transitionend', done);
+          window.clearTimeout(element.gharSettleTimer);
+
+          element.classList.add('is-reset');
+          element.classList.remove('is-leaving');
+          void element.offsetHeight;
+          window.requestAnimationFrame(() => element.classList.remove('is-reset'));
+        };
+
+        element.addEventListener('transitionend', done);
+
+        /* transitionend does not fire if the transition never runs - reduced
+           motion, or a tab hidden mid-flight - so back it with a timeout. */
+        element.gharSettleTimer = window.setTimeout(done, 900);
       }
     }
   );

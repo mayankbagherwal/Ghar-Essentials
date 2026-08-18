@@ -1,6 +1,11 @@
-/* Thin offer bar. Sits above the header on every page. Text stays 15px so it
-   is readable at 375px - it carries the free shipping threshold and COD, which
-   are two of the strongest trust signals for a first-time Indian buyer. */
+/* Offer bar. Carries the free-shipping threshold, COD and the prepaid
+   discount - three of the strongest trust signals for a first-time buyer, so
+   they rotate rather than compete for one line.
+
+   Motion: the outgoing line rises and fades out while the incoming one lifts
+   from just below and settles into place. Transform and opacity only, so the
+   whole thing runs on the compositor and never touches layout - that is what
+   keeps it smooth on a mid-range Android, not just on a desk. */
 
 .offer-bar {
   display: block;
@@ -17,51 +22,80 @@
 .offer-bar__inner {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  justify-content: center;
   min-height: 4rem;
-  padding-top: 0.6rem;
-  padding-bottom: 0.6rem;
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
 }
 
+/* All messages share one grid cell. The row is as tall as the tallest, so a
+   message that wraps to two lines still gets the room it needs, and nothing
+   has to be positioned absolutely against a guessed height. */
 .offer-bar__messages {
-  position: relative;
-  flex: 1 1 auto;
-  min-width: 0;
-  text-align: center;
+  display: grid;
+  width: 100%;
+  overflow: hidden;
 }
 
 .offer-bar__message {
-  display: none;
+  grid-area: 1 / 1;
   font-size: 1.5rem;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.35;
+  text-align: center;
+
+  /* Waiting position: just below the line, invisible. */
+  opacity: 0;
+  transform: translate3d(0, 105%, 0);
+  pointer-events: none;
+
+  /* Apple's sheet curve: quick to leave, long slow settle, no overshoot.
+     Opacity finishes earlier than the movement so the text is gone before it
+     reaches the edge, which stops it looking like it is being clipped. */
+  transition:
+    transform 0.52s cubic-bezier(0.32, 0.72, 0, 1),
+    opacity 0.34s cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .offer-bar__message.is-active {
-  display: block;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  pointer-events: auto;
+}
+
+.offer-bar__message.is-leaving {
+  opacity: 0;
+  transform: translate3d(0, -105%, 0);
+}
+
+/* Snaps a message back to the waiting position without animating it there. */
+.offer-bar__message.is-reset {
+  transition: none;
+}
+
+/* Only hint the compositor while something is actually moving. Leaving
+   will-change on permanently costs memory for no benefit. */
+.offer-bar__message.is-active,
+.offer-bar__message.is-leaving {
+  will-change: transform, opacity;
 }
 
 .offer-bar__link {
   color: inherit;
   text-decoration: underline;
+  text-underline-offset: 0.3rem;
 }
 
-.offer-bar__close {
-  flex: 0 0 auto;
-  width: 3.2rem;
-  height: 3.2rem;
-  padding: 0;
-  border: 0;
-  background: none;
-  color: inherit;
-  font-size: 2.2rem;
-  line-height: 1;
-  cursor: pointer;
-  opacity: 0.7;
-}
+/* Someone who has asked their device for less motion gets a plain swap. */
+@media (prefers-reduced-motion: reduce) {
+  .offer-bar__message {
+    transition: none;
+    transform: none;
+  }
 
-.offer-bar__close:hover {
-  opacity: 1;
+  .offer-bar__message.is-leaving {
+    transform: none;
+  }
 }
 
 @media screen and (min-width: 750px) {
