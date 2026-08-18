@@ -66,6 +66,14 @@
   height: 100%;
 }
 
+/* Dawn draws the cart on a 40x40 canvas and the other icons on 18x19, so at a
+   shared box size the cart glyph comes out about half as big. A larger box
+   brings it back to the same optical weight as account and search. */
+.ghar-header__cart .ghar-header__icon {
+  width: 3.4rem;
+  height: 3.4rem;
+}
+
 .ghar-header__cart-count {
   position: absolute;
   top: 0.5rem;
@@ -343,5 +351,164 @@
 @media screen and (max-width: 989px) {
   .ghar-header__search-link {
     display: none;
+  }
+}
+
+
+/* Expanding search — no separate page, no extra widget.
+   The bar opens in place, the input takes focus straight away so the phone
+   keyboard appears, and recent searches sit underneath. */
+
+.ghar-search {
+  border-top: 0.1rem solid rgba(var(--color-foreground), 0.1);
+  background-color: rgb(var(--color-background));
+}
+
+.ghar-search__inner {
+  padding-top: 1.2rem;
+  padding-bottom: 1.6rem;
+}
+
+.ghar-search__form {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  width: 100%;
+  padding: 0 0.8rem 0 1.2rem;
+  border: 0.2rem solid rgb(var(--color-foreground));
+  border-radius: 0.8rem;
+  background-color: rgb(var(--color-background));
+}
+
+.ghar-search__icon {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  opacity: 0.7;
+}
+
+.ghar-search__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.ghar-search__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 5rem;
+  border: 0;
+  background: none;
+  color: rgb(var(--color-foreground));
+  font-family: var(--font-body-family);
+  font-size: 1.6rem;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ghar-search__input:focus {
+  outline: none;
+}
+
+.ghar-search__input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.ghar-search__submit {
+  flex: 0 0 auto;
+  min-height: 3.8rem;
+  padding: 0 1.6rem;
+  border: 0;
+  border-radius: 0.6rem;
+  background-color: rgb(var(--color-foreground));
+  color: rgb(var(--color-background));
+  font-family: var(--font-body-family);
+  font-size: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.ghar-search__close {
+  flex: 0 0 auto;
+  width: 4.4rem;
+  height: 4.4rem;
+  border: 0;
+  background: none;
+  color: rgb(var(--color-foreground));
+  font-size: 2.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* Recent searches, kept on this device only */
+
+.ghar-search__recent {
+  margin-top: 1.2rem;
+}
+
+.ghar-search__recent-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.ghar-search__recent-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+.ghar-search__recent-clear {
+  padding: 0.4rem 0;
+  border: 0;
+  background: none;
+  color: rgba(var(--color-foreground), 0.7);
+  font-family: var(--font-body-family);
+  font-size: 1.4rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ghar-search__recent-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ghar-search__recent-item {
+  display: inline-flex;
+  align-items: center;
+  min-height: 4rem;
+  padding: 0 1.4rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.25);
+  border-radius: 4rem;
+  color: rgb(var(--color-foreground));
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
+.ghar-search__recent-item:hover {
+  background-color: rgba(var(--color-foreground), 0.06);
+}
+
+@media screen and (min-width: 990px) {
+  .ghar-search__inner {
+    padding-bottom: 2rem;
+  }
+
+  .ghar-search__form {
+    max-width: 76rem;
+    margin: 0 auto;
+  }
+
+  .ghar-search__recent {
+    max-width: 76rem;
+    margin: 1.2rem auto 0;
   }
 }

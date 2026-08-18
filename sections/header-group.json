@@ -52,7 +52,10 @@
         "sticky": true,
         "color_scheme": "scheme-1",
         "padding_top": 12,
-        "padding_bottom": 12
+        "padding_bottom": 12,
+        "search_placeholder": "Search kitchen, bathroom, floor...",
+        "recent_heading": "Recent searches",
+        "recent_clear": "Clear"
       }
     }
   },

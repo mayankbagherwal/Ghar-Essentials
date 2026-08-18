@@ -56,13 +56,15 @@
       </details>
 
       {%- if section.settings.show_search -%}
-        <a
+        <button
+          type="button"
           class="ghar-header__icon-button ghar-header__search-link"
-          href="{{ routes.search_url }}"
+          data-ghar-search-toggle
+          aria-expanded="false"
           aria-label="{{ 'general.search.search' | t }}"
         >
           <span class="ghar-header__icon" aria-hidden="true">{{- 'icon-search.svg' | inline_asset_content -}}</span>
-        </a>
+        </button>
       {%- endif -%}
 
       {%- if menu_left.links.size > 0 -%}
@@ -125,13 +127,15 @@
       {%- endif -%}
 
       {%- if section.settings.show_search -%}
-        <a
+        <button
+          type="button"
           class="ghar-header__icon-button ghar-header__search-mobile"
-          href="{{ routes.search_url }}"
+          data-ghar-search-toggle
+          aria-expanded="false"
           aria-label="{{ 'general.search.search' | t }}"
         >
           <span class="ghar-header__icon" aria-hidden="true">{{- 'icon-search.svg' | inline_asset_content -}}</span>
-        </a>
+        </button>
       {%- endif -%}
 
       {%- if section.settings.show_account and shop.customer_accounts_enabled -%}
@@ -163,6 +167,52 @@
       </a>
     </div>
   </div>
+
+  {%- if section.settings.show_search -%}
+    {%- comment -%}
+      The search bar expands in place rather than sending anyone to another
+      page. Recent searches are kept on the shopper's own device, never sent
+      anywhere. Submitting falls through to Shopify's own search results.
+    {%- endcomment -%}
+    <div class="ghar-search" data-ghar-search hidden>
+      <div class="ghar-search__inner page-width">
+        <form class="ghar-search__form" action="{{ routes.search_url }}" method="get" role="search">
+          <input type="hidden" name="options[prefix]" value="last">
+          <span class="ghar-search__icon" aria-hidden="true">{{- 'icon-search.svg' | inline_asset_content -}}</span>
+          <input
+            class="ghar-search__input"
+            type="search"
+            name="q"
+            value="{{ search.terms | escape }}"
+            placeholder="{{ section.settings.search_placeholder | escape }}"
+            autocomplete="off"
+            enterkeyhint="search"
+            aria-label="{{ 'general.search.search' | t }}"
+            data-ghar-search-input
+          >
+          <button type="submit" class="ghar-search__submit">{{ 'general.search.search' | t }}</button>
+          <button
+            type="button"
+            class="ghar-search__close"
+            data-ghar-search-close
+            aria-label="{{ 'accessibility.close' | t }}"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </form>
+
+        <div class="ghar-search__recent" data-ghar-recent hidden>
+          <div class="ghar-search__recent-head">
+            <span class="ghar-search__recent-title">{{ section.settings.recent_heading | escape }}</span>
+            <button type="button" class="ghar-search__recent-clear" data-ghar-recent-clear>
+              {{- section.settings.recent_clear | escape -}}
+            </button>
+          </div>
+          <ul class="ghar-search__recent-list" data-ghar-recent-list role="list"></ul>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
 </ghar-header>
 
 {% schema %}
@@ -244,6 +294,24 @@
       "id": "show_search",
       "label": "Show search",
       "default": true
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search box placeholder",
+      "default": "Search kitchen, bathroom, floor..."
+    },
+    {
+      "type": "text",
+      "id": "recent_heading",
+      "label": "Recent searches heading",
+      "default": "Recent searches"
+    },
+    {
+      "type": "text",
+      "id": "recent_clear",
+      "label": "Clear recent searches text",
+      "default": "Clear"
     },
     {
       "type": "checkbox",
