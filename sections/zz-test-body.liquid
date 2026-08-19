@@ -1,0 +1,115 @@
+{{ 'ghar-glow.css' | asset_url | stylesheet_tag }}
+{{ 'section-frequently-bought-together.css' | asset_url | stylesheet_tag }}
+{% render 'ghar-money' %}
+<script src="{{ 'ghar-money.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'section-frequently-bought-together.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  # This product first when asked for, then whatever the owner picked. A
+  # product that is out of stock is dropped rather than shown as a tickable
+  # line the shopper cannot actually buy.
+  assign scheme = section.settings.color_scheme | default: 'scheme-1'
+-%}
+
+<div class="color-{{ scheme }} gradient">
+  <div
+    class="fbt page-width section-{{ section.id }}-padding"
+    style="--fbt-accent: {{ section.settings.accent_color }}; --fbt-accent-text: {{ section.settings.accent_text_color }};"
+  >
+    {%- comment -%}
+      Everything below is rendered by Liquid at its starting state and then kept
+      in step by the custom element as boxes are ticked. Nothing is invented in
+      the browser: every price here is a real variant price, and the totals are
+      those same numbers added up.
+    {%- endcomment -%}
+    <ghar-bundle
+      class="fbt__inner"
+      data-button-label="{{ section.settings.button_label | escape }}"
+      data-savings-text="{{ section.settings.savings_text | escape }}"
+      data-empty-label="{{ section.settings.empty_label | escape }}"
+      {% if section.settings.show_timer %}
+        data-timer-minutes="{{ section.settings.timer_minutes }}"
+        data-timer-key="ghar-fbt-{{ section.id }}"
+        data-timer-end="{{ section.settings.timer_end }}"
+        data-timer-on-end="{{ section.settings.timer_on_end }}"
+      {% endif %}
+    >
+      {%- if section.settings.heading != blank -%}
+        <h2 class="fbt__heading">{{ section.settings.heading | escape }}</h2>
+      {%- endif -%}
+
+      <ul class="fbt__list" role="list">
+        {%- comment -%} This product, so the set the shopper sees starts with what they came for {%- endcomment -%}
+        {%- if section.settings.include_current and product != blank and product.available -%}
+          {%- render 'fbt-card',
+            card_product: product,
+            is_current: true,
+            current_label: section.settings.current_label
+          -%}
+        {%- endif -%}
+
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'product' and block.settings.product != blank and block.settings.product.available -%}
+            {%- render 'fbt-card',
+              card_product: block.settings.product,
+              block: block
+            -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </ul>
+
+      {%- comment -%}
+        Totals. The struck-through figure is the MRPs added up, so the saving is
+        the difference between two real numbers rather than a percentage typed
+        into a setting.
+      {%- endcomment -%}
+      <div class="fbt__totals">
+        <p class="fbt__total">
+          <span class="fbt__total-label">{{ section.settings.total_label | escape }}</span>
+          <span class="fbt__total-value" data-fbt-total></span>
+          <s class="fbt__total-was" data-fbt-was></s>
+        </p>
+
+        {%- if section.settings.show_timer -%}
+          <p class="fbt__timer" data-fbt-timer hidden>
+            <span class="fbt__timer-label">{{ section.settings.timer_label | escape }}</span>
+            <span class="fbt__timer-clock" data-fbt-clock></span>
+          </p>
+        {%- endif -%}
+      </div>
+
+      <button
+        type="button"
+        class="fbt__button{% if section.settings.glow %} ghar-glow{% endif %}"
+        data-fbt-add
+      >
+        <span data-fbt-button-text>{{ section.settings.button_label | escape }}</span>
+        <span class="fbt__spinner" data-fbt-spinner hidden></span>
+      </button>
+
+      <p class="fbt__savings" data-fbt-savings></p>
+
+      <p class="fbt__error" data-fbt-error role="alert" hidden></p>
+    </ghar-bundle>
+  </div>
+</div>
+
+{% style %}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "ZZ test body"
+}
+{% endschema %}
