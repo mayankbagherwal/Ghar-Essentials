@@ -120,6 +120,7 @@
         "tile_j7fxdy": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/IMG_2138.png",
             "label": "Kitchen grease",
             "link": ""
           }

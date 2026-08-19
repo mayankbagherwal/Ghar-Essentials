@@ -16,6 +16,30 @@
           "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {}
         },
+        "bought_together": {
+          "type": "bought_together",
+          "settings": {
+            "heading": "Frequently bought together",
+            "include_current": true,
+            "current_label": "This item",
+            "product_1": "kitchen-cleaner",
+            "product_2": "tap-cleaner-limescale-remover",
+            "product_3": "",
+            "product_4": "",
+            "total_label": "Total price:",
+            "button_label": "Add {count} to cart",
+            "empty_label": "Select a product",
+            "savings_text": "Get {count} products for {total} and save {saved}",
+            "show_timer": true,
+            "timer_label": "Deal ends in",
+            "timer_end": "",
+            "timer_minutes": 5,
+            "timer_on_end": "hide",
+            "glow": true,
+            "accent_color": "#f2c230",
+            "accent_text_color": "#12211b"
+          }
+        },
         "benefits": {
           "type": "benefits",
           "settings": {
@@ -45,25 +69,6 @@
             "heading": "Delivery and returns",
             "content": "<p>Cash on delivery is available across India.</p><p>Orders are delivered in 3-5 working days. [SUBSTANTIATE BEFORE LAUNCH]</p><p>Unopened bottles can be returned within 7 days of delivery. [SUBSTANTIATE BEFORE LAUNCH]</p>",
             "open_by_default": false
-          }
-        },
-        "bought_together": {
-          "type": "bought_together",
-          "settings": {
-            "heading": "Frequently bought together",
-            "include_current": true,
-            "current_label": "This item",
-            "total_label": "Total price:",
-            "button_label": "Add {count} to cart",
-            "empty_label": "Select a product",
-            "savings_text": "Get {count} products for {total} and save {saved}",
-            "show_timer": true,
-            "timer_label": "Deal ends in",
-            "timer_minutes": 5,
-            "timer_on_end": "hide",
-            "glow": true,
-            "accent_color": "#f2c230",
-            "accent_text_color": "#12211b"
           }
         }
       },
