@@ -66,20 +66,20 @@
     "trust_strip": {
       "type": "trust-strip",
       "blocks": {
-        "safe": {
-          "type": "item",
-          "settings": {
-            "icon_name": "shield",
-            "label": "Safe around food & kids",
-            "description": "For everyday kitchen surfaces."
-          }
-        },
         "plant": {
           "type": "item",
           "settings": {
             "icon_name": "leaf",
             "label": "Plant-based cleansers",
             "description": "Made with cleansers derived from coconut."
+          }
+        },
+        "safe": {
+          "type": "item",
+          "settings": {
+            "icon_name": "shield",
+            "label": "Safe around food & kids",
+            "description": "For everyday kitchen surfaces."
           }
         },
         "cod": {
@@ -100,8 +100,8 @@
         }
       },
       "block_order": [
-        "safe",
         "plant",
+        "safe",
         "cod",
         "delivery"
       ],
