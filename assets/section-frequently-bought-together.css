@@ -10,45 +10,35 @@
 
 .fbt__inner {
   display: block;
-  padding: 1.6rem;
+  padding: 1.2rem;
   border: 0.1rem solid rgba(var(--color-foreground), 0.14);
   border-radius: 1.2rem;
   background-color: rgb(var(--color-background));
 }
 
 .fbt__heading {
-  margin: 0 0 1.6rem;
-  font-size: 2.2rem;
+  margin: 0 0 1rem;
+  font-size: 1.8rem;
   line-height: 1.2;
 }
 
+/* Stacked rows. Tiles put three products across a screen and a half, which
+   means the button the section is asking to be pressed is never on screen at
+   the same time as the products it applies to. Rows put the whole set, the
+   total and the button in one view on a phone. */
 .fbt__list {
-  display: flex;
-  gap: 1rem;
-  margin: 0;
-  padding: 0;
-  overflow-x: auto;
-  scroll-snap-type: x proximity;
-  -webkit-overflow-scrolling: touch;
-  list-style: none;
-  scrollbar-width: none;
-}
-
-.fbt__list::-webkit-scrollbar {
-  display: none;
-}
-
-.fbt__item {
-  flex: 0 0 46%;
-  scroll-snap-align: start;
-}
-
-.fbt__card {
-  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
-  height: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fbt__card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   padding: 0.8rem;
   border: 0.15rem solid rgba(var(--color-foreground), 0.16);
   border-radius: 1rem;
@@ -57,8 +47,8 @@
   transition: border-color 0.15s ease-out;
 }
 
-/* A ticked card is outlined in the button green, so which products are going
-   into the cart is readable at a glance rather than only from the small tick. */
+/* A ticked row is outlined in the button green, so what is going into the cart
+   is readable at a glance and not only from the small tick at the end. */
 .fbt__card:has(.fbt__checkbox:checked) {
   border-color: rgb(var(--color-button));
 }
@@ -68,11 +58,87 @@
   outline-offset: 0.2rem;
 }
 
+.fbt__media {
+  flex: 0 0 auto;
+  width: 7.2rem;
+  overflow: hidden;
+  border-radius: 0.8rem;
+  background-color: rgba(var(--color-foreground), 0.04);
+}
+
+/* Square, whatever shape the photograph is. Without the ratio pinned here a
+   tall packshot makes a tall row, and three tall rows are the problem this
+   layout exists to solve. */
+.fbt__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.fbt__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.fbt__title {
+  font-family: var(--font-heading-family);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+/* Inline with the title rather than a line of its own - it is a note about the
+   product, not a heading above it. */
+.fbt__pill {
+  display: inline-block;
+  margin-left: 0.6rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.4rem;
+  background-color: rgba(var(--color-foreground), 0.08);
+  font-family: var(--font-body-family);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  vertical-align: 0.1rem;
+}
+
+.fbt__prices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.fbt__price {
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.fbt__mrp {
+  font-size: 1.3rem;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.fbt__badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.4rem;
+  background-color: var(--fbt-accent, #f2c230);
+  color: var(--fbt-accent-text, #12211b);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
 .fbt__tick {
-  position: absolute;
-  top: 1.4rem;
-  right: 1.4rem;
-  z-index: 2;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -95,74 +161,6 @@
   color: rgb(var(--color-button-text));
 }
 
-.fbt__media {
-  display: block;
-  overflow: hidden;
-  border-radius: 0.8rem;
-  background-color: rgba(var(--color-foreground), 0.04);
-}
-
-.fbt__image {
-  display: block;
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-}
-
-.fbt__body {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.fbt__pill {
-  align-self: flex-start;
-  padding: 0.3rem 0.7rem;
-  border-radius: 0.4rem;
-  background-color: rgba(var(--color-foreground), 0.08);
-  font-size: 1.2rem;
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-.fbt__title {
-  font-family: var(--font-heading-family);
-  font-size: 1.6rem;
-  font-weight: 600;
-  line-height: 1.25;
-}
-
-.fbt__prices {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.5rem;
-  margin-top: auto;
-}
-
-.fbt__price {
-  font-size: 1.6rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.fbt__mrp {
-  font-size: 1.4rem;
-  color: rgba(var(--color-foreground), 0.6);
-}
-
-.fbt__badge {
-  padding: 0.2rem 0.6rem;
-  border-radius: 0.4rem;
-  background-color: var(--fbt-accent, #f2c230);
-  color: var(--fbt-accent-text, #12211b);
-  font-size: 1.2rem;
-  font-weight: 600;
-  line-height: 1.4;
-  white-space: nowrap;
-}
-
 /* Totals */
 
 .fbt__totals {
@@ -170,8 +168,8 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.8rem 1.6rem;
-  margin-top: 1.6rem;
+  gap: 0.6rem 1.6rem;
+  margin-top: 1.2rem;
 }
 
 .fbt__total {
@@ -235,8 +233,8 @@
   justify-content: center;
   gap: 0.8rem;
   width: 100%;
-  min-height: 5.2rem;
-  margin-top: 1.4rem;
+  min-height: 4.8rem;
+  margin-top: 1rem;
   padding: 0.8rem 1.6rem;
   border: 0;
   border-radius: 0.8rem;
@@ -270,7 +268,7 @@
 }
 
 .fbt__savings {
-  margin: 1rem 0 0;
+  margin: 0.8rem 0 0;
   font-size: 1.5rem;
   line-height: 1.4;
   text-align: center;
@@ -289,33 +287,22 @@
 
 @media screen and (min-width: 750px) {
   .fbt__inner {
-    padding: 2.4rem;
+    padding: 2rem;
   }
 
   .fbt__heading {
-    font-size: 2.8rem;
+    font-size: 2.2rem;
   }
 
-  .fbt__list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-    gap: 1.6rem;
-    overflow: visible;
-  }
-
-  .fbt__item {
-    flex: initial;
-  }
-
-  .fbt__card {
-    padding: 1.2rem;
+  .fbt__media {
+    width: 8rem;
   }
 
   .fbt__title {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
   }
 
   .fbt__button {
-    font-size: 1.8rem;
+    font-size: 1.7rem;
   }
 }
