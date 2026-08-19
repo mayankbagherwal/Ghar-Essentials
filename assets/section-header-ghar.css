@@ -122,23 +122,20 @@
   text-decoration: none;
 }
 
-/* On mobile the logo is exactly the height the slider says. It is allowed to
-   be taller than the bar and sit proud of it, which is the only way to give a
-   mark with transparent padding baked into the file some real presence without
-   making the header itself taller.
+/* The logo takes the height it is given, but never more than the bar minus
+   the inset above and below. min() does that clamping in CSS rather than
+   relying on the slider being set sensibly, so the two controls can never
+   fight and the header cannot be pushed taller than its setting.
 
-   The bar cannot grow to follow it: .ghar-header__inner has a hard height, so
-   an oversized logo overflows the row rather than stretching it. Nothing here
-   clips, so the overflow is simply drawn.
-
-   Desktop keeps its clamp further down - that layout has room and is settled.
-
-   object-fit keeps the mark's proportions if the width ceiling bites first. */
+   object-fit keeps the mark's proportions if the clamp does bite. */
 .ghar-header__logo-image {
   display: block;
   width: auto;
   max-width: var(--ghar-logo-width-mobile, 200px);
-  height: var(--ghar-logo-height-mobile, 40px);
+  height: min(
+    var(--ghar-logo-height-mobile, 40px),
+    calc(var(--ghar-header-height-mobile, 52px) - (var(--ghar-logo-inset, 8px) * 2))
+  );
   object-fit: contain;
   object-position: center;
 }
