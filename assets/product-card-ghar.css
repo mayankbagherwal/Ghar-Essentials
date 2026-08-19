@@ -160,12 +160,30 @@
   margin: 0.4rem 0 0;
 }
 
+/* Judge.me stores the badge with style="display:none" baked into the HTML and
+   relies on its own script to strip that inline style once it has decided the
+   preview badge is "installed" on the page. It makes that decision from its own
+   install markers, and a hand-built card has none, so on our grid the badge was
+   rendering correctly and then sitting there invisible - which is exactly what
+   an empty review row looks like.
+
+   The inline style can only be beaten by !important, and it is safe to beat:
+   the hiding exists to stop a flash of unstyled stars before Judge.me's CSS
+   arrives, and that stylesheet is loaded by the Judge.me app embed in the theme
+   head, so it is already there by the time this paints. The override is scoped
+   to our card, so Judge.me's own widgets elsewhere still behave normally. */
 .ghar-card__reviews .jdgm-prev-badge {
-  display: inline-flex;
+  display: inline-flex !important;
   align-items: center;
   gap: 0.5rem;
   margin: 0;
   padding: 0;
+}
+
+/* The schema.org block Judge.me prints alongside the badge is metadata for
+   search engines and carries no visible content. */
+.ghar-card__reviews .jdgm-prev-badge__rich-snippet {
+  display: none;
 }
 
 .ghar-card__reviews .jdgm-prev-badge__stars {
