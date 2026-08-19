@@ -45,8 +45,18 @@
   color: rgb(var(--color-foreground));
 }
 
+/* The square is pinned on the frame, not on the image.
+
+   aspect-ratio on the <img> itself competes with the picture's own intrinsic
+   size and the width/height attributes Shopify writes onto the tag, and it
+   does not reliably win: a 400x400 file was still rendering as a tall crop.
+   Giving the frame the ratio and letting the image fill it absolutely takes
+   the image's own dimensions out of the layout entirely, so the frame is
+   square whatever is dropped into it. */
 .problem-picker__media {
+  position: relative;
   display: block;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 0.8rem;
   background-color: rgba(var(--color-foreground), 0.05);
@@ -54,9 +64,11 @@
 
 .problem-picker__image,
 .problem-picker__placeholder {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 100%;
   object-fit: cover;
 }
 

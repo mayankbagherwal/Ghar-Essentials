@@ -1,32 +1,90 @@
-/* A slow pulse on a primary button.
+/* The glow.
 
-   It is a ring drawn outside the button with box-shadow, not a change to the
-   button's own colour, so the label keeps its contrast the whole way through
-   the animation - a button that brightens and dims is a button whose text is
-   only readable half the time.
+   A ring that pulses outward from the edge of a button or a discount tag. It
+   is drawn with box-shadow, not by changing the element's own colour, so the
+   label keeps full contrast the whole way through - a button that brightens
+   and dims is a button whose text is only readable half the time.
 
-   Nothing moves and nothing reflows: box-shadow is painted, so the pulse costs
-   no layout on a mid-range phone. */
+   box-shadow is painted, never laid out, so nothing on the page moves and the
+   animation costs no reflow on a mid-range Android. The ring is allowed to
+   overlap whatever is beside it, which is the point: it should read as light
+   coming off the element rather than as a border on it.
 
-.ghar-glow {
-  position: relative;
-  animation: ghar-glow-pulse 2.4s ease-in-out infinite;
+   Loaded from theme.liquid so it reaches every page - home, collection,
+   product, cart - without each section having to ask for it.
+
+   Colour comes from the element. Buttons pulse in the button colour; a
+   discount tag pulses in its own lemon, so the tag glows yellow while the
+   button below it glows green rather than everything sharing one wash. */
+
+.ghar-glow,
+.ghar-card__atc,
+.ghar-pdp__atc,
+.stickybuy__button,
+.fbt__button,
+.product-form__submit,
+.shopify-payment-button__button {
+  animation: ghar-glow-button 2s ease-in-out infinite;
 }
 
-@keyframes ghar-glow-pulse {
+@keyframes ghar-glow-button {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(var(--color-button), 0.45);
+    box-shadow: 0 0 0 0 rgba(var(--color-button), 0.55);
   }
 
-  50% {
-    box-shadow: 0 0 0 0.7rem rgba(var(--color-button), 0);
+  70% {
+    box-shadow: 0 0 0 1.2rem rgba(var(--color-button), 0);
   }
 }
 
-/* Someone who has asked their device for less motion gets a still button. */
+/* Discount tags. These are lemon on ink, so the ring is lemon too. The colour
+   is a variable with the brand's lemon as its fallback, so a section that
+   exposes the badge colour as a setting can hand its own value through and the
+   glow follows it. */
+.ghar-card__badge--discount,
+.ghar-card__off,
+.ghar-pdp__off,
+.fbt__badge {
+  position: relative;
+  animation: ghar-glow-badge 2s ease-in-out infinite;
+}
+
+@keyframes ghar-glow-badge {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(242, 194, 48, 0.75);
+  }
+
+  70% {
+    box-shadow: 0 0 0 0.9rem rgba(242, 194, 48, 0);
+  }
+}
+
+/* A disabled button is not asking to be pressed, so it does not pulse. */
+.ghar-glow:disabled,
+.ghar-card__atc:disabled,
+.ghar-pdp__atc:disabled,
+.stickybuy__button:disabled,
+.fbt__button:disabled,
+.product-form__submit:disabled,
+[aria-disabled='true'] {
+  animation: none;
+}
+
+/* Someone who has asked their device for less motion gets everything still. */
 @media (prefers-reduced-motion: reduce) {
-  .ghar-glow {
+  .ghar-glow,
+  .ghar-card__atc,
+  .ghar-pdp__atc,
+  .stickybuy__button,
+  .fbt__button,
+  .product-form__submit,
+  .shopify-payment-button__button,
+  .ghar-card__badge--discount,
+  .ghar-card__off,
+  .ghar-pdp__off,
+  .fbt__badge {
     animation: none;
   }
 }

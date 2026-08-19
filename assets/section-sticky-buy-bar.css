@@ -16,25 +16,11 @@
   background-color: rgb(var(--color-background));
   box-shadow: 0 -0.4rem 2rem rgba(0, 0, 0, 0.1);
 
-  /* Parked below the fold until it is wanted. Transform rather than display,
-     so it slides rather than appears. */
-  transform: translate3d(0, 110%, 0);
-  transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-
-  /* Nothing inside is reachable while it is parked, or a tap near the bottom
-     of the screen could land on a button that is not visible. */
-  visibility: hidden;
-}
-
-.stickybuy.is-visible {
-  transform: translate3d(0, 0, 0);
+  /* It does not come and go. A bar that appears and disappears reads as
+     something the page is doing; one that is simply there reads as furniture,
+     and it is present at the moment the shopper decides rather than arriving
+     after it. */
   visibility: visible;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .stickybuy {
-    transition: none;
-  }
 }
 
 /* Offer strip along the top */
@@ -192,9 +178,16 @@
   flex: 0 0 auto;
 }
 
-.stickybuy product-form,
-.stickybuy .form {
+.stickybuy product-form {
   display: block;
+}
+
+/* The form holds the quantity stepper and the button. Left as a block they sat
+   one above the other and made the bar twice as tall as it needed to be. */
+.stickybuy .form {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .stickybuy__button {
@@ -231,11 +224,15 @@
   display: none;
 }
 
-/* On a narrow phone the quantity stepper is the first thing to go: the buy
-   button matters more than being able to order two without opening the cart. */
-@media screen and (max-width: 480px) {
+/* On a phone the quantity stepper is already in the buy column at its normal
+   place, so repeating it here would spend width the button needs more. */
+@media screen and (max-width: 749px) {
   .stickybuy__quantity {
     display: none;
+  }
+
+  .stickybuy__button {
+    padding: 0 2.4rem;
   }
 }
 

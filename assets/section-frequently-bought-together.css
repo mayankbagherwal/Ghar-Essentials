@@ -90,21 +90,29 @@
   color: rgb(var(--color-button-text));
 }
 
+/* The square is pinned on the frame, not on the image.
+
+   aspect-ratio on the <img> itself competes with the picture's own intrinsic
+   size and the width/height attributes Shopify writes onto the tag, and it
+   does not reliably win: a 400x400 file was still rendering as a tall crop.
+   Giving the frame the ratio and letting the image fill it absolutely takes
+   the image's own dimensions out of the layout entirely, so the frame is
+   square whatever is dropped into it. */
 .fbt__media {
+  position: relative;
   display: block;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 0.6rem;
   background-color: rgba(var(--color-foreground), 0.04);
 }
 
-/* Square whatever shape the photograph is. Left to itself a tall packshot
-   makes a tall tile, and three tall tiles are what made this run off the
-   screen the first time. */
 .fbt__image {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
-  height: auto;
-  aspect-ratio: 1 / 1;
+  height: 100%;
   object-fit: cover;
 }
 
