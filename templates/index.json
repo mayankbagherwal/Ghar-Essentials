@@ -53,7 +53,7 @@
         "image_desktop": "shopify://shop_images/IMG_2034.png",
         "overlay_opacity": 15,
         "heading": "Clean ghar, bina harsh chemicals",
-        "subheading": "Plant-based cleaners for your kitchen, bathroom and floors.",
+        "subheading": "Choice of 15+ lakhs homes",
         "button_label": "Shop bestsellers",
         "button_link": "",
         "microproof": "",
@@ -151,6 +151,13 @@
             "label": "Hard-water stains",
             "link": ""
           }
+        },
+        "tile_W9cEcw": {
+          "type": "tile",
+          "settings": {
+            "label": "Kitchen grease",
+            "link": ""
+          }
         }
       },
       "block_order": [
@@ -158,7 +165,8 @@
         "tile_7gb8PU",
         "tile_KPMiBU",
         "tile_GHFakP",
-        "tile_PYF4pL"
+        "tile_PYF4pL",
+        "tile_W9cEcw"
       ],
       "name": "Problem picker",
       "settings": {
