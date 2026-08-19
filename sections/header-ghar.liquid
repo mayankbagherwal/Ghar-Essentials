@@ -10,6 +10,18 @@
     --ghar-logo-height: {{ section.settings.logo_height }}px;
     --ghar-logo-height-mobile: {{ section.settings.logo_height_mobile }}px;
     --ghar-logo-inset: {{ section.settings.logo_inset }}px;
+
+    {%- comment -%}
+      Zoom and nudge are the crop. The logo file has transparent space baked
+      around the mark, so a 48px box shows a mark far smaller than 48px. Rather
+      than growing the box - which is what pushed the logo over the offer bar
+      last time - the picture is scaled inside a box that never changes, and
+      the empty edges are clipped away by the box. The header cannot move,
+      whatever these are set to.
+    {%- endcomment -%}
+    --ghar-logo-zoom: {{ section.settings.logo_zoom | divided_by: 100.0 }};
+    --ghar-logo-shift-x: {{ section.settings.logo_offset_x }}%;
+    --ghar-logo-shift-y: {{ section.settings.logo_offset_y }}%;
     --ghar-header-gutter: {{ section.settings.header_gutter }}px;
     --ghar-header-gutter-mobile: {{ section.settings.header_gutter_mobile }}px;
   }
@@ -299,7 +311,7 @@
       "step": 2,
       "unit": "px",
       "label": "Logo height on desktop",
-      "info": "This is the one that makes the logo bigger. It can exceed the bar height if you want the mark to sit proud of it.",
+      "info": "The height of the box the logo sits in. It is capped at the bar height minus the inset, so this can never make the header taller.",
       "default": 56
     },
     {
@@ -310,7 +322,8 @@
       "step": 2,
       "unit": "px",
       "label": "Logo height on mobile",
-      "default": 40
+      "default": 40,
+      "info": "Capped at the bar height minus the inset, so this can never make the header taller."
     },
     {
       "type": "range",
@@ -332,6 +345,45 @@
       "unit": "px",
       "label": "Maximum logo width on mobile",
       "default": 130
+    },
+    {
+      "type": "header",
+      "content": "Logo crop"
+    },
+    {
+      "type": "paragraph",
+      "content": "Your logo file has empty space around the mark, which is why it looks small however high the box is set. Zoom in until the mark fills the box, then nudge it until it is centred. None of this changes the header's height."
+    },
+    {
+      "type": "range",
+      "id": "logo_zoom",
+      "min": 100,
+      "max": 400,
+      "step": 5,
+      "unit": "%",
+      "label": "Zoom",
+      "info": "Scales the picture inside its box. The empty edges are cropped away.",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "logo_offset_x",
+      "min": -50,
+      "max": 50,
+      "step": 1,
+      "unit": "%",
+      "label": "Nudge left or right",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "logo_offset_y",
+      "min": -50,
+      "max": 50,
+      "step": 1,
+      "unit": "%",
+      "label": "Nudge up or down",
+      "default": 0
     },
     {
       "type": "text",
