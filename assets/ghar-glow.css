@@ -1,21 +1,25 @@
 /* The glow.
 
-   A ring that pulses outward from the edge of a button or a discount tag. It
-   is drawn with box-shadow, not by changing the element's own colour, so the
-   label keeps full contrast the whole way through - a button that brightens
-   and dims is a button whose text is only readable half the time.
+   A soft halo that sits around the element and breathes, rather than a ring
+   that shoots outward and fades. The difference matters: an expanding ring
+   reads as a ripple - something that just happened - and its edge is hard, so
+   it looks like a border being drawn. A blurred halo reads as light coming off
+   the element, which is what makes a small tag look lit rather than outlined.
 
-   box-shadow is painted, never laid out, so nothing on the page moves and the
-   animation costs no reflow on a mid-range Android. The ring is allowed to
-   overlap whatever is beside it, which is the point: it should read as light
-   coming off the element rather than as a border on it.
+   It never drops to nothing. The halo is always there and the animation only
+   moves it between softer and stronger, so an element is glowing at the moment
+   it is looked at rather than only during part of a cycle.
+
+   box-shadow is painted, never laid out, so nothing on the page moves and this
+   costs no reflow on a mid-range Android.
 
    Loaded from theme.liquid so it reaches every page - home, collection,
    product, cart - without each section having to ask for it.
 
-   Colour comes from the element. Buttons pulse in the button colour; a
-   discount tag pulses in its own lemon, so the tag glows yellow while the
-   button below it glows green rather than everything sharing one wash. */
+   Colour follows the element: buttons glow in the button green, and the lemon
+   things - discount tags, the offer pill, the countdown - glow lemon. So a tag
+   and the button under it are lit in their own colours rather than sharing one
+   wash. */
 
 .ghar-glow,
 .ghar-card__atc,
@@ -24,44 +28,45 @@
 .fbt__button,
 .product-form__submit,
 .shopify-payment-button__button {
-  animation: ghar-glow-button 2s ease-in-out infinite;
+  animation: ghar-glow-button 2.4s ease-in-out infinite;
 }
 
 @keyframes ghar-glow-button {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(var(--color-button), 0.55);
+    box-shadow: 0 0 1.2rem 0.1rem rgba(var(--color-button), 0.45);
   }
 
-  70% {
-    box-shadow: 0 0 0 1.2rem rgba(var(--color-button), 0);
+  50% {
+    box-shadow: 0 0 2.4rem 0.5rem rgba(var(--color-button), 0.8);
   }
 }
 
-/* Discount tags. These are lemon on ink, so the ring is lemon too. The colour
-   is a variable with the brand's lemon as its fallback, so a section that
-   exposes the badge colour as a setting can hand its own value through and the
-   glow follows it. */
+/* The lemon set: discount tags, the offer pill in the buy bar, and the
+   countdown. These are the two things the reference site lights up, and they
+   are small, so the halo is tighter - a wide blur around a 20px tag stops
+   looking like light and starts looking like fog. */
 .ghar-card__badge--discount,
 .ghar-card__off,
 .ghar-pdp__off,
-.fbt__badge {
-  position: relative;
-  animation: ghar-glow-badge 2s ease-in-out infinite;
+.fbt__badge,
+.stickybuy__pill,
+.fbt__timer-clock {
+  animation: ghar-glow-lemon 2.4s ease-in-out infinite;
 }
 
-@keyframes ghar-glow-badge {
+@keyframes ghar-glow-lemon {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(242, 194, 48, 0.75);
+    box-shadow: 0 0 0.8rem 0.05rem rgba(242, 194, 48, 0.5);
   }
 
-  70% {
-    box-shadow: 0 0 0 0.9rem rgba(242, 194, 48, 0);
+  50% {
+    box-shadow: 0 0 1.6rem 0.3rem rgba(242, 194, 48, 0.85);
   }
 }
 
-/* A disabled button is not asking to be pressed, so it does not pulse. */
+/* A disabled button is not asking to be pressed, so it does not glow at all. */
 .ghar-glow:disabled,
 .ghar-card__atc:disabled,
 .ghar-pdp__atc:disabled,
@@ -70,9 +75,12 @@
 .product-form__submit:disabled,
 [aria-disabled='true'] {
   animation: none;
+  box-shadow: none;
 }
 
-/* Someone who has asked their device for less motion gets everything still. */
+/* Reduced motion takes away the breathing, not the glow. The halo holds at its
+   middle strength, so the element is still lit - someone who asked their
+   device for less movement asked for less movement, not for a plainer page. */
 @media (prefers-reduced-motion: reduce) {
   .ghar-glow,
   .ghar-card__atc,
@@ -80,11 +88,18 @@
   .stickybuy__button,
   .fbt__button,
   .product-form__submit,
-  .shopify-payment-button__button,
+  .shopify-payment-button__button {
+    animation: none;
+    box-shadow: 0 0 1.8rem 0.3rem rgba(var(--color-button), 0.6);
+  }
+
   .ghar-card__badge--discount,
   .ghar-card__off,
   .ghar-pdp__off,
-  .fbt__badge {
+  .fbt__badge,
+  .stickybuy__pill,
+  .fbt__timer-clock {
     animation: none;
+    box-shadow: 0 0 1.2rem 0.15rem rgba(242, 194, 48, 0.65);
   }
 }
