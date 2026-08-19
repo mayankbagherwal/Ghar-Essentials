@@ -1,0 +1,28 @@
+<div></div>
+{% schema %}
+{
+  "settings": [
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button text",
+      "info": "Write {count} where the number of ticked products should go.",
+      "default": "Add {count} to cart"
+    },
+    {
+      "type": "text",
+      "id": "savings_text",
+      "label": "Line under the button",
+      "info": "Use {count} for the number of products, {total} for the price and {saved} for the amount saved. Leave empty for none.",
+      "default": "Get {count} products for {total} and save {saved}"
+    },
+    {
+      "type": "text",
+      "id": "empty_label",
+      "label": "Button text when nothing is ticked",
+      "default": "Select a product"
+    }
+  ],
+  "name": "zz d"
+}
+{% endschema %}

@@ -1,0 +1,48 @@
+<div></div>
+{% schema %}
+{
+  "enabled_on": {
+    "templates": [
+      "product"
+    ]
+  },
+  "max_blocks": 5,
+  "settings": [
+    {
+      "type": "text",
+      "id": "x",
+      "label": "X"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product"
+        },
+        {
+          "type": "checkbox",
+          "id": "checked",
+          "label": "Ticked to start with",
+          "default": true
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bought together",
+      "blocks": [
+        {
+          "type": "product"
+        }
+      ]
+    }
+  ],
+  "name": "zz c"
+}
+{% endschema %}
