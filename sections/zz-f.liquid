@@ -1,0 +1,69 @@
+<div></div>
+{% schema %}
+{
+  "name": "zz-f",
+  "settings": [
+    {
+      "type": "text",
+      "id": "timer_label",
+      "label": "Countdown label",
+      "default": "Deal ends in"
+    },
+    {
+      "type": "text",
+      "id": "timer_end",
+      "label": "Deal ends at",
+      "info": "A real date and time, e.g. 2026-09-30 23:59. Leave empty to count down the minutes below on each visit instead.",
+      "default": ""
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "checkbox",
+      "id": "glow",
+      "label": "Make the button glow",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Discount badge background",
+      "default": "#f2c230"
+    },
+    {
+      "type": "color",
+      "id": "accent_text_color",
+      "label": "Discount badge text",
+      "default": "#12211b"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 32
+    }
+  ]
+}
+{% endschema %}
