@@ -163,7 +163,7 @@
       "name": "Problem picker",
       "settings": {
         "heading": "What are you cleaning today?",
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-1",
         "padding_top": 32,
         "padding_bottom": 32
       }
@@ -231,7 +231,7 @@
         "accent_color": "#f2c230",
         "accent_text_color": "#12211b",
         "discount_color": "#0f7a4e",
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-1",
         "padding_top": 32,
         "padding_bottom": 32
       }
@@ -335,7 +335,7 @@
         "subheading": "Refill packs and combos for a household that cleans every week.",
         "button_label": "Add bundle to cart",
         "tax_note": "Inclusive of all taxes",
-        "color_scheme": "",
+        "color_scheme": "scheme-1",
         "padding_top": 40,
         "padding_bottom": 40
       }
