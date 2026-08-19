@@ -1,0 +1,83 @@
+{% comment %}
+  Draws a five-star rating row.
+
+  The stars are ours, not the review app's. Judge.me stores its badge as a
+  block of HTML whose star glyphs are drawn by Judge.me's own stylesheet, and
+  that stylesheet arrives with the app embed - which means the row is at the
+  mercy of whether the app's CSS has loaded, and it never renders inside the
+  theme editor preview at all. Reading the numbers out of Judge.me's data and
+  drawing the stars here removes that dependency: the row is plain SVG in the
+  page, it takes the brand's colours, and it looks the same in the editor as it
+  does on the shop.
+
+  Judge.me is still the source of the numbers. It writes them to the product
+  metafield judgeme.review_widget_data every time a review lands, so this stays
+  in step with the app on its own.
+
+  Accepts:
+  - rating: {Number} Average rating out of 5. Required.
+  - count: {Number} Number of reviews. Required.
+  - count_label: {String} Text after the count, e.g. "reviews". (optional)
+  - count_label_one: {String} Text used when there is exactly one. (optional)
+  - show_count: {Boolean} Show the count beside the stars. Default: true (optional)
+  - link: {String} Wrap the row in a link, e.g. to the product's review section. (optional)
+
+  Usage:
+    {% render 'ghar-stars', rating: 4.8, count: 12, count_label: 'reviews' %}
+{% endcomment %}
+
+{%- liquid
+  assign star_rating = rating | times: 1.0
+  if star_rating > 5
+    assign star_rating = 5
+  endif
+  if star_rating < 0
+    assign star_rating = 0
+  endif
+
+  assign review_count = count | plus: 0
+  assign fill_width = star_rating | divided_by: 5.0 | times: 100 | round: 2
+
+  assign label_many = count_label | default: 'reviews'
+  assign label_one = count_label_one | default: 'review'
+  assign count_word = label_many
+  if review_count == 1
+    assign count_word = label_one
+  endif
+
+  assign aria_label = star_rating | append: ' out of 5 stars, ' | append: review_count | append: ' ' | append: count_word
+-%}
+
+{%- capture star_row -%}
+  {%- for i in (1..5) -%}
+    <svg class="ghar-stars__star" viewBox="0 0 24 24" fill="currentColor" focusable="false" aria-hidden="true">
+      <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+    </svg>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- capture star_body -%}
+  {%- comment -%}
+    Two identical rows stacked on top of each other. The filled row is clipped
+    to the score, which is what gives a half star its half - no separate
+    half-star artwork, and any rating in between lands exactly where it should.
+  {%- endcomment -%}
+  <span class="ghar-stars__track" aria-hidden="true">
+    <span class="ghar-stars__row ghar-stars__row--empty">{{ star_row }}</span>
+    <span class="ghar-stars__row ghar-stars__row--full" style="width: {{ fill_width }}%">{{ star_row }}</span>
+  </span>
+
+  {%- unless show_count == false -%}
+    <span class="ghar-stars__count">{{ review_count }} {{ count_word }}</span>
+  {%- endunless -%}
+{%- endcapture -%}
+
+{%- if link != blank -%}
+  <a class="ghar-stars ghar-stars--link" href="{{ link }}" aria-label="{{ aria_label | escape }}">
+    {{ star_body }}
+  </a>
+{%- else -%}
+  <span class="ghar-stars" role="img" aria-label="{{ aria_label | escape }}">
+    {{ star_body }}
+  </span>
+{%- endif -%}

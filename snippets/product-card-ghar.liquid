@@ -20,6 +20,10 @@
   - accent_text_color: {String} Text colour inside the "% OFF" badge. (optional)
   - discount_color: {String} Colour of the "% off" text in the price row. (optional)
   - skip_styles: {Boolean} Skip the stylesheet tag when the section already loaded it. (optional)
+  - card_blocks: {Array} The calling section's blocks. Pass section.blocks to let the
+      owner add, remove and reorder the rows inside the card from the theme editor.
+      Leave it out and the card falls back to its built-in order. (optional)
+  - review_link: {Boolean} Link the star row to the product page. Default: true (optional)
 
   The calling section must also load Dawn's add-to-cart script:
     <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
@@ -33,6 +37,7 @@
 {% endcomment %}
 
 {%- unless skip_styles -%}
+  {{ 'ghar-stars.css' | asset_url | stylesheet_tag }}
   {{ 'product-card-ghar.css' | asset_url | stylesheet_tag }}
 {%- endunless -%}
 
@@ -158,165 +163,241 @@
       </div>
     </a>
 
+    {%- comment -%}
+      The rows inside the card.
+
+      When the calling section passes its blocks in, the owner decides what
+      appears here and in what order, from the theme editor. Without them the
+      card falls back to the built-in order below, so a section that has never
+      had a block added still renders a complete card rather than an empty one.
+    {%- endcomment -%}
+    {%- liquid
+      assign use_blocks = false
+      assign card_rows = 'title,size,reviews,price,tax_note,variant_picker,button' | split: ','
+      if card_blocks != blank and card_blocks.size > 0
+        assign use_blocks = true
+        assign card_rows = card_blocks
+      endif
+
+      # Judge.me rewrites this metafield every time a review lands, so the
+      # numbers here follow the app with nothing to maintain.
+      assign jdgm = card_product.metafields.judgeme.review_widget_data.value
+      assign review_count = jdgm.number_of_reviews | default: 0
+      assign review_rating = jdgm.average_rating | default: 0
+
+      assign review_url = ''
+      unless review_link == false
+        assign review_url = card_product.url
+      endunless
+    -%}
+
     <div class="ghar-card__body">
-      {%- comment -%} 3. Title, clamped to two lines in CSS {%- endcomment -%}
-      <h3 class="ghar-card__title">
-        <a href="{{ card_product.url }}" id="GharCardLink-{{ card_uid }}">
-          {{- card_product.title | escape -}}
-        </a>
-      </h3>
+      {%- for card_row in card_rows -%}
+        {%- liquid
+          if use_blocks
+            assign row_type = card_row.type
+            assign row = card_row.settings
+          else
+            assign row_type = card_row
+            assign row = blank
+          endif
+        -%}
 
-      {%- comment -%} 4. Size / variant line {%- endcomment -%}
-      {%- if show_size_line -%}
-        <p class="ghar-card__size" data-ghar-size>{{ variant.title | escape }}</p>
-      {%- endif -%}
-
-      {%- comment -%}
-        5. Review row - the Judge.me preview badge (stars + review count).
-
-        A card is rendered inside a loop, so it cannot take a Shopify app block
-        the way the product page does. Judge.me's own markup is used instead,
-        and it has two halves that both matter:
-
-        - The metafield prints the badge HTML with the page, so the stars are
-          there in the first paint rather than appearing a moment later.
-        - The class and data attributes are what Judge.me's script looks for.
-          It fills the div in if the metafield has not been written yet, and
-          keeps it in step after that.
-
-        Height is reserved in CSS so the price row does not jump if the script
-        fills the div in after load. Judge.me prints nothing for a product with
-        no reviews unless "show badge when there are no reviews" is turned on
-        in its settings.
-      {%- endcomment -%}
-      <div
-        class="jdgm-widget jdgm-preview-badge ghar-card__reviews"
-        data-id="{{ card_product.id }}"
-        data-template="{{ template | split: '.' | first }}"
-      >
-        {{- card_product.metafields.judgeme.badge -}}
-      </div>
-
-      {%- comment -%} 6. Price row {%- endcomment -%}
-      <div class="ghar-card__prices">
-        <span class="ghar-card__price" data-ghar-price>{{ variant.price | money }}</span>
-
-        <s
-          class="ghar-card__mrp"
-          data-ghar-mrp
-          {% if discount_percent == 0 %}
-            hidden
+        <div
+          class="ghar-card__row ghar-card__row--{{ row_type | replace: '@', '' }}"
+          {% if use_blocks and editor_attributes %}
+            {{ card_row.shopify_attributes }}
           {% endif %}
         >
-          {%- if discount_percent > 0 -%}{{ variant.compare_at_price | money }}{%- endif -%}
-        </s>
+          {%- case row_type -%}
+            {%- comment -%} Title, clamped to two lines in CSS {%- endcomment -%}
+            {%- when 'title' -%}
+              <h3 class="ghar-card__title">
+                <a href="{{ card_product.url }}" id="GharCardLink-{{ card_uid }}">
+                  {{- card_product.title | escape -}}
+                </a>
+              </h3>
 
-        <span
-          class="ghar-card__off"
-          data-ghar-off
-          {% if discount_percent == 0 %}
-            hidden
-          {% endif %}
-        >
-          {%- if discount_percent > 0 -%}{{ discount_percent }}% off{%- endif -%}
-        </span>
-      </div>
+            {%- comment -%} Size / variant line {%- endcomment -%}
+            {%- when 'size' -%}
+              {%- if show_size_line -%}
+                <p class="ghar-card__size" data-ghar-size>{{ variant.title | escape }}</p>
+              {%- endif -%}
 
-      {%- if tax_note != blank -%}
-        <p class="ghar-card__tax">{{ tax_note | escape }}</p>
-      {%- endif -%}
-
-      {%- comment -%} 7. Variant selector, so size changes without leaving the grid {%- endcomment -%}
-      {%- if show_picker -%}
-        <div class="ghar-card__variants">
-          <label class="visually-hidden" for="GharCardVariant-{{ card_uid }}">
-            {{- 'products.product.product_variants' | t -}}
-          </label>
-          <select
-            id="GharCardVariant-{{ card_uid }}"
-            class="ghar-card__select"
-            data-ghar-variant-select
-          >
-            {%- for product_variant in card_product.variants -%}
-              <option
-                value="{{ product_variant.id }}"
-                {% if product_variant.id == variant.id %}
-                  selected
-                {% endif %}
-              >
-                {{ product_variant.title | escape }}
-                {%- unless product_variant.available %} — {{ 'products.product.sold_out' | t }}{% endunless -%}
-              </option>
-            {%- endfor -%}
-          </select>
-        </div>
-
-        <script type="application/json" data-ghar-variants>
-          [
-            {%- for product_variant in card_product.variants -%}
-              {
-                "id": {{ product_variant.id | json }},
-                "title": {{ product_variant.title | json }},
-                "available": {{ product_variant.available | json }},
-                "price": {{ product_variant.price | money | json }},
-                "compare_at_price": {% if product_variant.compare_at_price > product_variant.price %}{{ product_variant.compare_at_price | money | json }}{% else %}null{% endif %},
-                "discount": {% if product_variant.compare_at_price > product_variant.price %}{{ product_variant.compare_at_price | minus: product_variant.price | times: 100.0 | divided_by: product_variant.compare_at_price | round }}{% else %}0{% endif %}
-              }{%- unless forloop.last -%},{%- endunless -%}
-            {%- endfor -%}
-          ]
-        </script>
-      {%- endif -%}
-
-      {%- comment -%} 8. Add to Cart — always visible, never behind a hover or a tap {%- endcomment -%}
-      <div class="ghar-card__form">
-        <product-form data-section-id="{{ section_id }}">
-          {%- form 'product',
-            card_product,
-            id: card_form_id,
-            class: 'form',
-            novalidate: 'novalidate',
-            data-type: 'add-to-cart-form'
-          -%}
-            <input
-              type="hidden"
-              name="id"
-              value="{{ variant.id }}"
-              class="product-variant-id"
-              data-ghar-variant-id
-            >
-            <input type="hidden" name="quantity" value="1">
-
-            <button
-              type="submit"
-              name="add"
-              class="ghar-card__atc"
-              data-ghar-atc
-              data-add-label="{{ 'products.product.add_to_cart' | t | escape }}"
-              data-sold-out-label="{{ 'products.product.sold_out' | t | escape }}"
-              aria-labelledby="GharCardLink-{{ card_uid }}"
-              {% if card_product.available == false %}
-                disabled
-              {% endif %}
-            >
-              <span data-ghar-atc-text>
-                {%- if card_product.available -%}
-                  {{- 'products.product.add_to_cart' | t -}}
-                {%- else -%}
-                  {{- 'products.product.sold_out' | t -}}
+            {%- comment -%}
+              Star rating. Drawn by the theme from Judge.me's numbers rather
+              than by Judge.me's own markup - see snippets/ghar-stars.liquid
+              for why. A product with no reviews yet shows the line the owner
+              sets, or nothing at all if that is left empty.
+            {%- endcomment -%}
+            {%- when 'reviews' -%}
+              <div class="ghar-card__reviews">
+                {%- if review_count > 0 -%}
+                  {%- render 'ghar-stars',
+                    rating: review_rating,
+                    count: review_count,
+                    count_label: row.count_label,
+                    count_label_one: row.count_label_one,
+                    show_count: row.show_count,
+                    link: review_url
+                  -%}
+                {%- elsif row.empty_text != blank -%}
+                  <span class="ghar-card__reviews-empty">{{ row.empty_text | escape }}</span>
                 {%- endif -%}
-              </span>
-              <span class="sold-out-message hidden">
-                {{- 'products.product.sold_out' | t -}}
-              </span>
-              {%- render 'loading-spinner' -%}
-            </button>
+              </div>
 
-            <div class="product-form__error-message-wrapper ghar-card__error" role="alert" hidden>
-              <span class="product-form__error-message"></span>
-            </div>
-          {%- endform -%}
-        </product-form>
-      </div>
+            {%- comment -%} Price, MRP and the saving, all calculated {%- endcomment -%}
+            {%- when 'price' -%}
+              <div class="ghar-card__prices">
+                <span class="ghar-card__price" data-ghar-price>{{ variant.price | money }}</span>
+
+                <s
+                  class="ghar-card__mrp"
+                  data-ghar-mrp
+                  {% if discount_percent == 0 %}
+                    hidden
+                  {% endif %}
+                >
+                  {%- if discount_percent > 0 -%}{{ variant.compare_at_price | money }}{%- endif -%}
+                </s>
+
+                <span
+                  class="ghar-card__off"
+                  data-ghar-off
+                  {% if discount_percent == 0 %}
+                    hidden
+                  {% endif %}
+                >
+                  {%- if discount_percent > 0 -%}{{ discount_percent }}% off{%- endif -%}
+                </span>
+              </div>
+
+            {%- comment -%} Tax line. The block's own wording wins, if it has any. {%- endcomment -%}
+            {%- when 'tax_note' -%}
+              {%- assign tax_line = row.text | default: tax_note -%}
+              {%- if tax_line != blank -%}
+                <p class="ghar-card__tax">{{ tax_line | escape }}</p>
+              {%- endif -%}
+
+            {%- comment -%} A free line the owner can write, e.g. a delivery promise {%- endcomment -%}
+            {%- when 'text' -%}
+              {%- if row.content != blank -%}
+                <div class="ghar-card__text">{{ row.content }}</div>
+              {%- endif -%}
+
+            {%- comment -%} Size selector, so a size change does not cost a page load {%- endcomment -%}
+            {%- when 'variant_picker' -%}
+              {%- if show_picker -%}
+                <div class="ghar-card__variants">
+                  <label class="visually-hidden" for="GharCardVariant-{{ card_uid }}">
+                    {{- 'products.product.product_variants' | t -}}
+                  </label>
+                  <select
+                    id="GharCardVariant-{{ card_uid }}"
+                    class="ghar-card__select"
+                    data-ghar-variant-select
+                  >
+                    {%- for product_variant in card_product.variants -%}
+                      <option
+                        value="{{ product_variant.id }}"
+                        {% if product_variant.id == variant.id %}
+                          selected
+                        {% endif %}
+                      >
+                        {{ product_variant.title | escape }}
+                        {%- unless product_variant.available %} — {{ 'products.product.sold_out' | t }}{% endunless -%}
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                </div>
+
+                <script type="application/json" data-ghar-variants>
+                  [
+                    {%- for product_variant in card_product.variants -%}
+                      {
+                        "id": {{ product_variant.id | json }},
+                        "title": {{ product_variant.title | json }},
+                        "available": {{ product_variant.available | json }},
+                        "price": {{ product_variant.price | money | json }},
+                        "compare_at_price": {% if product_variant.compare_at_price > product_variant.price %}{{ product_variant.compare_at_price | money | json }}{% else %}null{% endif %},
+                        "discount": {% if product_variant.compare_at_price > product_variant.price %}{{ product_variant.compare_at_price | minus: product_variant.price | times: 100.0 | divided_by: product_variant.compare_at_price | round }}{% else %}0{% endif %}
+                      }{%- unless forloop.last -%},{%- endunless -%}
+                    {%- endfor -%}
+                  ]
+                </script>
+              {%- endif -%}
+
+            {%- comment -%} Add to cart. Always visible, never behind a hover or a tap. {%- endcomment -%}
+            {%- when 'button' -%}
+              {%- liquid
+                assign add_label = 'products.product.add_to_cart' | t
+                if row.label != blank
+                  assign add_label = row.label
+                endif
+                assign sold_out_label = 'products.product.sold_out' | t
+              -%}
+              <div class="ghar-card__form">
+                <product-form data-section-id="{{ section_id }}">
+                  {%- form 'product',
+                    card_product,
+                    id: card_form_id,
+                    class: 'form',
+                    novalidate: 'novalidate',
+                    data-type: 'add-to-cart-form'
+                  -%}
+                    <input
+                      type="hidden"
+                      name="id"
+                      value="{{ variant.id }}"
+                      class="product-variant-id"
+                      data-ghar-variant-id
+                    >
+                    <input type="hidden" name="quantity" value="1">
+
+                    <button
+                      type="submit"
+                      name="add"
+                      class="ghar-card__atc"
+                      data-ghar-atc
+                      data-add-label="{{ add_label | escape }}"
+                      data-sold-out-label="{{ sold_out_label | escape }}"
+                      aria-labelledby="GharCardLink-{{ card_uid }}"
+                      {% if card_product.available == false %}
+                        disabled
+                      {% endif %}
+                    >
+                      <span data-ghar-atc-text>
+                        {%- if card_product.available -%}
+                          {{- add_label -}}
+                        {%- else -%}
+                          {{- sold_out_label -}}
+                        {%- endif -%}
+                      </span>
+                      <span class="sold-out-message hidden">
+                        {{- sold_out_label -}}
+                      </span>
+                      {%- render 'loading-spinner' -%}
+                    </button>
+
+                    <div class="product-form__error-message-wrapper ghar-card__error" role="alert" hidden>
+                      <span class="product-form__error-message"></span>
+                    </div>
+                  {%- endform -%}
+                </product-form>
+              </div>
+
+            {%- comment -%}
+              An app block the owner added to the card. It renders in every
+              card in the grid; whether it can tell which product it is sitting
+              in is up to the app.
+            {%- endcomment -%}
+            {%- when '@app' -%}
+              {%- if use_blocks -%}
+                {%- render card_row -%}
+              {%- endif -%}
+          {%- endcase -%}
+        </div>
+      {%- endfor -%}
     </div>
   </ghar-product-card>
 {%- endif -%}

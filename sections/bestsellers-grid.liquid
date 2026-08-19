@@ -1,3 +1,4 @@
+{{ 'ghar-stars.css' | asset_url | stylesheet_tag }}
 {{ 'product-card-ghar.css' | asset_url | stylesheet_tag }}
 {{ 'section-bestsellers-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
@@ -52,6 +53,8 @@
             {% render 'product-card-ghar',
               card_product: product,
               section_id: section.id,
+              card_blocks: section.blocks,
+              editor_attributes: forloop.first,
               tax_note: section.settings.tax_note,
               secondary_badge: section.settings.secondary_badge,
               accent_color: section.settings.accent_color,
@@ -217,9 +220,139 @@
       "default": 32
     }
   ],
+  "max_blocks": 12,
+  "blocks": [
+    {
+      "type": "title",
+      "name": "Product name",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "size",
+      "name": "Size line",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Shows the selected size, e.g. 500 ml. Hidden on products that only come in one size."
+        }
+      ]
+    },
+    {
+      "type": "reviews",
+      "name": "Star rating",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Stars and the count come straight from Judge.me. There is nothing to fill in - a product shows its rating as soon as it has one review."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_count",
+          "label": "Show the number of reviews",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "count_label",
+          "label": "Word after the count",
+          "default": "reviews"
+        },
+        {
+          "type": "text",
+          "id": "count_label_one",
+          "label": "Word when there is only one",
+          "default": "review"
+        },
+        {
+          "type": "text",
+          "id": "empty_text",
+          "label": "Text before a product has any reviews",
+          "info": "Leave empty to show nothing at all.",
+          "default": "No reviews yet"
+        }
+      ]
+    },
+    {
+      "type": "price",
+      "name": "Price and savings",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Price, the struck-out MRP and the percentage saved. All three are read from the product - the percentage is worked out, never typed in."
+        }
+      ]
+    },
+    {
+      "type": "tax_note",
+      "name": "Tax line",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "info": "Leave empty to use the tax line set further down in this section.",
+          "default": "Inclusive of all taxes"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "name": "Line of text",
+      "settings": [
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Text",
+          "default": "<p>Free delivery above Rs. 499</p>"
+        }
+      ]
+    },
+    {
+      "type": "variant_picker",
+      "name": "Size selector",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "paragraph",
+          "content": "Lets a shopper change size without leaving the grid. Hidden on products that only come in one size."
+        }
+      ]
+    },
+    {
+      "type": "button",
+      "name": "Add to cart button",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "label",
+          "label": "Button text",
+          "info": "Leave empty to use the theme's own wording.",
+          "default": "Add to cart"
+        }
+      ]
+    },
+    {
+      "type": "@app"
+    }
+  ],
   "presets": [
     {
-      "name": "Bestsellers grid"
+      "name": "Bestsellers grid",
+      "blocks": [
+        { "type": "title" },
+        { "type": "size" },
+        { "type": "reviews" },
+        { "type": "price" },
+        { "type": "tax_note" },
+        { "type": "variant_picker" },
+        { "type": "button" }
+      ]
     }
   ]
 }

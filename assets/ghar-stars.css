@@ -1,0 +1,63 @@
+/* The five-star rating row. Drawn here rather than by the review app, so it
+   takes the brand's colours and renders the same in the theme editor as it
+   does on the shop.
+
+   The fill is done by stacking two identical rows and clipping the top one to
+   the score. That keeps a 4.3 looking like a 4.3 instead of rounding to a
+   whole star, and it needs no half-star artwork. */
+
+.ghar-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  line-height: 1;
+}
+
+.ghar-stars--link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.ghar-stars--link:hover .ghar-stars__count {
+  text-decoration: underline;
+}
+
+.ghar-stars__track {
+  position: relative;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.ghar-stars__row {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  white-space: nowrap;
+}
+
+/* The empty row sets the width of the track, so the filled row above it has
+   something definite to be a percentage of. */
+.ghar-stars__row--empty {
+  color: var(--ghar-star-empty, rgba(var(--color-foreground), 0.22));
+}
+
+.ghar-stars__row--full {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  color: var(--ghar-star-color, #f2c230);
+}
+
+.ghar-stars__star {
+  width: var(--ghar-star-size, 1.5rem);
+  height: var(--ghar-star-size, 1.5rem);
+  flex: 0 0 auto;
+}
+
+.ghar-stars__count {
+  font-size: var(--ghar-star-text-size, 1.3rem);
+  line-height: 1;
+  color: rgba(var(--color-foreground), 0.7);
+  white-space: nowrap;
+}

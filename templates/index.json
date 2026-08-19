@@ -178,6 +178,54 @@
     },
     "bestsellers": {
       "type": "bestsellers-grid",
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {}
+        },
+        "size": {
+          "type": "size",
+          "settings": {}
+        },
+        "reviews": {
+          "type": "reviews",
+          "settings": {
+            "show_count": true,
+            "count_label": "reviews",
+            "count_label_one": "review",
+            "empty_text": "No reviews yet"
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "tax_note": {
+          "type": "tax_note",
+          "settings": {
+            "text": "Inclusive of all taxes"
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {}
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "label": "Add to cart"
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "size",
+        "reviews",
+        "price",
+        "tax_note",
+        "variant_picker",
+        "button"
+      ],
       "settings": {
         "heading": "Our bestsellers",
         "subheading": "",
