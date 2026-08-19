@@ -257,16 +257,21 @@
       {%- comment -%}
         The buy column's own Add to cart, quantity and Buy it now.
 
-        Off by default. The single-product path lives in the sticky bar at the
-        bottom of the screen instead, which leaves the bundle's "add all three"
-        as the only button in this column - so the offer reads as the thing to
-        do rather than as one option sitting beside a plainer one.
+        On a phone these stay. Everything in this column is stacked there, so a
+        shopper who does not want the set would otherwise have to scroll past
+        the whole of it to find any way to buy one thing - and the bundle's
+        three photographs are most of a screen on their own.
 
-        Turn it back on in this section's settings if that ever needs undoing.
-        Nothing else depends on it: the size picker, the price and the sticky
-        bar all work whether it is here or not.
+        On a desktop they go. The column is beside the gallery rather than
+        under it, the set is in view without scrolling, and a plainer button
+        sitting next to it just hands the shopper the smaller decision.
+
+        Which of those applies is a setting, and the hiding is done in CSS
+        rather than by guessing the device server-side, so a resized window
+        gets it right too.
       {%- endcomment -%}
-      {%- if section.settings.show_buy_buttons -%}
+      {%- unless section.settings.buy_buttons == 'never' -%}
+        <div class="ghar-pdp__buy{% if section.settings.buy_buttons == 'mobile' %} ghar-pdp__buy--mobile-only{% endif %}">
       <product-form data-section-id="{{ section.id }}">
         {%- form 'product',
           product,
@@ -352,7 +357,8 @@
           </div>
         {%- endform -%}
       </product-form>
-      {%- endif -%}
+        </div>
+      {%- endunless -%}
 
       {%- comment -%}
         Payment notes sit next to the buttons on purpose — this is the point of
@@ -458,11 +464,25 @@
       "default": "Cash on delivery available. Delivered in 3-5 days."
     },
     {
-      "type": "checkbox",
-      "id": "show_buy_buttons",
-      "label": "Show Add to cart in the buy column",
-      "info": "Off by default: the sticky bar at the bottom carries the single-product purchase, leaving the bundle's button as the only one here.",
-      "default": false
+      "type": "select",
+      "id": "buy_buttons",
+      "label": "Add to cart in the buy column",
+      "options": [
+        {
+          "value": "mobile",
+          "label": "On phones only"
+        },
+        {
+          "value": "always",
+          "label": "Always"
+        },
+        {
+          "value": "never",
+          "label": "Never"
+        }
+      ],
+      "info": "On phones the column is one long stack, so a direct way to buy one item is worth keeping. On desktop the set is already in view and a plainer button beside it only offers the smaller decision.",
+      "default": "mobile"
     },
     {
       "type": "checkbox",

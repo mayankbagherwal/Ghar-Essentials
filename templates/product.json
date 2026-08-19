@@ -92,7 +92,8 @@
         "accent_text_color": "#12211b",
         "discount_color": "#0f7a4e",
         "padding_top": 24,
-        "padding_bottom": 36
+        "padding_bottom": 36,
+        "buy_buttons": "mobile"
       }
     },
     "disclosures": {

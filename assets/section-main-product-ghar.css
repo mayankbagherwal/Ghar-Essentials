@@ -441,6 +441,13 @@
 }
 
 @media screen and (min-width: 750px) {
+  /* Above this width the buy column sits beside the gallery, the bundle is in
+     view without scrolling, and a second, plainer button next to it only
+     offers the shopper the smaller decision. */
+  .ghar-pdp__buy--mobile-only {
+    display: none;
+  }
+
   .ghar-pdp {
     display: block;
     max-width: var(--page-width);

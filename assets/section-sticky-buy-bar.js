@@ -29,10 +29,21 @@ if (!customElements.get('ghar-sticky-buy')) {
         this.bindQuantity();
         this.bindVariants();
         this.watchBuyButton();
+
+        /* Rotating a phone or dragging a window across the breakpoint changes
+           which button is on screen, and with it which one the bar should be
+           watching. */
+        this.breakpoint = window.matchMedia('(min-width: 750px)');
+        this.onBreakpoint = () => {
+          if (this.observer) this.observer.disconnect();
+          this.watchBuyButton();
+        };
+        this.breakpoint.addEventListener('change', this.onBreakpoint);
       }
 
       disconnectedCallback() {
         if (this.observer) this.observer.disconnect();
+        if (this.breakpoint) this.breakpoint.removeEventListener('change', this.onBreakpoint);
         document.removeEventListener('ghar:variant:change', this.onVariant);
       }
 
@@ -47,8 +58,16 @@ if (!customElements.get('ghar-sticky-buy')) {
            Deliberately not falling back to any .product-form__submit on the
            page: the related-products grid further down has those, and watching
            one of them would keep the bar hidden for most of the page. */
-        const target =
-          document.querySelector('[data-ghar-atc]') || document.querySelector('[data-fbt-add]');
+        const buyButton = document.querySelector('[data-ghar-atc]');
+
+        /* The buy column's button is in the markup on every screen and hidden
+           by CSS above the phone breakpoint, so its presence is not the
+           question - whether it is actually being shown is. offsetParent is
+           null for anything display:none, which answers that without this file
+           needing to know what the breakpoint is. */
+        const target = buyButton && buyButton.offsetParent !== null
+          ? buyButton
+          : document.querySelector('[data-fbt-add]');
 
         /* No buy button on the page to hide behind - a gift card template, say.
            Showing the bar unconditionally is the safe answer: the shopper can
