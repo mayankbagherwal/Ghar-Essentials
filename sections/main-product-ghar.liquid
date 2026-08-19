@@ -254,6 +254,19 @@
         </script>
       {%- endif -%}
 
+      {%- comment -%}
+        The buy column's own Add to cart, quantity and Buy it now.
+
+        Off by default. The single-product path lives in the sticky bar at the
+        bottom of the screen instead, which leaves the bundle's "add all three"
+        as the only button in this column - so the offer reads as the thing to
+        do rather than as one option sitting beside a plainer one.
+
+        Turn it back on in this section's settings if that ever needs undoing.
+        Nothing else depends on it: the size picker, the price and the sticky
+        bar all work whether it is here or not.
+      {%- endcomment -%}
+      {%- if section.settings.show_buy_buttons -%}
       <product-form data-section-id="{{ section.id }}">
         {%- form 'product',
           product,
@@ -339,6 +352,7 @@
           </div>
         {%- endform -%}
       </product-form>
+      {%- endif -%}
 
       {%- comment -%}
         Payment notes sit next to the buttons on purpose — this is the point of
@@ -445,9 +459,16 @@
     },
     {
       "type": "checkbox",
+      "id": "show_buy_buttons",
+      "label": "Show Add to cart in the buy column",
+      "info": "Off by default: the sticky bar at the bottom carries the single-product purchase, leaving the bundle's button as the only one here.",
+      "default": false
+    },
+    {
+      "type": "checkbox",
       "id": "show_buy_now",
       "label": "Show Buy Now button",
-      "info": "Needs dynamic checkout turned on in Settings, Payments.",
+      "info": "Only applies when Add to cart above is showing.",
       "default": true
     },
     {

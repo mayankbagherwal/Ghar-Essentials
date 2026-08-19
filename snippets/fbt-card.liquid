@@ -28,15 +28,9 @@
 
 <li class="fbt__item" {% if block %}{{ block.shopify_attributes }}{% endif %}>
   {%- comment -%}
-    A row, not a tile. The set sits in the buy column beside the price, so it
-    has to be readable in one glance without scrolling past the button that
-    the whole thing is asking the shopper to press. Three tiles are a screen
-    and a half; three rows are half a screen.
-
-    The tick comes last in the markup so it can be an ordinary item at the end
-    of the row rather than something positioned on top of the card. It still
-    follows the checkbox, which is all the sibling selector that styles it
-    needs.
+    A tile, three across. The whole tile is a label around a real checkbox, so
+    tapping anywhere on it toggles the product and the keyboard and screen
+    reader get a genuine control rather than a div pretending to be one.
   {%- endcomment -%}
   <label class="fbt__card">
     <input
@@ -51,15 +45,21 @@
       {% endif %}
     >
 
+    <span class="fbt__tick" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+        <path d="M20 6 9 17l-5-5"/>
+      </svg>
+    </span>
+
     <span class="fbt__media">
       {%- if card_product.featured_media -%}
         {{
           card_product.featured_media
-          | image_url: width: 200
+          | image_url: width: 400
           | image_tag:
             loading: 'lazy',
-            widths: '72,110,144,200',
-            sizes: '7.2rem',
+            widths: '110,150,220,300,400',
+            sizes: '(min-width: 750px) 14rem, 30vw',
             class: 'fbt__image',
             alt: card_product.featured_media.alt | default: card_product.title
         }}
@@ -69,12 +69,7 @@
     </span>
 
     <span class="fbt__body">
-      <span class="fbt__title">
-        {{- card_product.title | escape -}}
-        {%- if is_current and current_label != blank -%}
-          <span class="fbt__pill">{{ current_label | escape }}</span>
-        {%- endif -%}
-      </span>
+      <span class="fbt__title">{{ card_product.title | escape }}</span>
 
       <span class="fbt__prices">
         <span class="fbt__price">{{ fbt_variant.price | money }}</span>
@@ -83,12 +78,6 @@
           <span class="fbt__badge">{{ fbt_discount }}% off</span>
         {%- endif -%}
       </span>
-    </span>
-
-    <span class="fbt__tick" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" focusable="false">
-        <path d="M20 6 9 17l-5-5"/>
-      </svg>
     </span>
   </label>
 </li>

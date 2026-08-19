@@ -39,9 +39,16 @@ if (!customElements.get('ghar-sticky-buy')) {
       /* ---- when to show ---- */
 
       watchBuyButton() {
+        /* Whichever button is the page's own call to action. When the buy
+           column's Add to cart is turned off, that is the bundle's button, and
+           the bar takes over once it scrolls away - so there are never two
+           buttons on screen asking for the same tap.
+
+           Deliberately not falling back to any .product-form__submit on the
+           page: the related-products grid further down has those, and watching
+           one of them would keep the bar hidden for most of the page. */
         const target =
-          document.querySelector('[data-ghar-atc]') ||
-          document.querySelector('.product-form__submit');
+          document.querySelector('[data-ghar-atc]') || document.querySelector('[data-fbt-add]');
 
         /* No buy button on the page to hide behind - a gift card template, say.
            Showing the bar unconditionally is the safe answer: the shopper can
