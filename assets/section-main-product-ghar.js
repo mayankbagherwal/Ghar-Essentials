@@ -67,6 +67,13 @@ if (!customElements.get('ghar-product-info')) {
 
         this.updateButton(variant.available);
         this.updateUrl(variant.id);
+
+        /* Anything else on the page that shows this product's price - the
+           sticky buy bar at the bottom - listens for this rather than reaching
+           into the picker itself, so neither has to know the other exists. */
+        document.dispatchEvent(
+          new CustomEvent('ghar:variant:change', { bubbles: true, detail: variant })
+        );
       }
 
       updateButton(available) {

@@ -1,0 +1,32 @@
+/* A slow pulse on a primary button.
+
+   It is a ring drawn outside the button with box-shadow, not a change to the
+   button's own colour, so the label keeps its contrast the whole way through
+   the animation - a button that brightens and dims is a button whose text is
+   only readable half the time.
+
+   Nothing moves and nothing reflows: box-shadow is painted, so the pulse costs
+   no layout on a mid-range phone. */
+
+.ghar-glow {
+  position: relative;
+  animation: ghar-glow-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes ghar-glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(var(--color-button), 0.45);
+  }
+
+  50% {
+    box-shadow: 0 0 0 0.7rem rgba(var(--color-button), 0);
+  }
+}
+
+/* Someone who has asked their device for less motion gets a still button. */
+@media (prefers-reduced-motion: reduce) {
+  .ghar-glow {
+    animation: none;
+  }
+}

@@ -1,0 +1,82 @@
+{% comment %}
+  One tickable product in the "frequently bought together" set.
+
+  The whole card is a label wrapping a real checkbox, so a tap anywhere on it
+  toggles the product and the keyboard and screen reader get a genuine control
+  rather than a div pretending to be one.
+
+  Accepts:
+  - card_product: {Object} Product object. Required.
+  - is_current: {Boolean} This is the product the page is about. (optional)
+  - current_label: {String} Small label to show on that card. (optional)
+  - block: {Object} The section block, when the product came from one. (optional)
+{% endcomment %}
+
+{%- liquid
+  assign fbt_variant = card_product.selected_or_first_available_variant
+
+  assign fbt_discount = 0
+  if fbt_variant.compare_at_price > fbt_variant.price
+    assign fbt_discount = fbt_variant.compare_at_price | minus: fbt_variant.price | times: 100.0 | divided_by: fbt_variant.compare_at_price | round
+  endif
+
+  assign fbt_checked = true
+  if block != blank and block.settings.checked == false
+    assign fbt_checked = false
+  endif
+-%}
+
+<li class="fbt__item" {% if block %}{{ block.shopify_attributes }}{% endif %}>
+  <label class="fbt__card">
+    <input
+      class="fbt__checkbox visually-hidden"
+      type="checkbox"
+      data-fbt-item
+      value="{{ fbt_variant.id }}"
+      data-price="{{ fbt_variant.price }}"
+      data-compare="{{ fbt_variant.compare_at_price | default: fbt_variant.price }}"
+      {% if fbt_checked %}
+        checked
+      {% endif %}
+    >
+
+    <span class="fbt__tick" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+        <path d="M20 6 9 17l-5-5"/>
+      </svg>
+    </span>
+
+    <span class="fbt__media">
+      {%- if card_product.featured_media -%}
+        {{
+          card_product.featured_media
+          | image_url: width: 400
+          | image_tag:
+            loading: 'lazy',
+            widths: '150,200,300,400',
+            sizes: '(min-width: 750px) 20rem, 30vw',
+            class: 'fbt__image',
+            alt: card_product.featured_media.alt | default: card_product.title
+        }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'fbt__image placeholder-svg' }}
+      {%- endif -%}
+    </span>
+
+    <span class="fbt__body">
+      {%- if is_current and current_label != blank -%}
+        <span class="fbt__pill">{{ current_label | escape }}</span>
+      {%- endif -%}
+
+      <span class="fbt__title">{{ card_product.title | escape }}</span>
+
+      <span class="fbt__prices">
+        <span class="fbt__price">{{ fbt_variant.price | money }}</span>
+        {%- if fbt_discount > 0 -%}
+          <s class="fbt__mrp">{{ fbt_variant.compare_at_price | money }}</s>
+          <span class="fbt__badge">{{ fbt_discount }}% off</span>
+        {%- endif -%}
+      </span>
+    </span>
+  </label>
+</li>

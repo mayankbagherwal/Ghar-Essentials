@@ -1,0 +1,272 @@
+{{ 'ghar-glow.css' | asset_url | stylesheet_tag }}
+{{ 'section-sticky-buy-bar.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'section-sticky-buy-bar.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign scheme = section.settings.color_scheme | default: 'scheme-1'
+  assign strip_scheme = section.settings.strip_color_scheme | default: 'scheme-4'
+  assign bar_variant = product.selected_or_first_available_variant
+  assign bar_form_id = 'GharStickyBuy-' | append: section.id
+-%}
+
+{%- if product != blank -%}
+  <ghar-sticky-buy
+    class="stickybuy color-{{ scheme }}"
+    data-section-id="{{ section.id }}"
+  >
+    {%- comment -%}
+      The offer strip. It links somewhere real or it is not a strip - a line of
+      text that looks tappable and is not is worse than no line at all.
+    {%- endcomment -%}
+    {%- if section.settings.show_strip and section.settings.strip_text != blank -%}
+      <a
+        class="stickybuy__strip color-{{ strip_scheme }}"
+        href="{{ section.settings.strip_link | default: routes.all_products_collection_url }}"
+        style="--stickybuy-pill: {{ section.settings.pill_color }}; --stickybuy-pill-text: {{ section.settings.pill_text_color }};"
+      >
+        {%- if section.settings.pill_text != blank -%}
+          <span class="stickybuy__pill">{{ section.settings.pill_text | escape }}</span>
+        {%- endif -%}
+
+        <span>{{ section.settings.strip_text | escape }}</span>
+
+        <span class="stickybuy__strip-arrow" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+            <path d="M4 12h15M13 6l6 6-6 6"/>
+          </svg>
+        </span>
+      </a>
+    {%- endif -%}
+
+    <div class="stickybuy__row page-width">
+      {%- if section.settings.show_thumbnail -%}
+        <span class="stickybuy__thumb">
+          {%- if product.featured_media -%}
+            {{
+              product.featured_media
+              | image_url: width: 160
+              | image_tag:
+                loading: 'lazy',
+                widths: '80,112,160',
+                sizes: '5.6rem',
+                alt: product.featured_media.alt | default: product.title
+            }}
+          {%- else -%}
+            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {%- endif -%}
+        </span>
+      {%- endif -%}
+
+      <div class="stickybuy__info">
+        <p class="stickybuy__title">{{ product.title | escape }}</p>
+
+        <div class="stickybuy__prices">
+          <span class="stickybuy__price" data-sticky-price>{{ bar_variant.price | money }}</span>
+          <s
+            class="stickybuy__mrp"
+            data-sticky-mrp
+            {% if bar_variant.compare_at_price <= bar_variant.price %}
+              hidden
+            {% endif %}
+          >
+            {%- if bar_variant.compare_at_price > bar_variant.price -%}
+              {{- bar_variant.compare_at_price | money -}}
+            {%- endif -%}
+          </s>
+        </div>
+
+        {%- if section.settings.tax_note != blank -%}
+          <p class="stickybuy__tax">{{ section.settings.tax_note | escape }}</p>
+        {%- endif -%}
+      </div>
+
+      <product-form class="stickybuy__form" data-section-id="{{ section.id }}">
+        {%- form 'product',
+          product,
+          id: bar_form_id,
+          class: 'form',
+          novalidate: 'novalidate',
+          data-type: 'add-to-cart-form'
+        -%}
+          <input
+            type="hidden"
+            name="id"
+            value="{{ bar_variant.id }}"
+            class="product-variant-id"
+            data-sticky-variant-id
+          >
+
+          {%- if section.settings.show_quantity -%}
+            <div class="stickybuy__quantity">
+              <button
+                type="button"
+                class="stickybuy__quantity-button"
+                data-sticky-quantity-change="minus"
+                aria-label="{{ 'products.product.quantity.decrease' | t: product: product.title | escape }}"
+              >
+                −
+              </button>
+              <input
+                class="stickybuy__quantity-input"
+                type="number"
+                name="quantity"
+                value="1"
+                min="1"
+                step="1"
+                inputmode="numeric"
+                data-sticky-quantity
+                aria-label="{{ 'products.product.quantity.label' | t | escape }}"
+              >
+              <button
+                type="button"
+                class="stickybuy__quantity-button"
+                data-sticky-quantity-change="plus"
+                aria-label="{{ 'products.product.quantity.increase' | t: product: product.title | escape }}"
+              >
+                +
+              </button>
+            </div>
+          {%- else -%}
+            <input type="hidden" name="quantity" value="1">
+          {%- endif -%}
+
+          <button
+            type="submit"
+            name="add"
+            class="stickybuy__button{% if section.settings.glow %} ghar-glow{% endif %}"
+            data-sticky-atc
+            data-add-label="{{ section.settings.button_label | default: 'Add to cart' | escape }}"
+            data-sold-out-label="{{ 'products.product.sold_out' | t | escape }}"
+            {% if product.available == false %}
+              disabled
+            {% endif %}
+          >
+            <span data-sticky-atc-text>
+              {%- if product.available -%}
+                {{- section.settings.button_label | default: 'Add to cart' | escape -}}
+              {%- else -%}
+                {{- 'products.product.sold_out' | t -}}
+              {%- endif -%}
+            </span>
+            <span class="sold-out-message hidden">{{ 'products.product.sold_out' | t }}</span>
+            {%- render 'loading-spinner' -%}
+          </button>
+
+          <div class="product-form__error-message-wrapper stickybuy__error" role="alert" hidden>
+            <span class="product-form__error-message"></span>
+          </div>
+        {%- endform -%}
+      </product-form>
+    </div>
+  </ghar-sticky-buy>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Sticky buy bar",
+  "tag": "section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Sits at the bottom of the screen once the main Add to cart button has scrolled out of view."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button text",
+      "default": "Add to cart"
+    },
+    {
+      "type": "text",
+      "id": "tax_note",
+      "label": "Tax line",
+      "default": "Inclusive of all taxes"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_thumbnail",
+      "label": "Show the product photo",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity",
+      "label": "Show the quantity selector",
+      "info": "Hidden on narrow phones either way, so the button keeps its room.",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "glow",
+      "label": "Make the button glow",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Offer strip"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_strip",
+      "label": "Show the offer strip above the bar",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "pill_text",
+      "label": "Pill text",
+      "info": "Leave empty for none.",
+      "default": "Hot deal"
+    },
+    {
+      "type": "text",
+      "id": "strip_text",
+      "label": "Offer text",
+      "default": "Buy 3 products for Rs. 499"
+    },
+    {
+      "type": "url",
+      "id": "strip_link",
+      "label": "Offer link",
+      "info": "Where the strip takes the shopper. Point it at the bundle or collection the offer is about."
+    },
+    {
+      "type": "color",
+      "id": "pill_color",
+      "label": "Pill background",
+      "default": "#f2c230"
+    },
+    {
+      "type": "color",
+      "id": "pill_text_color",
+      "label": "Pill text",
+      "default": "#12211b"
+    },
+    {
+      "type": "color_scheme",
+      "id": "strip_color_scheme",
+      "label": "Strip colour scheme",
+      "default": "scheme-4"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky buy bar"
+    }
+  ]
+}
+{% endschema %}

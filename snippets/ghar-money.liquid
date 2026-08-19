@@ -1,0 +1,12 @@
+{% comment %}
+  Emits the shop's money format once, for scripts that have to format a price
+  the shopper just changed - a bundle total, a quantity subtotal - where Liquid
+  cannot know the answer in advance.
+
+  Prices that are known at render time must still go through the money filter.
+  This is only for totals that move.
+{% endcomment %}
+
+<script>
+  window.gharMoneyFormat = window.gharMoneyFormat || {{ shop.money_format | json }};
+</script>

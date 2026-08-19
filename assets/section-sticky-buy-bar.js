@@ -1,0 +1,119 @@
+/*
+  Sticky buy bar.
+
+  Two jobs: decide when the bar should be on screen, and keep it saying the
+  same thing as the product page above it.
+
+  Visibility is tied to the real Add to cart button rather than to a scroll
+  distance. A distance is a guess that is wrong on every screen it was not
+  measured on - on a tall phone the button is still visible at 600px, on a
+  short one it left at 300px. Watching the button itself is right everywhere,
+  and IntersectionObserver does it without running code on every scroll frame.
+
+  The bar's price and variant follow the picker on the page, which announces
+  changes on the document. Without that a shopper could pick the 1 litre and
+  add the 500 ml from down here.
+*/
+if (!customElements.get('ghar-sticky-buy')) {
+  customElements.define(
+    'ghar-sticky-buy',
+    class GharStickyBuy extends HTMLElement {
+      connectedCallback() {
+        this.priceEl = this.querySelector('[data-sticky-price]');
+        this.mrpEl = this.querySelector('[data-sticky-mrp]');
+        this.idInput = this.querySelector('[data-sticky-variant-id]');
+        this.button = this.querySelector('[data-sticky-atc]');
+        this.buttonText = this.querySelector('[data-sticky-atc-text]');
+        this.quantityInput = this.querySelector('[data-sticky-quantity]');
+
+        this.bindQuantity();
+        this.bindVariants();
+        this.watchBuyButton();
+      }
+
+      disconnectedCallback() {
+        if (this.observer) this.observer.disconnect();
+        document.removeEventListener('ghar:variant:change', this.onVariant);
+      }
+
+      /* ---- when to show ---- */
+
+      watchBuyButton() {
+        const target =
+          document.querySelector('[data-ghar-atc]') ||
+          document.querySelector('.product-form__submit');
+
+        /* No buy button on the page to hide behind - a gift card template, say.
+           Showing the bar unconditionally is the safe answer: the shopper can
+           still buy, which is the whole point of it. */
+        if (!target || !('IntersectionObserver' in window)) {
+          this.toggle(true);
+          return;
+        }
+
+        this.observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              this.toggle(!entry.isIntersecting);
+            });
+          },
+          { rootMargin: '0px 0px -20px 0px' }
+        );
+
+        this.observer.observe(target);
+      }
+
+      /* A fixed bar covers whatever is at the bottom of the page, so the page
+         is given exactly as much extra room underneath as the bar takes up.
+         Measured rather than guessed, because the bar is taller when the offer
+         strip is on and shorter when it is off. */
+      toggle(visible) {
+        this.classList.toggle('is-visible', visible);
+        document.body.style.paddingBottom = visible ? `${this.offsetHeight}px` : '';
+      }
+
+      /* ---- quantity ---- */
+
+      bindQuantity() {
+        if (!this.quantityInput) return;
+
+        this.querySelectorAll('[data-sticky-quantity-change]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const step = button.dataset.stickyQuantityChange === 'plus' ? 1 : -1;
+            const next = Math.max(1, (parseInt(this.quantityInput.value, 10) || 1) + step);
+            this.quantityInput.value = next;
+            this.quantityInput.dispatchEvent(new Event('change', { bubbles: true }));
+          });
+        });
+      }
+
+      /* ---- follow the page's variant picker ---- */
+
+      bindVariants() {
+        this.onVariant = (event) => {
+          const variant = event.detail;
+          if (!variant) return;
+
+          if (this.idInput) this.idInput.value = variant.id;
+          if (this.priceEl) this.priceEl.innerHTML = variant.price;
+
+          if (this.mrpEl) {
+            this.mrpEl.innerHTML = variant.compare_at_price || '';
+            this.mrpEl.hidden = !variant.compare_at_price;
+          }
+
+          if (this.button) {
+            this.button.disabled = !variant.available;
+            if (this.buttonText) {
+              this.buttonText.textContent = variant.available
+                ? this.button.dataset.addLabel
+                : this.button.dataset.soldOutLabel;
+            }
+          }
+        };
+
+        document.addEventListener('ghar:variant:change', this.onVariant);
+      }
+    }
+  );
+}

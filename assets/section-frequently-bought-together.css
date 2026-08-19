@@ -1,0 +1,321 @@
+/* Frequently bought together.
+
+   Three tickable products, a running total and one button that adds the lot.
+   The whole card is a label around a real checkbox, so the tap target is the
+   card and the tick mark is just the checkbox's own state drawn nicely.
+
+   On a phone the row scrolls sideways with the next card peeking, the same
+   rhythm as the trust strip and the bestsellers grid, so the page has one
+   behaviour for "there is more this way" rather than three. */
+
+.fbt__inner {
+  display: block;
+  padding: 1.6rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.14);
+  border-radius: 1.2rem;
+  background-color: rgb(var(--color-background));
+}
+
+.fbt__heading {
+  margin: 0 0 1.6rem;
+  font-size: 2.2rem;
+  line-height: 1.2;
+}
+
+.fbt__list {
+  display: flex;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.fbt__list::-webkit-scrollbar {
+  display: none;
+}
+
+.fbt__item {
+  flex: 0 0 46%;
+  scroll-snap-align: start;
+}
+
+.fbt__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  height: 100%;
+  padding: 0.8rem;
+  border: 0.15rem solid rgba(var(--color-foreground), 0.16);
+  border-radius: 1rem;
+  background-color: rgb(var(--color-background));
+  cursor: pointer;
+  transition: border-color 0.15s ease-out;
+}
+
+/* A ticked card is outlined in the button green, so which products are going
+   into the cart is readable at a glance rather than only from the small tick. */
+.fbt__card:has(.fbt__checkbox:checked) {
+  border-color: rgb(var(--color-button));
+}
+
+.fbt__card:has(.fbt__checkbox:focus-visible) {
+  outline: 0.2rem solid rgb(var(--color-foreground));
+  outline-offset: 0.2rem;
+}
+
+.fbt__tick {
+  position: absolute;
+  top: 1.4rem;
+  right: 1.4rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 0.15rem solid rgba(var(--color-foreground), 0.3);
+  border-radius: 0.6rem;
+  background-color: rgb(var(--color-background));
+  color: transparent;
+}
+
+.fbt__tick svg {
+  width: 1.6rem;
+  height: 1.6rem;
+}
+
+.fbt__checkbox:checked ~ .fbt__tick {
+  border-color: rgb(var(--color-button));
+  background-color: rgb(var(--color-button));
+  color: rgb(var(--color-button-text));
+}
+
+.fbt__media {
+  display: block;
+  overflow: hidden;
+  border-radius: 0.8rem;
+  background-color: rgba(var(--color-foreground), 0.04);
+}
+
+.fbt__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.fbt__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fbt__pill {
+  align-self: flex-start;
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.4rem;
+  background-color: rgba(var(--color-foreground), 0.08);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.fbt__title {
+  font-family: var(--font-heading-family);
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.fbt__prices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+
+.fbt__price {
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.fbt__mrp {
+  font-size: 1.4rem;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.fbt__badge {
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.4rem;
+  background-color: var(--fbt-accent, #f2c230);
+  color: var(--fbt-accent-text, #12211b);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* Totals */
+
+.fbt__totals {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem 1.6rem;
+  margin-top: 1.6rem;
+}
+
+.fbt__total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.fbt__total-label {
+  font-family: var(--font-heading-family);
+  font-size: 1.7rem;
+  font-weight: 600;
+}
+
+.fbt__total-value {
+  font-family: var(--font-heading-family);
+  font-size: 1.9rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.fbt__total-was {
+  font-size: 1.5rem;
+  color: rgba(var(--color-foreground), 0.6);
+}
+
+.fbt__total-was:empty {
+  display: none;
+}
+
+.fbt__timer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.fbt__timer-label {
+  color: rgba(var(--color-foreground), 0.7);
+}
+
+/* Monospaced digits so the clock does not jitter as the seconds change. */
+.fbt__timer-clock {
+  padding: 0.4rem 0.9rem;
+  border-radius: 4rem;
+  background-color: var(--fbt-accent, #f2c230);
+  color: var(--fbt-accent-text, #12211b);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Button */
+
+.fbt__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  width: 100%;
+  min-height: 5.2rem;
+  margin-top: 1.4rem;
+  padding: 0.8rem 1.6rem;
+  border: 0;
+  border-radius: 0.8rem;
+  background-color: rgb(var(--color-button));
+  color: rgb(var(--color-button-text));
+  font-family: var(--font-body-family);
+  font-size: 1.7rem;
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.fbt__button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.fbt__spinner {
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 0.2rem solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: fbt-spin 0.7s linear infinite;
+}
+
+@keyframes fbt-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.fbt__savings {
+  margin: 1rem 0 0;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  text-align: center;
+  color: rgba(var(--color-foreground), 0.8);
+}
+
+.fbt__savings:empty {
+  display: none;
+}
+
+.fbt__error {
+  margin: 0.8rem 0 0;
+  font-size: 1.4rem;
+  color: rgba(var(--color-foreground), 0.85);
+}
+
+@media screen and (min-width: 750px) {
+  .fbt__inner {
+    padding: 2.4rem;
+  }
+
+  .fbt__heading {
+    font-size: 2.8rem;
+  }
+
+  .fbt__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    gap: 1.6rem;
+    overflow: visible;
+  }
+
+  .fbt__item {
+    flex: initial;
+  }
+
+  .fbt__card {
+    padding: 1.2rem;
+  }
+
+  .fbt__title {
+    font-size: 1.8rem;
+  }
+
+  .fbt__button {
+    font-size: 1.8rem;
+  }
+}
