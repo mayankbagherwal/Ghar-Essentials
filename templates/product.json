@@ -133,7 +133,6 @@
         "savings_text": "Get {count} products for {total} and save {saved}",
         "show_timer": true,
         "timer_label": "Deal ends in",
-        "timer_end": "",
         "timer_minutes": 5,
         "timer_on_end": "hide",
         "glow": true,
