@@ -1,5 +1,10 @@
 {{ 'section-main-product-ghar.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+{{ 'ghar-glow.css' | asset_url | stylesheet_tag }}
+{{ 'section-frequently-bought-together.css' | asset_url | stylesheet_tag }}
+{% render 'ghar-money' %}
+<script src="{{ 'ghar-money.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'section-frequently-bought-together.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'section-main-product-ghar.js' | asset_url }}" defer="defer"></script>
 
 {%- style -%}
@@ -349,6 +354,19 @@
           {%- endif -%}
         </div>
       {%- endif -%}
+
+      {%- comment -%}
+        The bought-together set, in the buy column rather than a section of its
+        own further down. A section cannot be rendered inside another section,
+        and everything a shopper needs to decide belongs in one column, so this
+        is a block here. It sits under the buy buttons, not above them, so the
+        primary action stays the first thing in reach.
+      {%- endcomment -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'bought_together' -%}
+          {%- render 'bought-together', block: block, current_product: product, section_id: section.id -%}
+        {%- endif -%}
+      {%- endfor -%}
     </ghar-product-info>
     </div>
 
@@ -359,6 +377,8 @@
           {%- case block.type -%}
             {%- when '@app' -%}
               {%- comment -%} Already rendered in the rating row above. {%- endcomment -%}
+            {%- when 'bought_together' -%}
+              {%- comment -%} Already rendered in the buy column above. {%- endcomment -%}
 
             {%- when 'benefits' -%}
               <div class="ghar-pdp__benefits" {{ block.shopify_attributes }}>
@@ -537,6 +557,162 @@
           "id": "open_by_default",
           "label": "Open by default",
           "default": false
+        }
+      ]
+    },
+    {
+      "type": "bought_together",
+      "name": "Bought together",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Frequently bought together"
+        },
+        {
+          "type": "checkbox",
+          "id": "include_current",
+          "label": "Start with this product",
+          "default": true
+        },
+        {
+          "type": "text",
+          "id": "current_label",
+          "label": "Label on this product",
+          "info": "Leave empty for none.",
+          "default": "This item"
+        },
+        {
+          "type": "header",
+          "content": "Products to offer alongside"
+        },
+        {
+          "type": "product",
+          "id": "product_1",
+          "label": "Product 1"
+        },
+        {
+          "type": "product",
+          "id": "product_2",
+          "label": "Product 2"
+        },
+        {
+          "type": "product",
+          "id": "product_3",
+          "label": "Product 3"
+        },
+        {
+          "type": "product",
+          "id": "product_4",
+          "label": "Product 4"
+        },
+        {
+          "type": "header",
+          "content": "Totals"
+        },
+        {
+          "type": "text",
+          "id": "total_label",
+          "label": "Total line label",
+          "default": "Total price:"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "Button text",
+          "info": "Write {count} where the number of ticked products should go.",
+          "default": "Add {count} to cart"
+        },
+        {
+          "type": "text",
+          "id": "empty_label",
+          "label": "Button text when nothing is ticked",
+          "default": "Select a product"
+        },
+        {
+          "type": "text",
+          "id": "savings_text",
+          "label": "Line under the button",
+          "info": "Use {count} for the number of products, {total} for the price and {saved} for the amount saved. Leave empty for none.",
+          "default": "Get {count} products for {total} and save {saved}"
+        },
+        {
+          "type": "header",
+          "content": "Countdown"
+        },
+        {
+          "type": "paragraph",
+          "content": "A countdown on an offer that does not actually end is listed as false urgency in the CCPA Guidelines for Prevention and Regulation of Dark Patterns, 2023. Set a real end date below and the timer tells the truth."
+        },
+        {
+          "type": "checkbox",
+          "id": "show_timer",
+          "label": "Show a countdown",
+          "default": false
+        },
+        {
+          "type": "text",
+          "id": "timer_label",
+          "label": "Countdown label",
+          "default": "Deal ends in"
+        },
+        {
+          "type": "text",
+          "id": "timer_end",
+          "label": "Deal ends at",
+          "info": "A real date and time, e.g. 2026-09-30 23:59. Leave empty to count down the minutes below on each visit instead."
+        },
+        {
+          "type": "range",
+          "id": "timer_minutes",
+          "min": 1,
+          "max": 60,
+          "step": 1,
+          "unit": "min",
+          "label": "Minutes to count down per visit",
+          "info": "Only used when no end date is set above.",
+          "default": 5
+        },
+        {
+          "type": "select",
+          "id": "timer_on_end",
+          "label": "When the countdown reaches zero",
+          "options": [
+            {
+              "value": "hide",
+              "label": "Hide the countdown, keep the offer"
+            },
+            {
+              "value": "restart",
+              "label": "Start it again"
+            }
+          ],
+          "info": "Starting it again is the pattern the guidelines above call out.",
+          "default": "hide"
+        },
+        {
+          "type": "header",
+          "content": "Appearance"
+        },
+        {
+          "type": "checkbox",
+          "id": "glow",
+          "label": "Make the button glow",
+          "default": true
+        },
+        {
+          "type": "color",
+          "id": "accent_color",
+          "label": "Discount badge background",
+          "default": "#f2c230"
+        },
+        {
+          "type": "color",
+          "id": "accent_text_color",
+          "label": "Discount badge text",
+          "default": "#12211b"
         }
       ]
     }

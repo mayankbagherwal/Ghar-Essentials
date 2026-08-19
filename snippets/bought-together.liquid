@@ -1,0 +1,102 @@
+{% comment %}
+  The bought-together set, rendered inside the product page's buy column.
+
+  It is a block rather than a section because Shopify renders sections one after
+  another and cannot put one inside another - and this belongs beside the price
+  and the buy button, not below the accordions.
+
+  Accepts:
+  - block: {Object} The bought_together block. Required.
+  - current_product: {Object} The product the page is about. Required.
+  - section_id: {String} Used to keep the countdown's storage key unique.
+{% endcomment %}
+
+{%- liquid
+  assign bt = block.settings
+-%}
+
+<ghar-bundle
+  class="fbt__inner ghar-pdp__bundle"
+  style="--fbt-accent: {{ bt.accent_color }}; --fbt-accent-text: {{ bt.accent_text_color }};"
+  data-button-label="{{ bt.button_label | escape }}"
+  data-savings-text="{{ bt.savings_text | escape }}"
+  data-empty-label="{{ bt.empty_label | escape }}"
+  {% if bt.show_timer %}
+    data-timer-minutes="{{ bt.timer_minutes }}"
+    data-timer-key="ghar-bt-{{ section_id }}"
+    data-timer-end="{{ bt.timer_end }}"
+    data-timer-on-end="{{ bt.timer_on_end }}"
+  {% endif %}
+  {{ block.shopify_attributes }}
+>
+  {%- if bt.heading != blank -%}
+    <h2 class="fbt__heading">{{ bt.heading | escape }}</h2>
+  {%- endif -%}
+
+  <ul class="fbt__list" role="list">
+    {%- comment -%}
+      This product first, so the set starts with what the shopper came for.
+    {%- endcomment -%}
+    {%- if bt.include_current and current_product != blank and current_product.available -%}
+      {%- render 'fbt-card',
+        card_product: current_product,
+        is_current: true,
+        current_label: bt.current_label
+      -%}
+    {%- endif -%}
+
+    {%- comment -%}
+      Four pickers rather than a block each: a block cannot itself hold blocks,
+      and this already is one. Out-of-stock picks are dropped rather than shown
+      as a tickable line the shopper cannot actually buy, and the same product
+      is never listed twice.
+    {%- endcomment -%}
+    {%- for i in (1..4) -%}
+      {%- liquid
+        case i
+          when 1
+            assign pick = bt.product_1
+          when 2
+            assign pick = bt.product_2
+          when 3
+            assign pick = bt.product_3
+          when 4
+            assign pick = bt.product_4
+        endcase
+      -%}
+
+      {%- if pick != blank and pick.available -%}
+        {%- unless bt.include_current and pick.id == current_product.id -%}
+          {%- render 'fbt-card', card_product: pick -%}
+        {%- endunless -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </ul>
+
+  <div class="fbt__totals">
+    <p class="fbt__total">
+      <span class="fbt__total-label">{{ bt.total_label | escape }}</span>
+      <span class="fbt__total-value" data-fbt-total></span>
+      <s class="fbt__total-was" data-fbt-was></s>
+    </p>
+
+    {%- if bt.show_timer -%}
+      <p class="fbt__timer" data-fbt-timer hidden>
+        <span class="fbt__timer-label">{{ bt.timer_label | escape }}</span>
+        <span class="fbt__timer-clock" data-fbt-clock></span>
+      </p>
+    {%- endif -%}
+  </div>
+
+  <button
+    type="button"
+    class="fbt__button{% if bt.glow %} ghar-glow{% endif %}"
+    data-fbt-add
+  >
+    <span data-fbt-button-text>{{ bt.button_label | escape }}</span>
+    <span class="fbt__spinner" data-fbt-spinner hidden></span>
+  </button>
+
+  <p class="fbt__savings" data-fbt-savings></p>
+  <p class="fbt__error" data-fbt-error role="alert" hidden></p>
+</ghar-bundle>

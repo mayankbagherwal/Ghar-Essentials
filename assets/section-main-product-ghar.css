@@ -524,3 +524,10 @@
     min-width: 0;
   }
 }
+
+/* The bought-together set, sitting in the buy column under the buttons. It
+   reuses the section stylesheet for its innards; this only spaces it from the
+   payment notes above it. */
+.ghar-pdp__bundle {
+  margin-top: 2rem;
+}
