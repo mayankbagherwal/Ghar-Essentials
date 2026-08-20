@@ -25,6 +25,11 @@
 
 /* Offer strip along the top */
 
+/* The strip carries its own colour scheme class, but colour:inherit beat the
+   scheme's rule at equal specificity, so the text kept coming from the pale bar
+   around it - ink on forest green, which is close to unreadable. Taking both
+   colours from the scheme's own variables means the strip is lit by whichever
+   scheme is chosen for it rather than by its neighbour. */
 .stickybuy__strip {
   display: flex;
   align-items: center;
@@ -32,7 +37,8 @@
   gap: 0.8rem;
   min-height: 4rem;
   padding: 0.6rem 1.6rem;
-  color: inherit;
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
   font-size: 1.5rem;
   font-weight: 600;
   text-decoration: none;

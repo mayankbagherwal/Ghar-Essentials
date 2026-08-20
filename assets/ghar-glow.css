@@ -65,6 +65,20 @@
   }
 }
 
+/* The product page's own Add to cart and Buy it now do not glow.
+
+   They only appear on a phone, where the whole buy column is one stack and the
+   bundle's button is a short scroll away. Three lit buttons in that little
+   space is not emphasis, it is noise - and the glow is meant to point at the
+   offer, not compete with it. The bar at the bottom keeps its glow, because
+   that is the one that follows the shopper down the page. */
+.ghar-pdp__buy .ghar-pdp__atc,
+.ghar-pdp__buy .shopify-payment-button__button,
+.ghar-pdp__buy .shopify-payment-button__button--unbranded {
+  animation: none;
+  box-shadow: none;
+}
+
 /* A disabled button is not asking to be pressed, so it does not glow at all. */
 .ghar-glow:disabled,
 .ghar-card__atc:disabled,
