@@ -1,11 +1,16 @@
 /*
   "Clean it up".
 
-  The clean photograph sits underneath as a normal image. The dirty one is
-  painted onto a canvas on top, and a finger dragged across the canvas erases
-  it - destination-out compositing, which removes pixels rather than painting
-  over them. So the shopper is uncovering the real second photograph. That is
+  One photograph of a clean kitchen sits underneath as a normal image. The
+  grime over it is drawn onto a canvas in code - a greasy film, splatter,
+  specks and a few drips - and a finger dragged across erases it, using
+  destination-out compositing, which removes pixels rather than painting over
+  them. So the shopper is uncovering the real photograph underneath. That is
   what makes it feel like wiping instead of like a cross-fade.
+
+  Drawing the mess rather than photographing it means there is no second shot
+  to keep framed identically, and the dirt lands somewhere different every time
+  the game is played.
 
   Two decisions worth knowing about:
 
@@ -30,15 +35,17 @@ if (!customElements.get('ghar-clean-game')) {
       connectedCallback() {
         this.frame = this.querySelector('[data-clean-frame]');
         this.canvas = this.querySelector('[data-clean-canvas]');
-        this.source = this.querySelector('[data-clean-source]');
         this.resetButton = this.querySelector('[data-clean-reset]');
         this.skipButton = this.querySelector('[data-clean-skip]');
-        if (!this.frame || !this.canvas || !this.source) return;
+        if (!this.frame || !this.canvas) return;
 
         this.ctx = this.canvas.getContext('2d');
         if (!this.ctx) return;
 
         this.threshold = Math.min(95, Math.max(10, Number(this.dataset.threshold) || 60));
+        this.level = Math.min(10, Math.max(1, Number(this.dataset.grimeLevel) || 6));
+        this.grime = this.rgb(this.dataset.grimeColor) || { r: 107, g: 74, b: 34 };
+        this.seed = Math.floor(Math.random() * 1e9);
         this.grid = 24;
         this.done = false;
         this.painting = false;
@@ -58,15 +65,10 @@ if (!customElements.get('ghar-clean-game')) {
            skip button gets them the same payoff. */
         if (this.skipButton) this.skipButton.addEventListener('click', () => this.finish());
 
-        /* Two things have to be true before the dirt can be painted: the image
-           has decoded, and the frame has been laid out. Neither is reliably
-           true when this runs - the image may still be in flight, and a frame
-           that is off screen or in a tab that has not been shown yet measures
-           zero. So instead of painting once and hoping, both are watched and
-           whichever finishes last triggers the paint. */
-        this.source.addEventListener('load', this.tryPaint);
-        this.source.addEventListener('error', () => this.giveUp(), { once: true });
-
+        /* The grime is drawn, not fetched, so the only thing worth waiting for
+           is the frame having a size. A frame that is off screen, or in a tab
+           that has not been shown yet, measures zero - so rather than painting
+           once and hoping, its size is watched. */
         if ('ResizeObserver' in window) {
           this.sizeObserver = new ResizeObserver(this.tryPaint);
           this.sizeObserver.observe(this.frame);
@@ -87,21 +89,12 @@ if (!customElements.get('ghar-clean-game')) {
          check also stops a resize that changed nothing from wiping away a game
          already in progress. */
       tryPaint() {
-        if (!this.source.naturalWidth) return;
-
         const rect = this.frame.getBoundingClientRect();
         if (rect.width < 2 || rect.height < 2) return;
         if (this.painted && Math.abs(rect.width - this.width) < 2) return;
 
         this.painted = true;
         this.paint();
-      }
-
-      /* The dirty photograph could not be fetched. Rather than leave a hint
-         inviting someone to wipe a canvas with nothing on it, the hint goes and
-         the clean photograph is simply a photograph. */
-      giveUp() {
-        this.classList.add('cleangame--started');
       }
 
       /* ---- painting the dirt on ---- */
@@ -123,7 +116,7 @@ if (!customElements.get('ghar-clean-game')) {
 
         this.ctx.globalCompositeOperation = 'source-over';
         this.ctx.clearRect(0, 0, this.width, this.height);
-        this.drawCover(this.source, this.width, this.height);
+        this.drawGrime(this.width, this.height);
 
         this.cells = new Array(this.grid * this.grid).fill(false);
         this.cleared = 0;
@@ -132,18 +125,141 @@ if (!customElements.get('ghar-clean-game')) {
         this.classList.remove('cleangame--done', 'cleangame--started');
       }
 
-      /* object-fit: cover, done by hand, so the dirty photograph is framed
-         exactly like the clean one underneath it. Any mismatch would show as
-         the edges jumping the moment the canvas fades. */
-      drawCover(image, width, height) {
-        const iw = image.naturalWidth;
-        const ih = image.naturalHeight;
-        if (!iw || !ih) return;
+      /* ---- drawing the mess ---- */
 
-        const scale = Math.max(width / iw, height / ih);
-        const w = iw * scale;
-        const h = ih * scale;
-        this.ctx.drawImage(image, (width - w) / 2, (height - h) / 2, w, h);
+      /* A seeded generator rather than Math.random, so one game is one mess:
+         the pattern survives a repaint from a resize instead of the dirt
+         jumping to new places under the shopper's finger mid-wipe. Playing
+         again reseeds, which is where the variety belongs. */
+      random() {
+        this.seed |= 0;
+        this.seed = (this.seed + 0x6d2b79f5) | 0;
+        let t = Math.imul(this.seed ^ (this.seed >>> 15), 1 | this.seed);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      }
+
+      between(min, max) {
+        return min + this.random() * (max - min);
+      }
+
+      rgb(value) {
+        const match = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(String(value || '').trim());
+        if (!match) return null;
+        return {
+          r: parseInt(match[1], 16),
+          g: parseInt(match[2], 16),
+          b: parseInt(match[3], 16),
+        };
+      }
+
+      shade(amount, alpha) {
+        const c = this.grime;
+        const mix = (channel) => Math.round(Math.max(0, Math.min(255, channel * amount)));
+        return `rgba(${mix(c.r)}, ${mix(c.g)}, ${mix(c.b)}, ${alpha})`;
+      }
+
+      /* Four passes, coarse to fine. Real kitchen grime is not one thing: it is
+         a dulling film, then splashes, then the fine speckle of spices and
+         crumbs, with a few drips where something ran down. Drawing them as
+         separate layers is what stops it reading as a brown rectangle. */
+      drawGrime(width, height) {
+        const ctx = this.ctx;
+        const density = this.level / 10;
+        const area = (width * height) / 100000;
+        ctx.save();
+
+        this.filmPass(width, height, density);
+        this.splatterPass(width, height, density, area);
+        this.speckPass(width, height, density, area);
+        this.dripPass(width, height, density);
+
+        ctx.restore();
+      }
+
+      /* The film. Broad soft patches rather than a flat wash, so the surface
+         looks unevenly grubby the way a real one does. */
+      filmPass(width, height, density) {
+        const ctx = this.ctx;
+        const patches = 5 + Math.round(density * 5);
+
+        for (let i = 0; i < patches; i += 1) {
+          const x = this.between(0, width);
+          const y = this.between(0, height);
+          const radius = this.between(width * 0.25, width * 0.7);
+          const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+          gradient.addColorStop(0, this.shade(1, 0.1 + density * 0.16));
+          gradient.addColorStop(1, this.shade(1, 0));
+          ctx.fillStyle = gradient;
+          ctx.fillRect(0, 0, width, height);
+        }
+      }
+
+      /* Splashes. Each one is a handful of overlapping circles rather than a
+         single disc - a perfect circle reads as a sticker, a lumpy cluster
+         reads as something that landed. */
+      splatterPass(width, height, density, area) {
+        const ctx = this.ctx;
+        const blobs = Math.round((8 + density * 26) * Math.max(1, area / 8));
+
+        for (let i = 0; i < blobs; i += 1) {
+          const cx = this.between(0, width);
+          const cy = this.between(0, height);
+          const size = this.between(width * 0.012, width * 0.055);
+          const alpha = this.between(0.18, 0.34) * (0.5 + density);
+          ctx.fillStyle = this.shade(this.between(0.75, 1.15), Math.min(0.62, alpha));
+
+          const lobes = 3 + Math.floor(this.random() * 4);
+          for (let l = 0; l < lobes; l += 1) {
+            const ox = cx + this.between(-size, size);
+            const oy = cy + this.between(-size, size);
+            ctx.beginPath();
+            ctx.arc(ox, oy, size * this.between(0.35, 0.95), 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+
+      /* Spices, crumbs, burnt bits. Small, dark and plentiful - this is the
+         layer that makes it read as a kitchen rather than as mud. */
+      speckPass(width, height, density, area) {
+        const ctx = this.ctx;
+        const specks = Math.round((90 + density * 320) * Math.max(1, area / 8));
+
+        for (let i = 0; i < specks; i += 1) {
+          const x = this.between(0, width);
+          const y = this.between(0, height);
+          const radius = this.between(width * 0.0012, width * 0.0042);
+          ctx.fillStyle = this.shade(this.between(0.35, 0.8), this.between(0.35, 0.85));
+          ctx.beginPath();
+          ctx.arc(x, y, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      /* A few runs where something splashed and slid down. Tapered, because a
+         drip is heavy at the top and thins as it goes. */
+      dripPass(width, height, density) {
+        const ctx = this.ctx;
+        const drips = Math.round(2 + density * 6);
+
+        for (let i = 0; i < drips; i += 1) {
+          const x = this.between(0, width);
+          const top = this.between(0, height * 0.55);
+          const length = this.between(height * 0.06, height * 0.28);
+          const wide = this.between(width * 0.004, width * 0.011);
+          const gradient = ctx.createLinearGradient(x, top, x, top + length);
+          gradient.addColorStop(0, this.shade(0.9, this.between(0.25, 0.45)));
+          gradient.addColorStop(1, this.shade(0.9, 0));
+
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.moveTo(x - wide, top);
+          ctx.lineTo(x + wide, top);
+          ctx.lineTo(x, top + length);
+          ctx.closePath();
+          ctx.fill();
+        }
       }
 
       /* ---- wiping it off ---- */
@@ -233,6 +349,7 @@ if (!customElements.get('ghar-clean-game')) {
       }
 
       reset() {
+        this.seed = Math.floor(Math.random() * 1e9);
         this.paint();
       }
 

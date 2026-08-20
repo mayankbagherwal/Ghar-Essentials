@@ -99,9 +99,7 @@
     "clean_it_game": {
       "type": "clean-it-game",
       "settings": {
-        "image_dirty": "shopify://shop_images/4A020718-EB29-4AC6-8130-CC6325D779CC.png",
         "image_clean": "shopify://shop_images/C4056328-94E0-4AAC-846A-983480D28549.png",
-        "dirty_alt": "A greasy stove top before cleaning",
         "clean_alt": "The same stove top after cleaning",
         "heading": "Clean it up",
         "subtext": "Wipe the stove with your finger and see what happens.",
@@ -115,7 +113,9 @@
         "threshold": 60,
         "color_scheme": "scheme-1",
         "padding_top": 40,
-        "padding_bottom": 40
+        "padding_bottom": 40,
+        "grime_level": 6,
+        "grime_color": "#6b4a22"
       }
     },
     "disclosures": {

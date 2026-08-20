@@ -3,29 +3,27 @@
 
 {%- liquid
   assign scheme = section.settings.color_scheme | default: 'scheme-2'
-  assign dirty = section.settings.image_dirty
   assign clean = section.settings.image_clean
 -%}
 
 {%- comment -%}
-  Nothing renders to a shopper until both photographs are set - one without the
-  other is not half a game, it is a broken one.
+  Nothing renders to a shopper until the photograph is set.
 
   The owner is a different case. A section that renders nothing is a section
   that cannot be found: it is in the template and in the editor's list, but
   clicking it shows an empty page, so it reads as broken rather than as
   unfinished. In the editor it says what it is waiting for instead.
 {%- endcomment -%}
-{%- if dirty == blank or clean == blank -%}
+{%- if clean == blank -%}
   {%- if request.design_mode -%}
     <div class="color-{{ scheme }} gradient">
       <div class="cleangame page-width section-{{ section.id }}-padding">
         <div class="cleangame__setup">
           <p class="cleangame__setup-title">Clean it up game</p>
           <p class="cleangame__setup-text">
-            Pick two photographs of the same spot in this section's settings - one
-            dirty, one clean, framed the same way. Until both are set this section
-            stays hidden from shoppers.
+            Pick a photograph of a clean kitchen in this section's settings. The
+            grime is drawn on top of it, so only the one photo is needed. Until
+            it is set this section stays hidden from shoppers.
           </p>
         </div>
       </div>
@@ -45,11 +43,19 @@
         </div>
       {%- endif -%}
 
-      <ghar-clean-game class="cleangame__game" data-threshold="{{ section.settings.threshold }}">
+      <ghar-clean-game
+        class="cleangame__game"
+        data-threshold="{{ section.settings.threshold }}"
+        data-grime-level="{{ section.settings.grime_level }}"
+        data-grime-color="{{ section.settings.grime_color }}"
+      >
         <div class="cleangame__frame" data-clean-frame>
           {%- comment -%}
-            The clean photograph is the floor of the frame - it is what is
-            uncovered, so it loads as a normal image and needs no script.
+            The photograph is the floor of the frame - it is what is uncovered,
+            so it loads as a normal image and needs no script. The grime over it
+            is drawn onto the canvas rather than being a second photograph,
+            which means there is no pair of shots to keep framed alike and the
+            mess is different every time it is played.
           {%- endcomment -%}
           {{
             clean
@@ -60,32 +66,6 @@
               sizes: '(min-width: 750px) 60vw, 100vw',
               class: 'cleangame__clean',
               alt: section.settings.clean_alt | default: shop.name
-          }}
-
-          {%- comment -%}
-            The dirty photograph is never shown directly. The script reads it
-            and paints it onto the canvas above, which is what gets wiped away.
-
-            No crossorigin attribute here on purpose. It was making the browser
-            fetch this as a CORS request, and a response without the matching
-            header fails the load entirely - which left an empty canvas over the
-            clean photograph and nothing to wipe. Drawing a cross-origin image
-            onto a canvas has never needed it; only reading the pixels back
-            does, and the wipe is measured on a grid rather than by reading
-            pixels.
-
-            Eager, not lazy: the canvas needs this the moment the section is
-            reachable, and it is the one image on the page that is never seen.
-          {%- endcomment -%}
-          {{
-            dirty
-            | image_url: width: 1400
-            | image_tag:
-              loading: 'eager',
-              widths: '375,550,750,1100,1400',
-              sizes: '(min-width: 750px) 60vw, 100vw',
-              class: 'cleangame__source',
-              alt: section.settings.dirty_alt | default: shop.name
           }}
 
           <canvas class="cleangame__canvas" data-clean-canvas aria-hidden="true"></canvas>
@@ -154,31 +134,20 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Two photographs of the same spot, one dirty and one clean, framed the same way. The shopper wipes the dirty one away with a finger and the clean one appears underneath."
-    },
-    {
-      "type": "image_picker",
-      "id": "image_dirty",
-      "label": "Dirty photo"
+      "content": "One photograph of a clean kitchen. The grime is drawn over it in code, and the shopper wipes it off with a finger. A new mess every time it is played."
     },
     {
       "type": "image_picker",
       "id": "image_clean",
-      "label": "Clean photo",
-      "info": "Same spot, same camera position. If the two are framed differently the edges will jump when it finishes."
-    },
-    {
-      "type": "text",
-      "id": "dirty_alt",
-      "label": "Description of the dirty photo",
-      "info": "For screen readers and for when a photo fails to load.",
-      "default": "A greasy stove top before cleaning"
+      "label": "Photo",
+      "info": "A clean kitchen. The grime is drawn on top of it, so only this one photo is needed."
     },
     {
       "type": "text",
       "id": "clean_alt",
-      "label": "Description of the clean photo",
-      "default": "The same stove top after cleaning"
+      "label": "Description of the photo",
+      "default": "The same stove top after cleaning",
+      "info": "For screen readers and for when the photo fails to load."
     },
     {
       "type": "header",
@@ -247,6 +216,23 @@
     {
       "type": "header",
       "content": "Difficulty"
+    },
+    {
+      "type": "range",
+      "id": "grime_level",
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "label": "How dirty",
+      "info": "How much grease, splatter and speckle is drawn over the photo.",
+      "default": 6
+    },
+    {
+      "type": "color",
+      "id": "grime_color",
+      "label": "Grime colour",
+      "info": "The greasy brown of cooking splatter. Darker specks are mixed in automatically.",
+      "default": "#6b4a22"
     },
     {
       "type": "range",

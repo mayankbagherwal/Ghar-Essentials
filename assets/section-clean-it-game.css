@@ -52,21 +52,6 @@
   transition: opacity 0.7s ease-out;
 }
 
-/* The source image is only ever read from, never shown - the canvas paints it.
-
-   Sized to the frame rather than to a pixel. At 1px the browser is entitled to
-   satisfy the srcset with its smallest candidate, and the canvas would then be
-   painted from a thumbnail. */
-.cleangame__source {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  pointer-events: none;
-}
-
 /* Once enough has been wiped the rest goes on its own, so nobody is left
    chasing the last few specks in the corners. */
 .cleangame--done .cleangame__canvas {
