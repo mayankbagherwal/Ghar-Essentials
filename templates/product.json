@@ -85,6 +85,7 @@
         "tax_note": "Inclusive of all taxes",
         "prepaid_note": "Extra 5% off on prepaid orders",
         "payment_note": "Cash on delivery available. Delivered in 3-5 days.",
+        "buy_buttons": "mobile",
         "show_buy_now": true,
         "variant_label": "Choose size",
         "quantity_label": "Quantity",
@@ -92,8 +93,29 @@
         "accent_text_color": "#12211b",
         "discount_color": "#0f7a4e",
         "padding_top": 24,
-        "padding_bottom": 36,
-        "buy_buttons": "mobile"
+        "padding_bottom": 36
+      }
+    },
+    "clean_it_game": {
+      "type": "clean-it-game",
+      "settings": {
+        "image_dirty": "shopify://shop_images/4A020718-EB29-4AC6-8130-CC6325D779CC.png",
+        "image_clean": "shopify://shop_images/C4056328-94E0-4AAC-846A-983480D28549.png",
+        "dirty_alt": "A greasy stove top before cleaning",
+        "clean_alt": "The same stove top after cleaning",
+        "heading": "Clean it up",
+        "subtext": "Wipe the stove with your finger and see what happens.",
+        "hint": "Wipe to clean",
+        "done_text": "That is what one spray does.",
+        "done_subtext": "No hard scrubbing. Plant-based cleansers.",
+        "cta_label": "Shop the cleaner",
+        "cta_link": "",
+        "reset_label": "Make it dirty again",
+        "skip_label": "Show me clean",
+        "threshold": 60,
+        "color_scheme": "scheme-1",
+        "padding_top": 40,
+        "padding_bottom": 40
       }
     },
     "disclosures": {
@@ -161,25 +183,6 @@
         "pill_text_color": "#12211b",
         "strip_color_scheme": "scheme-4",
         "color_scheme": "scheme-1"
-      }
-    },
-    "clean_it_game": {
-      "type": "clean-it-game",
-      "settings": {
-        "dirty_alt": "A greasy stove top before cleaning",
-        "clean_alt": "The same stove top after cleaning",
-        "heading": "Clean it up",
-        "subtext": "Wipe the stove with your finger and see what happens.",
-        "hint": "Wipe to clean",
-        "done_text": "That is what one spray does.",
-        "done_subtext": "No hard scrubbing. Plant-based cleansers.",
-        "cta_label": "Shop the cleaner",
-        "reset_label": "Make it dirty again",
-        "skip_label": "Show me clean",
-        "threshold": 60,
-        "color_scheme": "scheme-2",
-        "padding_top": 40,
-        "padding_bottom": 40
       }
     }
   },
