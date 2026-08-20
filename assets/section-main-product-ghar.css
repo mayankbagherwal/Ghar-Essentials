@@ -29,22 +29,43 @@
   clip: rect(0, 0, 0, 0);
 }
 
+/* Every photograph sits in a horizontal scroller with a snap point on each,
+   so the gallery is swiped the way a shopper expects a photograph to be. This
+   is the browser's own scrolling: it has native momentum and rubber-banding,
+   it costs no JavaScript, and it works before any script has loaded.
+
+   mandatory rather than proximity, so a half-hearted swipe always settles on
+   one photograph instead of leaving two half-showing. */
 .ghar-gallery__main {
-  overflow: hidden;
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
   border-radius: 0.8rem;
   background-color: rgba(var(--color-foreground), 0.04);
+  scrollbar-width: none;
+
+  /* A scroller inside a grid track needs this, or its content sets the track's
+     width and the whole column grows instead of the photographs scrolling. */
+  min-width: 0;
 }
 
-/* Hidden by default; the generated :checked rules reveal exactly one. The
-   first radio always carries `checked` in the markup, so one is always shown.
-   No :first-child fallback here - it would leave two slides visible at once. */
-.ghar-gallery__slide {
+.ghar-gallery__main::-webkit-scrollbar {
   display: none;
 }
 
-/* The no-media placeholder has no radios to drive it. */
-.ghar-gallery--placeholder .ghar-gallery__slide {
-  display: block;
+@media (prefers-reduced-motion: reduce) {
+  .ghar-gallery__main {
+    scroll-behavior: auto;
+  }
+}
+
+.ghar-gallery__slide {
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  min-width: 0;
 }
 
 .ghar-gallery__image {

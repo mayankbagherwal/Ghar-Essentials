@@ -20,14 +20,15 @@
   }
 
   {%- comment -%}
-    One pair of rules per image: show the matching slide, and mark the matching
-    thumbnail as selected. Generated here because the count varies per product.
+    One rule per image, marking the matching thumbnail as selected. Generated
+    here because the count varies per product.
+
+    The slides themselves are no longer shown and hidden by these radios. They
+    all sit in a scroller now, so the photograph can be swiped the way a
+    shopper expects a photograph to be - the radios only carry which one is
+    currently in view, which is what the thumbnail highlight reads.
   {%- endcomment -%}
   {%- for media in product.media -%}
-    #GharMedia-{{ section.id }}-{{ forloop.index }}:checked ~ .ghar-gallery__main .ghar-gallery__slide:nth-child({{ forloop.index }}) {
-      display: block;
-    }
-
     #GharMedia-{{ section.id }}-{{ forloop.index }}:checked ~ .ghar-gallery__thumbs .ghar-gallery__thumb:nth-child({{ forloop.index }}) label {
       border-color: rgb(var(--color-foreground));
       opacity: 1;
@@ -72,12 +73,13 @@
     <div class="ghar-pdp__media-col">
       {%- if product.media.size > 0 -%}
         {%- comment -%}
-          Thumbnail rail plus one large image. The radios drive which image is
-          shown through CSS sibling selectors, so switching photos costs no
-          JavaScript at all - it works before scripts load, and on a slow
-          connection it works even if they never do.
+          Thumbnail rail over a scroller holding every photograph. Swiping is
+          the browser's own horizontal scrolling with snap points, so it has
+          native momentum and works before any script loads. The script only
+          keeps the two in step: a tap on a thumbnail scrolls the rail, and a
+          swipe marks the thumbnail that matches.
         {%- endcomment -%}
-        <div class="ghar-gallery{% if product.media.size == 1 %} ghar-gallery--single{% endif %}">
+        <ghar-gallery class="ghar-gallery{% if product.media.size == 1 %} ghar-gallery--single{% endif %}">
           {%- for media in product.media -%}
             <input
               type="radio"
@@ -140,7 +142,7 @@
               {%- endfor -%}
             </ul>
           {%- endif -%}
-        </div>
+        </ghar-gallery>
       {%- else -%}
         <div class="ghar-gallery ghar-gallery--placeholder">
           <div class="ghar-gallery__main">

@@ -111,3 +111,77 @@ if (!customElements.get('ghar-product-info')) {
     }
   );
 }
+
+/*
+  Product gallery.
+
+  The swiping itself is not done here - the slides sit in a scroller with snap
+  points, so the browser handles the gesture with its own momentum and does it
+  before this file has loaded. What this adds is the link between the big
+  photograph and the thumbnail rail, in both directions:
+
+  - Tapping a thumbnail scrolls the rail to that photograph.
+  - Swiping marks the thumbnail for whichever photograph has settled in view.
+
+  The second half reads the scroller with an IntersectionObserver rather than a
+  scroll listener, so nothing runs on every frame of a flick, and momentum
+  scrolling reports the photograph it lands on rather than each one it passes.
+
+  Which photograph is current is still held by the radio inputs, exactly as
+  before, because the thumbnail highlight is a CSS rule keyed to them. Setting
+  one from here updates the rail without this file needing to know how the
+  highlight is drawn.
+*/
+if (!customElements.get('ghar-gallery')) {
+  customElements.define(
+    'ghar-gallery',
+    class GharGallery extends HTMLElement {
+      connectedCallback() {
+        this.track = this.querySelector('.ghar-gallery__main');
+        this.slides = Array.from(this.querySelectorAll('.ghar-gallery__slide'));
+        this.radios = Array.from(this.querySelectorAll('.ghar-gallery__radio'));
+        if (!this.track || this.slides.length < 2) return;
+
+        this.bindThumbs();
+        this.watchSlides();
+      }
+
+      disconnectedCallback() {
+        if (this.observer) this.observer.disconnect();
+      }
+
+      bindThumbs() {
+        this.querySelectorAll('.ghar-gallery__thumb label').forEach((label, index) => {
+          label.addEventListener('click', () => {
+            const slide = this.slides[index];
+            if (!slide) return;
+
+            /* Measured against the track's own scroll position rather than the
+               page, so it is right whether the gallery is in the phone's single
+               column or beside the buy panel on a desktop. */
+            this.track.scrollTo({ left: slide.offsetLeft - this.track.offsetLeft });
+          });
+        });
+      }
+
+      watchSlides() {
+        if (!('IntersectionObserver' in window)) return;
+
+        this.observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+
+              const index = this.slides.indexOf(entry.target);
+              const radio = this.radios[index];
+              if (radio && !radio.checked) radio.checked = true;
+            });
+          },
+          { root: this.track, threshold: 0.6 }
+        );
+
+        this.slides.forEach((slide) => this.observer.observe(slide));
+      }
+    }
+  );
+}
