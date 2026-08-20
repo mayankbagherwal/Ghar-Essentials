@@ -128,6 +128,7 @@
         "tile_7gb8PU": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/4A020718-EB29-4AC6-8130-CC6325D779CC.png",
             "label": "Chimney & stove",
             "link": ""
           }
