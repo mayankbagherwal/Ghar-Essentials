@@ -136,6 +136,7 @@
         "tile_KPMiBU": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/805F1E7F-C8B1-44EF-A4B9-BB7E11874F92.png",
             "label": "Bathroom & tiles",
             "link": ""
           }
@@ -143,6 +144,7 @@
         "tile_GHFakP": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/E275BAEF-16B8-4D98-8170-D04E64A5BF01.png",
             "label": "Floors",
             "link": ""
           }
