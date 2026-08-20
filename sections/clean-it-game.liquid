@@ -1,0 +1,270 @@
+{{ 'section-clean-it-game.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'section-clean-it-game.js' | asset_url }}" defer="defer"></script>
+
+{%- liquid
+  assign scheme = section.settings.color_scheme | default: 'scheme-2'
+  assign dirty = section.settings.image_dirty
+  assign clean = section.settings.image_clean
+-%}
+
+{%- comment -%}
+  Nothing renders until both photographs are set. One without the other is not
+  half a game, it is a broken one.
+{%- endcomment -%}
+{%- if dirty != blank and clean != blank -%}
+  <div class="color-{{ scheme }} gradient">
+    <div class="cleangame page-width section-{{ section.id }}-padding">
+      {%- if section.settings.heading != blank or section.settings.subtext != blank -%}
+        <div class="cleangame__header">
+          {%- if section.settings.heading != blank -%}
+            <h2 class="cleangame__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>
+          {%- endif -%}
+          {%- if section.settings.subtext != blank -%}
+            <p class="cleangame__subtext">{{ section.settings.subtext | escape | newline_to_br }}</p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      <ghar-clean-game class="cleangame__game" data-threshold="{{ section.settings.threshold }}">
+        <div class="cleangame__frame" data-clean-frame>
+          {%- comment -%}
+            The clean photograph is the floor of the frame - it is what is
+            uncovered, so it loads as a normal image and needs no script.
+          {%- endcomment -%}
+          {{
+            clean
+            | image_url: width: 1400
+            | image_tag:
+              loading: 'lazy',
+              widths: '375,550,750,1100,1400',
+              sizes: '(min-width: 750px) 60vw, 100vw',
+              class: 'cleangame__clean',
+              alt: section.settings.clean_alt | default: shop.name
+          }}
+
+          {%- comment -%}
+            The dirty photograph is never shown directly. The script reads it
+            and paints it onto the canvas above, which is what gets wiped away.
+            crossorigin is set so the canvas can use it without complaint.
+          {%- endcomment -%}
+          {{
+            dirty
+            | image_url: width: 1400
+            | image_tag:
+              loading: 'lazy',
+              widths: '375,550,750,1100,1400',
+              sizes: '(min-width: 750px) 60vw, 100vw',
+              class: 'cleangame__source',
+              alt: section.settings.dirty_alt | default: shop.name,
+              crossorigin: 'anonymous'
+          }}
+
+          <canvas class="cleangame__canvas" data-clean-canvas aria-hidden="true"></canvas>
+
+          <div class="cleangame__shine" aria-hidden="true"></div>
+
+          {%- if section.settings.hint != blank -%}
+            <div class="cleangame__hint" aria-hidden="true">
+              <span class="cleangame__hand">
+                <svg viewBox="0 0 24 24" fill="currentColor" focusable="false">
+                  <path d="M9 11.5V5a1.5 1.5 0 0 1 3 0v5.5h.5V3.5a1.5 1.5 0 0 1 3 0v7h.5V6a1.5 1.5 0 0 1 3 0v9.2a5.8 5.8 0 0 1-5.8 5.8h-1.9a5.3 5.3 0 0 1-4.2-2.1L3.6 14a1.5 1.5 0 0 1 2.2-2l1.7 1.7V8.5a1.5 1.5 0 0 1 3 0v3z"/>
+                </svg>
+              </span>
+              <span class="cleangame__hint-text">{{ section.settings.hint | escape }}</span>
+            </div>
+          {%- endif -%}
+
+          <div class="cleangame__done">
+            <p class="cleangame__done-text">{{ section.settings.done_text | escape | newline_to_br }}</p>
+            {%- if section.settings.done_subtext != blank -%}
+              <p class="cleangame__done-sub">{{ section.settings.done_subtext | escape | newline_to_br }}</p>
+            {%- endif -%}
+            {%- if section.settings.cta_label != blank -%}
+              <a
+                class="cleangame__cta"
+                href="{{ section.settings.cta_link | default: product.url | default: routes.all_products_collection_url }}"
+              >
+                {{- section.settings.cta_label | escape -}}
+              </a>
+            {%- endif -%}
+          </div>
+        </div>
+
+        <div class="cleangame__controls">
+          <button type="button" class="cleangame__button" data-clean-reset>
+            {{ section.settings.reset_label | escape }}
+          </button>
+          <button type="button" class="cleangame__button" data-clean-skip>
+            {{ section.settings.skip_label | escape }}
+          </button>
+        </div>
+      </ghar-clean-game>
+    </div>
+  </div>
+{%- endif -%}
+
+{% style %}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Clean it up game",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Two photographs of the same spot, one dirty and one clean, framed the same way. The shopper wipes the dirty one away with a finger and the clean one appears underneath."
+    },
+    {
+      "type": "image_picker",
+      "id": "image_dirty",
+      "label": "Dirty photo"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_clean",
+      "label": "Clean photo",
+      "info": "Same spot, same camera position. If the two are framed differently the edges will jump when it finishes."
+    },
+    {
+      "type": "text",
+      "id": "dirty_alt",
+      "label": "Description of the dirty photo",
+      "info": "For screen readers and for when a photo fails to load.",
+      "default": "A greasy stove top before cleaning"
+    },
+    {
+      "type": "text",
+      "id": "clean_alt",
+      "label": "Description of the clean photo",
+      "default": "The same stove top after cleaning"
+    },
+    {
+      "type": "header",
+      "content": "Words"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "info": "Press Enter to break the line where you want it.",
+      "default": "Clean it up"
+    },
+    {
+      "type": "textarea",
+      "id": "subtext",
+      "label": "Line under the heading",
+      "info": "Press Enter to break the line where you want it.",
+      "default": "Wipe the stove with your finger and see what happens."
+    },
+    {
+      "type": "text",
+      "id": "hint",
+      "label": "Hint over the photo",
+      "info": "Shown with an animated hand until the first touch. Leave empty for none.",
+      "default": "Wipe to clean"
+    },
+    {
+      "type": "textarea",
+      "id": "done_text",
+      "label": "Message when it is clean",
+      "default": "That is what one spray does."
+    },
+    {
+      "type": "textarea",
+      "id": "done_subtext",
+      "label": "Line under that message",
+      "info": "Leave empty for none. Keep any claim here to what the product can actually be shown to do.",
+      "default": "No hard scrubbing. Plant-based cleansers."
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button in the message",
+      "info": "Leave empty for none.",
+      "default": "Shop the cleaner"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link",
+      "info": "Leave empty to point at the product being viewed."
+    },
+    {
+      "type": "text",
+      "id": "reset_label",
+      "label": "Play again button",
+      "default": "Make it dirty again"
+    },
+    {
+      "type": "text",
+      "id": "skip_label",
+      "label": "Skip button",
+      "info": "Not everyone can drag - a keyboard, a switch, a screen reader. This gets them the same result.",
+      "default": "Show me clean"
+    },
+    {
+      "type": "header",
+      "content": "Difficulty"
+    },
+    {
+      "type": "range",
+      "id": "threshold",
+      "min": 20,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "How much to wipe before it finishes",
+      "info": "The rest clears itself, so nobody is left hunting specks in the corners.",
+      "default": 60
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Colour scheme",
+      "default": "scheme-2"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Clean it up game"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,269 @@
+/* "Clean it up" - wipe the dirty photograph away with a finger and the clean
+   one appears underneath.
+
+   The clean photograph is an ordinary <img>. The dirty one is painted onto a
+   canvas stacked on top of it, and wiping erases pixels from that canvas. So
+   what the shopper uncovers is the real second photograph, not a filter or a
+   fade - which is why it reads as cleaning rather than as an animation. */
+
+.cleangame__header {
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+
+.cleangame__heading {
+  margin: 0 0 0.4rem;
+  font-size: 2.4rem;
+  line-height: 1.2;
+}
+
+.cleangame__subtext {
+  margin: 0;
+  font-size: 1.6rem;
+  line-height: 1.45;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.cleangame__frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.2rem;
+  background-color: rgba(var(--color-foreground), 0.05);
+  aspect-ratio: 1 / 1;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.cleangame__frame:active {
+  cursor: grabbing;
+}
+
+.cleangame__clean,
+.cleangame__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cleangame__canvas {
+  transition: opacity 0.7s ease-out;
+}
+
+/* The source image is only ever read from, never shown - the canvas paints it. */
+.cleangame__source {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Once enough has been wiped the rest goes on its own, so nobody is left
+   chasing the last few specks in the corners. */
+.cleangame--done .cleangame__canvas {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The hint. A hand that sweeps side to side until the first touch, which
+   teaches the gesture without a line of instructions. */
+.cleangame__hint {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  pointer-events: none;
+  transition: opacity 0.3s ease-out;
+}
+
+.cleangame--started .cleangame__hint {
+  opacity: 0;
+}
+
+.cleangame__hand {
+  width: 5.6rem;
+  height: 5.6rem;
+  color: rgb(var(--color-background));
+  filter: drop-shadow(0 0.2rem 0.6rem rgba(0, 0, 0, 0.45));
+  animation: cleangame-wipe 2.2s ease-in-out infinite;
+}
+
+.cleangame__hand svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes cleangame-wipe {
+  0%,
+  100% {
+    transform: translateX(-3.5rem) rotate(-8deg);
+  }
+
+  50% {
+    transform: translateX(3.5rem) rotate(8deg);
+  }
+}
+
+.cleangame__hint-text {
+  padding: 0.6rem 1.4rem;
+  border-radius: 4rem;
+  background-color: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-family: var(--font-heading-family);
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+/* The finish. A shine sweeps across once, the way a wiped surface catches the
+   light, and the message rises under it. */
+.cleangame__done {
+  position: absolute;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  left: 1.2rem;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.4rem;
+  border-radius: 1rem;
+  background-color: rgba(var(--color-background), 0.94);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(1.2rem);
+  transition: opacity 0.45s ease-out, transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.cleangame--done .cleangame__done {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cleangame__done-text {
+  margin: 0;
+  font-family: var(--font-heading-family);
+  font-size: 1.8rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.cleangame__done-sub {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: rgba(var(--color-foreground), 0.75);
+}
+
+.cleangame__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 4.4rem;
+  padding: 0 2.4rem;
+  border-radius: 0.8rem;
+  background-color: rgb(var(--color-button));
+  color: rgb(var(--color-button-text));
+  font-family: var(--font-body-family);
+  font-size: 1.6rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cleangame__shine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.75) 50%,
+    transparent 65%
+  );
+}
+
+.cleangame--done .cleangame__shine {
+  animation: cleangame-shine 0.9s ease-out 0.1s 1;
+}
+
+@keyframes cleangame-shine {
+  from {
+    opacity: 1;
+    transform: translateX(-100%);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Controls under the frame */
+
+.cleangame__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+}
+
+.cleangame__button {
+  min-height: 4.4rem;
+  padding: 0 1.8rem;
+  border: 0.1rem solid rgba(var(--color-foreground), 0.25);
+  border-radius: 0.8rem;
+  background: none;
+  color: rgb(var(--color-foreground));
+  font-family: var(--font-body-family);
+  font-size: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cleangame__button:hover {
+  background-color: rgba(var(--color-foreground), 0.06);
+}
+
+/* Someone who asked their device for less motion still gets the game - the
+   wiping is the point, and it is a gesture, not an animation. What goes is the
+   looping hand, the shine, and the sliding of the message. */
+@media (prefers-reduced-motion: reduce) {
+  .cleangame__hand,
+  .cleangame--done .cleangame__shine {
+    animation: none;
+  }
+
+  .cleangame__done {
+    transition: opacity 0.2s ease-out;
+    transform: none;
+  }
+
+  .cleangame--done .cleangame__done {
+    transform: none;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .cleangame__heading {
+    font-size: 3.2rem;
+  }
+
+  .cleangame__frame {
+    aspect-ratio: 16 / 10;
+  }
+
+  .cleangame__hand {
+    width: 7rem;
+    height: 7rem;
+  }
+}
