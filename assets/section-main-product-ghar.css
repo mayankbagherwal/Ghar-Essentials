@@ -343,6 +343,23 @@
   line-height: 1;
 }
 
+/* Dawn does not give this button a border. It draws the outline as a ::after
+   pseudo-element - a box inset by the theme's button border width, carrying its
+   own radius and a box-shadow ring - and a ::before behind it for the shadow.
+
+   So setting a real border here did not replace that outline, it added a second
+   one. Two rings, each with a different radius, sitting a couple of pixels
+   apart: at the straight edges they overlap and look like one line, and at the
+   corners they separate, which is the doubled curve that looked wrong.
+
+   Switching both pseudo-elements off leaves the real border as the only outline
+   on the button, so the corner is a single 0.8rem curve matching Add to cart. */
+.ghar-pdp .shopify-payment-button__button--unbranded::before,
+.ghar-pdp .shopify-payment-button__button--unbranded::after,
+.ghar-pdp .shopify-payment-button__button--unbranded:hover::after {
+  display: none;
+}
+
 .ghar-pdp .shopify-payment-button__button--unbranded:hover:not([disabled]) {
   background-color: rgba(var(--color-button), 0.08);
 }
