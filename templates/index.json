@@ -152,6 +152,7 @@
         "tile_PYF4pL": {
           "type": "tile",
           "settings": {
+            "image": "shopify://shop_images/75448449-C2CB-4DFC-A7E9-B7926706B2A2.png",
             "label": "Hard-water stains",
             "link": ""
           }
