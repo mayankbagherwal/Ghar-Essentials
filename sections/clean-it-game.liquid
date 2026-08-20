@@ -65,18 +65,27 @@
           {%- comment -%}
             The dirty photograph is never shown directly. The script reads it
             and paints it onto the canvas above, which is what gets wiped away.
-            crossorigin is set so the canvas can use it without complaint.
+
+            No crossorigin attribute here on purpose. It was making the browser
+            fetch this as a CORS request, and a response without the matching
+            header fails the load entirely - which left an empty canvas over the
+            clean photograph and nothing to wipe. Drawing a cross-origin image
+            onto a canvas has never needed it; only reading the pixels back
+            does, and the wipe is measured on a grid rather than by reading
+            pixels.
+
+            Eager, not lazy: the canvas needs this the moment the section is
+            reachable, and it is the one image on the page that is never seen.
           {%- endcomment -%}
           {{
             dirty
             | image_url: width: 1400
             | image_tag:
-              loading: 'lazy',
+              loading: 'eager',
               widths: '375,550,750,1100,1400',
               sizes: '(min-width: 750px) 60vw, 100vw',
               class: 'cleangame__source',
-              alt: section.settings.dirty_alt | default: shop.name,
-              crossorigin: 'anonymous'
+              alt: section.settings.dirty_alt | default: shop.name
           }}
 
           <canvas class="cleangame__canvas" data-clean-canvas aria-hidden="true"></canvas>

@@ -46,12 +46,11 @@ if (!customElements.get('ghar-clean-game')) {
         this.onDown = this.onDown.bind(this);
         this.onMove = this.onMove.bind(this);
         this.onUp = this.onUp.bind(this);
-        this.onResize = this.onResize.bind(this);
+        this.tryPaint = this.tryPaint.bind(this);
 
         this.frame.addEventListener('pointerdown', this.onDown);
         this.frame.addEventListener('pointermove', this.onMove);
         window.addEventListener('pointerup', this.onUp);
-        window.addEventListener('resize', this.onResize);
 
         if (this.resetButton) this.resetButton.addEventListener('click', () => this.reset());
 
@@ -59,17 +58,50 @@ if (!customElements.get('ghar-clean-game')) {
            skip button gets them the same payoff. */
         if (this.skipButton) this.skipButton.addEventListener('click', () => this.finish());
 
-        if (this.source.complete && this.source.naturalWidth) {
-          this.paint();
+        /* Two things have to be true before the dirt can be painted: the image
+           has decoded, and the frame has been laid out. Neither is reliably
+           true when this runs - the image may still be in flight, and a frame
+           that is off screen or in a tab that has not been shown yet measures
+           zero. So instead of painting once and hoping, both are watched and
+           whichever finishes last triggers the paint. */
+        this.source.addEventListener('load', this.tryPaint);
+        this.source.addEventListener('error', () => this.giveUp(), { once: true });
+
+        if ('ResizeObserver' in window) {
+          this.sizeObserver = new ResizeObserver(this.tryPaint);
+          this.sizeObserver.observe(this.frame);
         } else {
-          this.source.addEventListener('load', () => this.paint(), { once: true });
+          window.addEventListener('resize', this.tryPaint);
         }
+
+        this.tryPaint();
       }
 
       disconnectedCallback() {
         window.removeEventListener('pointerup', this.onUp);
-        window.removeEventListener('resize', this.onResize);
-        window.clearTimeout(this.resizeTimer);
+        window.removeEventListener('resize', this.tryPaint);
+        if (this.sizeObserver) this.sizeObserver.disconnect();
+      }
+
+      /* Paint only when there is something to paint onto something. The width
+         check also stops a resize that changed nothing from wiping away a game
+         already in progress. */
+      tryPaint() {
+        if (!this.source.naturalWidth) return;
+
+        const rect = this.frame.getBoundingClientRect();
+        if (rect.width < 2 || rect.height < 2) return;
+        if (this.painted && Math.abs(rect.width - this.width) < 2) return;
+
+        this.painted = true;
+        this.paint();
+      }
+
+      /* The dirty photograph could not be fetched. Rather than leave a hint
+         inviting someone to wipe a canvas with nothing on it, the hint goes and
+         the clean photograph is simply a photograph. */
+      giveUp() {
+        this.classList.add('cleangame--started');
       }
 
       /* ---- painting the dirt on ---- */
@@ -204,17 +236,6 @@ if (!customElements.get('ghar-clean-game')) {
         this.paint();
       }
 
-      /* The canvas is sized in CSS pixels, so a rotation or a resized window
-         leaves it stretched. Repainting restarts the game, which is the honest
-         outcome - half a wipe cannot be carried across a new canvas size. */
-      onResize() {
-        window.clearTimeout(this.resizeTimer);
-        this.resizeTimer = window.setTimeout(() => {
-          const rect = this.frame.getBoundingClientRect();
-          if (Math.abs(rect.width - (this.width || 0)) < 2) return;
-          this.paint();
-        }, 200);
-      }
     }
   );
 }
