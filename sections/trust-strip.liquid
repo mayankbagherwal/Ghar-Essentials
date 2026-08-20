@@ -19,10 +19,10 @@
     {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
       <div class="trust__header">
         {%- if section.settings.heading != blank -%}
-          <h2 class="trust__heading">{{ section.settings.heading | escape }}</h2>
+          <h2 class="trust__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>
         {%- endif -%}
         {%- if section.settings.subheading != blank -%}
-          <p class="trust__subheading">{{ section.settings.subheading | escape }}</p>
+          <p class="trust__subheading">{{ section.settings.subheading | escape | newline_to_br }}</p>
         {%- endif -%}
       </div>
     {%- endif -%}
@@ -73,24 +73,31 @@
   "max_blocks": 6,
   "settings": [
     {
-      "type": "text",
+      "type": "textarea",
       "id": "heading",
       "label": "Heading",
-      "info": "Optional. Leave empty for a plain row of cards.",
+      "info": "Optional. Leave empty for a plain row of cards. Press Enter to break the line where you want it.",
       "default": "Why homes keep reordering"
     },
     {
-      "type": "text",
+      "type": "textarea",
       "id": "subheading",
-      "label": "Subheading"
+      "label": "Subheading",
+      "info": "Press Enter to break the line where you want it."
     },
     {
       "type": "select",
       "id": "layout",
       "label": "Card layout",
       "options": [
-        { "value": "cards", "label": "Cards with a description" },
-        { "value": "compact", "label": "Compact, icon and label only" }
+        {
+          "value": "cards",
+          "label": "Cards with a description"
+        },
+        {
+          "value": "compact",
+          "label": "Compact, icon and label only"
+        }
       ],
       "default": "cards"
     },
@@ -133,16 +140,46 @@
           "label": "Icon",
           "info": "Drawn in the brand's own line style. Upload below only to replace it.",
           "options": [
-            { "value": "leaf", "label": "Leaf" },
-            { "value": "shield", "label": "Shield" },
-            { "value": "cash", "label": "Cash" },
-            { "value": "truck", "label": "Delivery van" },
-            { "value": "clock", "label": "Clock" },
-            { "value": "drop", "label": "Drop" },
-            { "value": "spray", "label": "Spray bottle" },
-            { "value": "bottle", "label": "Bottle" },
-            { "value": "sparkle", "label": "Sparkle" },
-            { "value": "none", "label": "No icon" }
+            {
+              "value": "leaf",
+              "label": "Leaf"
+            },
+            {
+              "value": "shield",
+              "label": "Shield"
+            },
+            {
+              "value": "cash",
+              "label": "Cash"
+            },
+            {
+              "value": "truck",
+              "label": "Delivery van"
+            },
+            {
+              "value": "clock",
+              "label": "Clock"
+            },
+            {
+              "value": "drop",
+              "label": "Drop"
+            },
+            {
+              "value": "spray",
+              "label": "Spray bottle"
+            },
+            {
+              "value": "bottle",
+              "label": "Bottle"
+            },
+            {
+              "value": "sparkle",
+              "label": "Sparkle"
+            },
+            {
+              "value": "none",
+              "label": "No icon"
+            }
           ],
           "default": "leaf"
         },
@@ -172,10 +209,38 @@
     {
       "name": "Trust strip",
       "blocks": [
-        { "type": "item", "settings": { "icon_name": "leaf", "label": "Plant-based cleansers", "description": "Made with cleansers derived from coconut." } },
-        { "type": "item", "settings": { "icon_name": "shield", "label": "Safe around food & kids", "description": "For everyday kitchen surfaces." } },
-        { "type": "item", "settings": { "icon_name": "cash", "label": "Cash on delivery", "description": "Pay when it reaches your door." } },
-        { "type": "item", "settings": { "icon_name": "truck", "label": "Delivers in 3-5 days", "description": "Shipped across India." } }
+        {
+          "type": "item",
+          "settings": {
+            "icon_name": "leaf",
+            "label": "Plant-based cleansers",
+            "description": "Made with cleansers derived from coconut."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon_name": "shield",
+            "label": "Safe around food & kids",
+            "description": "For everyday kitchen surfaces."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon_name": "cash",
+            "label": "Cash on delivery",
+            "description": "Pay when it reaches your door."
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "icon_name": "truck",
+            "label": "Delivers in 3-5 days",
+            "description": "Shipped across India."
+          }
+        }
       ]
     }
   ]

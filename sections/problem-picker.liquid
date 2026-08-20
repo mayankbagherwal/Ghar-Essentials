@@ -17,7 +17,7 @@
 <div class="color-{{ section.settings.color_scheme | default: 'scheme-1' }} gradient">
   <div class="problem-picker page-width section-{{ section.id }}-padding">
     {%- if section.settings.heading != blank -%}
-      <h2 class="problem-picker__heading">{{ section.settings.heading | escape }}</h2>
+      <h2 class="problem-picker__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>
     {%- endif -%}
 
     <ul class="problem-picker__list" role="list">
@@ -63,10 +63,11 @@
   "max_blocks": 8,
   "settings": [
     {
-      "type": "text",
+      "type": "textarea",
       "id": "heading",
       "label": "Heading",
-      "default": "What are you cleaning today?"
+      "default": "What are you cleaning today?",
+      "info": "Press Enter to break the line where you want it."
     },
     {
       "type": "color_scheme",
@@ -125,11 +126,36 @@
     {
       "name": "Problem picker",
       "blocks": [
-        { "type": "tile", "settings": { "label": "Kitchen grease" } },
-        { "type": "tile", "settings": { "label": "Chimney & stove" } },
-        { "type": "tile", "settings": { "label": "Bathroom & tiles" } },
-        { "type": "tile", "settings": { "label": "Floors" } },
-        { "type": "tile", "settings": { "label": "Hard-water stains" } }
+        {
+          "type": "tile",
+          "settings": {
+            "label": "Kitchen grease"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "label": "Chimney & stove"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "label": "Bathroom & tiles"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "label": "Floors"
+          }
+        },
+        {
+          "type": "tile",
+          "settings": {
+            "label": "Hard-water stains"
+          }
+        }
       ]
     }
   ]

@@ -20,10 +20,10 @@
     {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
       <div class="bundles__header">
         {%- if section.settings.heading != blank -%}
-          <h2 class="bundles__heading">{{ section.settings.heading | escape }}</h2>
+          <h2 class="bundles__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>
         {%- endif -%}
         {%- if section.settings.subheading != blank -%}
-          <p class="bundles__subheading">{{ section.settings.subheading | escape }}</p>
+          <p class="bundles__subheading">{{ section.settings.subheading | escape | newline_to_br }}</p>
         {%- endif -%}
       </div>
     {%- endif -%}
@@ -186,16 +186,18 @@
   "max_blocks": 6,
   "settings": [
     {
-      "type": "text",
+      "type": "textarea",
       "id": "heading",
       "label": "Heading",
-      "default": "Buy the set, pay less per bottle"
+      "default": "Buy the set, pay less per bottle",
+      "info": "Press Enter to break the line where you want it."
     },
     {
-      "type": "text",
+      "type": "textarea",
       "id": "subheading",
       "label": "Subheading",
-      "default": "Refill packs and combos for a household that cleans every week."
+      "default": "Refill packs and combos for a household that cleans every week.",
+      "info": "Press Enter to break the line where you want it."
     },
     {
       "type": "text",
@@ -306,8 +308,15 @@
     {
       "name": "Bundles",
       "blocks": [
-        { "type": "bundle", "settings": { "highlight": true } },
-        { "type": "bundle" }
+        {
+          "type": "bundle",
+          "settings": {
+            "highlight": true
+          }
+        },
+        {
+          "type": "bundle"
+        }
       ]
     }
   ]

@@ -70,11 +70,11 @@
     <div class="hero__content hero__content--{{ section.settings.text_position }}">
       <div class="hero__box">
         {%- if section.settings.heading != blank -%}
-          <h1 class="hero__heading">{{ section.settings.heading | escape }}</h1>
+          <h1 class="hero__heading">{{ section.settings.heading | escape | newline_to_br }}</h1>
         {%- endif -%}
 
         {%- if section.settings.subheading != blank -%}
-          <p class="hero__subheading">{{ section.settings.subheading | escape }}</p>
+          <p class="hero__subheading">{{ section.settings.subheading | escape | newline_to_br }}</p>
         {%- endif -%}
 
         {%- if section.settings.button_label != blank -%}
@@ -91,7 +91,7 @@
         {%- endif -%}
 
         {%- if section.settings.microproof != blank -%}
-          <p class="hero__microproof">{{ section.settings.microproof | escape }}</p>
+          <p class="hero__microproof">{{ section.settings.microproof | escape | newline_to_br }}</p>
         {%- endif -%}
       </div>
     </div>
@@ -142,16 +142,18 @@
       "content": "Text"
     },
     {
-      "type": "text",
+      "type": "textarea",
       "id": "heading",
       "label": "Headline",
-      "default": "Clean ghar, bina harsh chemicals"
+      "default": "Clean ghar, bina harsh chemicals",
+      "info": "Press Enter to break the line where you want it."
     },
     {
-      "type": "text",
+      "type": "textarea",
       "id": "subheading",
       "label": "One-line subhead",
-      "default": "Plant-based cleaners for your kitchen, bathroom and floors."
+      "default": "Plant-based cleaners for your kitchen, bathroom and floors.",
+      "info": "Press Enter to break the line where you want it."
     },
     {
       "type": "text",
@@ -166,10 +168,10 @@
       "info": "Point this straight at your best-selling product, not a collection. Fewer taps to checkout."
     },
     {
-      "type": "text",
+      "type": "textarea",
       "id": "microproof",
       "label": "Small proof line under the button",
-      "info": "REPLACE BEFORE LAUNCH. Only put a rating or customer count here once it is real and you can show the reviews. Made-up numbers are a legal risk under ASCI rules.",
+      "info": "REPLACE BEFORE LAUNCH. Only put a rating or customer count here once it is real and you can show the reviews. Made-up numbers are a legal risk under ASCI rules. Press Enter to break the line where you want it.",
       "default": "[ADD REAL PROOF - e.g. 4.7 stars from 200 verified reviews]"
     },
     {
@@ -177,9 +179,18 @@
       "id": "text_position",
       "label": "Text position",
       "options": [
-        { "value": "top", "label": "Top" },
-        { "value": "middle", "label": "Middle" },
-        { "value": "bottom", "label": "Bottom" }
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "middle",
+          "label": "Middle"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
       ],
       "default": "bottom"
     },

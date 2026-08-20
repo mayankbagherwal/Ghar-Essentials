@@ -34,7 +34,7 @@
       {% endif %}
     >
       {%- if section.settings.heading != blank -%}
-        <h2 class="fbt__heading">{{ section.settings.heading | escape }}</h2>
+        <h2 class="fbt__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>
       {%- endif -%}
 
       <ul class="fbt__list" role="list">
@@ -113,15 +113,18 @@
   "tag": "section",
   "class": "section",
   "enabled_on": {
-    "templates": ["product"]
+    "templates": [
+      "product"
+    ]
   },
   "max_blocks": 5,
   "settings": [
     {
-      "type": "text",
+      "type": "textarea",
       "id": "heading",
       "label": "Heading",
-      "default": "Frequently bought together"
+      "default": "Frequently bought together",
+      "info": "Press Enter to break the line where you want it."
     },
     {
       "type": "checkbox",
@@ -209,8 +212,14 @@
       "id": "timer_on_end",
       "label": "When the countdown reaches zero",
       "options": [
-        { "value": "hide", "label": "Hide the countdown, keep the offer" },
-        { "value": "restart", "label": "Start it again" }
+        {
+          "value": "hide",
+          "label": "Hide the countdown, keep the offer"
+        },
+        {
+          "value": "restart",
+          "label": "Start it again"
+        }
       ],
       "info": "Starting it again is the pattern the guidelines above call out.",
       "default": "hide"
@@ -286,7 +295,11 @@
   "presets": [
     {
       "name": "Bought together",
-      "blocks": [{ "type": "product" }]
+      "blocks": [
+        {
+          "type": "product"
+        }
+      ]
     }
   ]
 }

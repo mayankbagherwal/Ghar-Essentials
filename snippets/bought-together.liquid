@@ -30,7 +30,7 @@
   {{ block.shopify_attributes }}
 >
   {%- if bt.heading != blank -%}
-    <h2 class="fbt__heading">{{ bt.heading | escape }}</h2>
+    <h2 class="fbt__heading">{{ bt.heading | escape | newline_to_br }}</h2>
   {%- endif -%}
 
   <ul class="fbt__list" role="list">

@@ -32,10 +32,10 @@
     {%- if section.settings.heading != blank or section.settings.subheading != blank -%}
       <div class="bestsellers__header">
         {%- if section.settings.heading != blank -%}
-          <h2 class="bestsellers__heading">{{ section.settings.heading | escape }}</h2>
+          <h2 class="bestsellers__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>
         {%- endif -%}
         {%- if section.settings.subheading != blank -%}
-          <p class="bestsellers__subheading">{{ section.settings.subheading | escape }}</p>
+          <p class="bestsellers__subheading">{{ section.settings.subheading | escape | newline_to_br }}</p>
         {%- endif -%}
       </div>
     {%- endif -%}
@@ -102,16 +102,18 @@
   "class": "section",
   "settings": [
     {
-      "type": "text",
+      "type": "textarea",
       "id": "heading",
       "label": "Heading",
-      "default": "Our bestsellers"
+      "default": "Our bestsellers",
+      "info": "Press Enter to break the line where you want it."
     },
     {
-      "type": "text",
+      "type": "textarea",
       "id": "subheading",
       "label": "Subheading",
-      "default": "The three cleaners most Ghar Essentials homes start with."
+      "default": "The three cleaners most Ghar Essentials homes start with.",
+      "info": "Press Enter to break the line where you want it."
     },
     {
       "type": "collection",

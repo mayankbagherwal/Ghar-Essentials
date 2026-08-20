@@ -17,7 +17,7 @@
 <div class="color-{{ section.settings.color_scheme | default: 'scheme-1' }} gradient">
   <div class="faq page-width section-{{ section.id }}-padding">
     {%- if section.settings.heading != blank -%}
-      <h2 class="faq__heading">{{ section.settings.heading | escape }}</h2>
+      <h2 class="faq__heading">{{ section.settings.heading | escape | newline_to_br }}</h2>
     {%- endif -%}
 
     <div class="faq__list">
@@ -49,10 +49,11 @@
   "max_blocks": 20,
   "settings": [
     {
-      "type": "text",
+      "type": "textarea",
       "id": "heading",
       "label": "Heading",
-      "default": "Questions people ask us"
+      "default": "Questions people ask us",
+      "info": "Press Enter to break the line where you want it."
     },
     {
       "type": "text",
