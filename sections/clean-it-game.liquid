@@ -8,10 +8,30 @@
 -%}
 
 {%- comment -%}
-  Nothing renders until both photographs are set. One without the other is not
-  half a game, it is a broken one.
+  Nothing renders to a shopper until both photographs are set - one without the
+  other is not half a game, it is a broken one.
+
+  The owner is a different case. A section that renders nothing is a section
+  that cannot be found: it is in the template and in the editor's list, but
+  clicking it shows an empty page, so it reads as broken rather than as
+  unfinished. In the editor it says what it is waiting for instead.
 {%- endcomment -%}
-{%- if dirty != blank and clean != blank -%}
+{%- if dirty == blank or clean == blank -%}
+  {%- if request.design_mode -%}
+    <div class="color-{{ scheme }} gradient">
+      <div class="cleangame page-width section-{{ section.id }}-padding">
+        <div class="cleangame__setup">
+          <p class="cleangame__setup-title">Clean it up game</p>
+          <p class="cleangame__setup-text">
+            Pick two photographs of the same spot in this section's settings - one
+            dirty, one clean, framed the same way. Until both are set this section
+            stays hidden from shoppers.
+          </p>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+{%- else -%}
   <div class="color-{{ scheme }} gradient">
     <div class="cleangame page-width section-{{ section.id }}-padding">
       {%- if section.settings.heading != blank or section.settings.subtext != blank -%}
