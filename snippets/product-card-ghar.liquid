@@ -18,7 +18,6 @@
   - image_sizes: {String} sizes attribute for the product image. (optional)
   - accent_color: {String} Background of the "% OFF" badge. (optional)
   - accent_text_color: {String} Text colour inside the "% OFF" badge. (optional)
-  - discount_color: {String} Colour of the "% off" text in the price row. (optional)
   - skip_styles: {Boolean} Skip the stylesheet tag when the section already loaded it. (optional)
   - card_blocks: {Array} The calling section's blocks. Pass section.blocks to let the
       owner add, remove and reorder the rows inside the card from the theme editor.
@@ -88,9 +87,6 @@
     endif
     if accent_text_color != blank
       assign card_styles = card_styles | append: '--ghar-accent-text: ' | append: accent_text_color | append: ';'
-    endif
-    if discount_color != blank
-      assign card_styles = card_styles | append: '--ghar-discount: ' | append: discount_color | append: ';'
     endif
   -%}
 
@@ -261,15 +257,6 @@
                   {%- if discount_percent > 0 -%}{{ variant.compare_at_price | money }}{%- endif -%}
                 </s>
 
-                <span
-                  class="ghar-card__off"
-                  data-ghar-off
-                  {% if discount_percent == 0 %}
-                    hidden
-                  {% endif %}
-                >
-                  {%- if discount_percent > 0 -%}{{ discount_percent }}% off{%- endif -%}
-                </span>
               </div>
 
             {%- comment -%} Tax line. The block's own wording wins, if it has any. {%- endcomment -%}

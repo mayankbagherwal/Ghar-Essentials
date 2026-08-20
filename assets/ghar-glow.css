@@ -47,7 +47,6 @@
    are small, so the halo is tighter - a wide blur around a 20px tag stops
    looking like light and starts looking like fog. */
 .ghar-card__badge--discount,
-.ghar-card__off,
 .ghar-pdp__off,
 .fbt__badge,
 .stickybuy__pill,
@@ -94,8 +93,7 @@
   }
 
   .ghar-card__badge--discount,
-  .ghar-card__off,
-  .ghar-pdp__off,
+    .ghar-pdp__off,
   .fbt__badge,
   .stickybuy__pill,
   .fbt__timer-clock {

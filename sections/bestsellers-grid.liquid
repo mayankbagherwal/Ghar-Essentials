@@ -59,7 +59,6 @@
               secondary_badge: section.settings.secondary_badge,
               accent_color: section.settings.accent_color,
               accent_text_color: section.settings.accent_text_color,
-              discount_color: section.settings.discount_color,
               lazy_load: card_lazy,
               skip_styles: true
             %}
@@ -182,12 +181,6 @@
       "id": "accent_text_color",
       "label": "Offer badge text",
       "default": "#12211b"
-    },
-    {
-      "type": "color",
-      "id": "discount_color",
-      "label": "Savings text",
-      "default": "#0f7a4e"
     },
     {
       "type": "header",
@@ -345,13 +338,27 @@
     {
       "name": "Bestsellers grid",
       "blocks": [
-        { "type": "title" },
-        { "type": "size" },
-        { "type": "reviews" },
-        { "type": "price" },
-        { "type": "tax_note" },
-        { "type": "variant_picker" },
-        { "type": "button" }
+        {
+          "type": "title"
+        },
+        {
+          "type": "size"
+        },
+        {
+          "type": "reviews"
+        },
+        {
+          "type": "price"
+        },
+        {
+          "type": "tax_note"
+        },
+        {
+          "type": "variant_picker"
+        },
+        {
+          "type": "button"
+        }
       ]
     }
   ]
