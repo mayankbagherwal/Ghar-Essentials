@@ -79,7 +79,21 @@
           keeps the two in step: a tap on a thumbnail scrolls the rail, and a
           swipe marks the thumbnail that matches.
         {%- endcomment -%}
+        {%- comment -%}
+          The saving is stated on a badge over the photograph, not in the price
+          line. A price line reads as one fact - what this costs - and a
+          percentage sitting inside it competes with the number that matters.
+        {%- endcomment -%}
         <ghar-gallery class="ghar-gallery{% if product.media.size == 1 %} ghar-gallery--single{% endif %}">
+          <span
+            class="ghar-pdp__badge"
+            data-ghar-badge-off
+            {% if discount_percent == 0 or product.available == false %}
+              hidden
+            {% endif %}
+          >
+            {%- if discount_percent > 0 -%}{{ discount_percent }}% OFF{%- endif -%}
+          </span>
           {%- for media in product.media -%}
             <input
               type="radio"
@@ -178,15 +192,6 @@
           {%- if discount_percent > 0 -%}{{ current_variant.compare_at_price | money }}{%- endif -%}
         </s>
 
-        <span
-          class="ghar-pdp__off"
-          data-ghar-off
-          {% if discount_percent == 0 %}
-            hidden
-          {% endif %}
-        >
-          {%- if discount_percent > 0 -%}{{ discount_percent }}% off{%- endif -%}
-        </span>
       </div>
 
       {%- if section.settings.tax_note != blank -%}

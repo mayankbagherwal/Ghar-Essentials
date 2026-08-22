@@ -132,29 +132,39 @@
       {%- endif -%}
 
       {%- comment -%} 2. Badges. The percentage is calculated, never typed in. {%- endcomment -%}
+      {%- comment -%}
+        One badge, never a stack of them. If everything on a card is
+        highlighted then nothing on it is, so they queue rather than pile up:
+        the state first, then the offer, then whatever the owner wanted to add.
+
+        Sold out earns its place at the front because being out of stock has to
+        be said in words - a greyed photograph is a colour signal and nothing
+        else, which a shopper who cannot see it will miss entirely.
+
+        The discount badge stays in the markup even when it has nothing to say,
+        because the in-card size switch turns it on and off as the variant
+        changes. It is only rendered at all when there is no sold-out badge to
+        outrank it.
+      {%- endcomment -%}
       <div class="ghar-card__badges">
         {%- if card_product.available == false -%}
           <span class="ghar-card__badge ghar-card__badge--soldout">
             {{- 'products.product.sold_out' | t -}}
           </span>
-        {%- endif -%}
+        {%- else -%}
+          <span
+            class="ghar-card__badge ghar-card__badge--discount"
+            data-ghar-badge-off
+            {% if discount_percent == 0 %}
+              hidden
+            {% endif %}
+          >
+            {%- if discount_percent > 0 -%}{{ discount_percent }}% OFF{%- endif -%}
+          </span>
 
-        {%- comment -%}
-          Always in the DOM so the in-card variant switch can update it. Hidden
-          when the selected variant has no MRP above its price.
-        {%- endcomment -%}
-        <span
-          class="ghar-card__badge ghar-card__badge--discount"
-          data-ghar-badge-off
-          {% if discount_percent == 0 or card_product.available == false %}
-            hidden
-          {% endif %}
-        >
-          {%- if discount_percent > 0 -%}{{ discount_percent }}% OFF{%- endif -%}
-        </span>
-
-        {%- if extra_badge != blank -%}
-          <span class="ghar-card__badge ghar-card__badge--custom">{{ extra_badge | escape }}</span>
+          {%- if discount_percent == 0 and extra_badge != blank -%}
+            <span class="ghar-card__badge ghar-card__badge--custom">{{ extra_badge | escape }}</span>
+          {%- endif -%}
         {%- endif -%}
       </div>
     </a>

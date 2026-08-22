@@ -29,7 +29,7 @@ if (!customElements.get('ghar-product-info')) {
 
         this.priceEl = this.querySelector('[data-ghar-price]');
         this.mrpEl = this.querySelector('[data-ghar-mrp]');
-        this.offEl = this.querySelector('[data-ghar-off]');
+        this.badgeEl = this.querySelector('[data-ghar-badge-off]');
         this.idInput = this.querySelector('[data-ghar-variant-id]');
         this.button = this.querySelector('[data-ghar-atc]');
         this.buttonText = this.button ? this.button.querySelector('[data-ghar-atc-text]') : null;
@@ -59,10 +59,10 @@ if (!customElements.get('ghar-product-info')) {
           this.mrpEl.hidden = !variant.compare_at_price;
         }
 
-        if (this.offEl) {
+        if (this.badgeEl) {
           const hasDiscount = variant.discount > 0;
-          this.offEl.textContent = hasDiscount ? `${variant.discount}% off` : '';
-          this.offEl.hidden = !hasDiscount;
+          this.badgeEl.textContent = hasDiscount ? `${variant.discount}% OFF` : '';
+          this.badgeEl.hidden = !hasDiscount || !variant.available;
         }
 
         this.updateButton(variant.available);

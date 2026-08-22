@@ -153,7 +153,7 @@
 }
 
 .fbt__mrp {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: rgba(var(--color-foreground), 0.6);
 }
 
@@ -162,7 +162,7 @@
   border-radius: 0.4rem;
   background-color: var(--fbt-accent, #f2c230);
   color: var(--fbt-accent-text, #12211b);
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   font-weight: 600;
   line-height: 1.35;
   white-space: nowrap;

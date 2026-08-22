@@ -44,7 +44,7 @@
           "type": "benefits",
           "settings": {
             "heading": "Why you'll like it",
-            "content": "<ul><li>Cuts everyday kitchen grease without hard scrubbing</li><li>Made with plant-based cleansers derived from coconut [SUBSTANTIATE BEFORE LAUNCH]</li><li>No added SLES, phthalates, sulphates or phosphates [SUBSTANTIATE BEFORE LAUNCH]</li><li>Safe to use around food preparation areas [SUBSTANTIATE BEFORE LAUNCH]</li></ul>"
+            "content": "<ul><li>Cuts baked-on oil from your gas stove, chimney filter and platform</li><li>Lemongrass fragrance, 500 ml</li><li>Alkaline, pH 10 - keep away from aluminium, marble and other natural stone</li><li>Full ingredient list published below</li></ul>"
           }
         },
         "how_to_use": {
@@ -59,7 +59,7 @@
           "type": "collapsible",
           "settings": {
             "heading": "Ingredients",
-            "content": "<p>Full ingredient list to be published here before launch. [SUBSTANTIATE BEFORE LAUNCH]</p><p><strong>Not added:</strong> SLES, phthalates, sulphates, phosphates. [SUBSTANTIATE BEFORE LAUNCH]</p>",
+            "content": "<p>Full ingredient list to be published here before launch. [SUBSTANTIATE BEFORE LAUNCH]</p><p><strong>Safety:</strong> keep out of reach of children. Avoid contact with eyes and rinse well with water if it happens. Do not mix with other cleaners, especially acidic ones. Wash hands after use.</p>",
             "open_by_default": false
           }
         },
@@ -104,14 +104,14 @@
         "heading": "Clean it up",
         "subtext": "Wipe the stove with your finger and see what happens.",
         "hint": "Wipe to clean",
-        "done_text": "That is what one spray does.",
-        "done_subtext": "No hard scrubbing. Plant-based cleansers.",
+        "done_text": "Grease, gone.",
+        "done_subtext": "Cuts baked-on oil from the stove, chimney filter and platform.",
         "cta_label": "Shop the cleaner",
         "cta_link": "",
         "reset_label": "Make it dirty again",
         "skip_label": "Show me clean",
         "threshold": 60,
-        "color_scheme": "scheme-1",
+        "color_scheme": "scheme-3",
         "padding_top": 40,
         "padding_bottom": 40,
         "grime_level": 6,

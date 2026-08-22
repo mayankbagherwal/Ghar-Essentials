@@ -118,7 +118,7 @@
   overflow: hidden;
   margin: 0;
   font-family: var(--font-heading-family);
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 600;
   line-height: 1.25;
   -webkit-line-clamp: 2;
@@ -171,7 +171,7 @@
 
   display: flex;
   align-items: center;
-  min-height: 1.8rem;
+  min-height: 2rem;
 }
 
 .ghar-card__reviews-empty {
@@ -316,7 +316,7 @@
   }
 
   .ghar-card__title {
-    font-size: 2.4rem;
+    font-size: 2rem;
   }
 
   .ghar-card__price {
